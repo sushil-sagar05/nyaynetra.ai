@@ -34,5 +34,7 @@ app.get('/', (req:Request,res:Response)=>{
     res.send('Hello World');
 });
 import userRoutes from './routes/user.routes'
+import documentRoutes from './routes/document.routes'
 app.use('/user',userRoutes);
+app.use('/document',documentRoutes)
 module.exports = app;
