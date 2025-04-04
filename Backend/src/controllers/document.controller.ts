@@ -20,6 +20,7 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
 
 try {
     const file = req.file
+    console.log(file)
     if(!file){
         throw new ApiError(400,"No Document is uploaded")  
     }
@@ -38,12 +39,18 @@ try {
         if(!document){
             throw new ApiError(400,"Something went wrong while uploading document on cloudinary ")   
         }
-    const user = req?.user?.id
+    
+   const user = req.user
+   if(!user){
+    throw new ApiError(400,"Something went wrong while retrieving user!")
+   } 
+   const userId = user.id
+//    console.log(fileType)
+//    console.log(typeof fileType)
     const newdocument =new DocumentModel ({
-        UploadedBy:user,
-        fileType,
-        filename,
-        ClouinaryUrl:document?.url
+        UploadedBy:userId,
+        ClouinaryUrl:document?.url,
+        fileType: fileType
     })
     const savedDocument = await newdocument.save();
     if(!savedDocument){
@@ -64,9 +71,85 @@ try {
        res.status(500).json({ success: false, message: "Internal Server Error" });
 }
 }
-
+const getAllUploadedDocument = async(req:authRequest,res:Response)=>{
+// Retrieve all the documents of authenticated user
+// send res them
+try {
+    const user = req.user
+    if(!user){
+        throw new ApiError(400,"Something went wrong while retrieving user!")
+    }
+    const userId = user.id
+    const userUploadedDocuments = await DocumentModel.find({UploadedBy:userId})
+    if(!userUploadedDocuments){
+        throw new ApiError(400,"Document not found")
+    } 
+    const formattedDocuments = userUploadedDocuments.map((doc=>{
+        const docObj = doc.toObject();
+         docObj._id = docObj._id.toString();         
+            docObj.UploadedBy = docObj.UploadedBy.toString();  
+            return docObj;
+    }))
+    console.log(formattedDocuments)
+    res.status(200).json(new ApiResponse(200, formattedDocuments, "Documents retrieved successfully"));
+} catch (error) {
+    if (error instanceof ApiError) {
+        res.status(error.statusCode).json({ success: false, message: error.message });
+        return;
+       }
+       res.status(500).json({ success: false, message: "Internal Server Error" })
+}
+}
+const getDocumentById = async(req:authRequest,res:Response)=>{
+    //get unique document from authenticated user's document collection
+try {
+        const DocumentId = req.params.id
+        const Document = await DocumentModel.find({_id:DocumentId})
+        if(!Document){
+            throw new ApiError(400,"Movie Doesnot Exist in User DB")
+        }
+    
+        res.status(200)
+        .json(new ApiResponse(200,Document,"Document Fetched"))
+} catch (error) {
+    if (error instanceof ApiError) {
+        res.status(error.statusCode).json({ success: false, message: error.message });
+        return;
+       }
+       res.status(500).json({ success: false, message: "Internal Server Error" })
+}
+}
+const deleteDocument = async(req:authRequest,res:Response)=>{
+    //delete document from authenticated user's document model
+   try {
+     const user = req.user
+     if(!user){
+         throw new ApiError(400,"Something went wrong while retrieving user!")
+     }
+     const userId = user.id
+     const DocumentId = req.params.id
+      const deletedDocument = await DocumentModel.findOneAndDelete({
+         _id: DocumentId,
+         UploadedBy: userId,  
+     });
+     if(!deletedDocument){
+        throw new ApiError(400,"Document not found or user is not authorized for this task!")
+     }
+     res.status(200)
+     .json(new ApiResponse(200,deletedDocument,"Document Deleted Successfully"))
+   } catch (error) {
+    if (error instanceof ApiError) {
+        res.status(error.statusCode).json({ success: false, message: error.message });
+        return;
+       }
+       res.status(500).json({ success: false, message: "Internal Server Error" })
+   }
+}
 
 const documentController = {
     uploadDocument,
+    getAllUploadedDocument,
+    getDocumentById,
+    deleteDocument
 }
 export default documentController;

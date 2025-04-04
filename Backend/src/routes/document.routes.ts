@@ -1,6 +1,4 @@
-import { Request, Response } from "express";
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
+
 import express from "express";
 import { upload } from "../middlewares/multer.middleware";
 import documentController from "../controllers/document.controller";
@@ -14,7 +12,9 @@ const router = express.Router();
 //     }
 // ])),documentController.uploadDocument)
 router.post('/upload',upload.single("document"),authUser,documentController.uploadDocument)
-
+router.post('/get-documents',authUser,documentController.getAllUploadedDocument)
+router.get('/get-documents/:id',authUser,documentController.getDocumentById)
+router.delete('/get-documents/:id',authUser,documentController.deleteDocument)
 export default router;
 
 

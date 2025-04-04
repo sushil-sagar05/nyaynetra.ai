@@ -1,11 +1,11 @@
 import mongoose,{Schema,Document, Types} from "mongoose";
 export interface IDocument extends Document{
-    _id:mongoose.Types.ObjectId
+    _id:string|mongoose.Types.ObjectId,
     filename:string,
     ClouinaryUrl:string,
-    UploadedBy:Types.ObjectId,
+    UploadedBy:Types.ObjectId|string,
     createdAt:Date;
-    fileType?:Enumerator
+    fileType:string
 } 
 const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    filename:{
@@ -20,7 +20,9 @@ const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
     ref:"User"
    },
    fileType:{
-    enum:["pdf","docx","jpg","jpeg","png"]
+    type: String,
+    enum:["pdf","docx","jpg","jpeg","png"],
+    required:true
    },
     createdAt:{
         type:Date,
