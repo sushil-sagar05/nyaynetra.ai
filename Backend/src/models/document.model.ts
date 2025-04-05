@@ -10,7 +10,8 @@ export interface IDocument extends Document{
     isSaved:Boolean,
     savedAt:Date,
     expiresAt:Date,
-    fileHash:String
+    fileHash:String,
+    isGuest:Boolean
 } 
 const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    filename:{
@@ -40,6 +41,11 @@ const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    },
    fileHash:{
     type:String,
+    required:true
+   },
+   isGuest:{
+    type:Boolean,
+    default:true,
     required:true
    },
    savedAt:{

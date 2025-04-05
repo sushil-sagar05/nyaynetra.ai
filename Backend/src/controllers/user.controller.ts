@@ -117,7 +117,7 @@ const profile =async(req:authRequest,res:Response)=>{
 const saveDocument=async(req:authRequest,res:Response)=>{
     const user = req.user
     if(!user){
-        throw new ApiError(409,"User not found")
+        throw new ApiError(409,"Guest is not allowed to save document , Register for this action")
     }
     const userId = user.id
     const documentId = req.params.id

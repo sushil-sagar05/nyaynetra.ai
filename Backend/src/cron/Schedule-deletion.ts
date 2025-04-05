@@ -13,17 +13,19 @@ try {
             console.log(filetype)
             const public_id = doc.public_id_fromCloudinary;
             console.log(public_id)
-            const userId = doc.UploadedBy;
+            const userId = doc?.UploadedBy;
             const documentId = doc._id
              await deleteFromCloudinary(public_id,filetype);
              console.log("File deleted from cloudinary")
             await DocumentModel.findOneAndDelete({_id:documentId,UploadedBy:userId})
             console.log("File is deleted from Document Db")
-           await UserModel.findByIdAndUpdate({_id:userId},
-                {$pull:{documents:documentId}
-            },{new:true}
-            )
-            console.log("Document Id is also deleted")
+            if(userId){
+                await UserModel.findByIdAndUpdate({_id:userId},
+                     {$pull:{documents:documentId}
+                 },{new:true}
+                 )
+                 console.log("Document Id is also deleted")
+            }
     }
     }
 } catch (error) {

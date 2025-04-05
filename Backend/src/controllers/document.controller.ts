@@ -42,6 +42,7 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
     //delete temperory file from the server after 5 minutes
     
     try {
+        const user = req?.user?.id
         const file = req.file
         if(!file){
             throw new ApiError(400,"No Document is uploaded")  
@@ -60,31 +61,46 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             }
             const fileHash = await generateFileHash(filePath);
             const checkExisting = await DocumentModel.findOne({fileHash})
+            const expiresAtFromnow = new Date(); 
+            expiresAtFromnow.setDate(expiresAtFromnow.getDate() + 7);
+            const expiresForGuest = new Date();
+            expiresForGuest.setMinutes(expiresForGuest.getMinutes()+15)
             if(checkExisting){
-                fs.unlinkSync(filePath);
-                throw new ApiError(409,"Document Already Uploaded by user")
+                const newdocument =new DocumentModel ({
+                    UploadedBy:user?user:null,
+                    fileType,
+                    filename,
+                    isSaved:false,
+                    expiresAt:user?expiresAtFromnow:expiresForGuest,
+                    fileHash,
+                    ClouinaryUrl:checkExisting.
+                    ClouinaryUrl,
+                    public_id_fromCloudinary:checkExisting.public_id_fromCloudinary,
+                    isGuest:user?false:true
+                })
+             const savedDocument = await newdocument.save();
+             res.status(200)
+            .json(new ApiResponse(201,savedDocument,"Document Created (from existing)"))
+            return
             }
             const document = await uploadOnCloudinary(filePath,fileType)
             const {public_id} = document;
             // console.log("Public id get in response",public_id) 
-            const expiresAtFromnow = new Date(); 
-            expiresAtFromnow.setDate(expiresAtFromnow.getDate() + 7);
             if(!document){
                 throw new ApiError(400,"Something went wrong while uploading document on cloudinary ")   
             }
-        const user = req?.user?.id
         const newdocument =new DocumentModel ({
-            UploadedBy:user,
+            UploadedBy:user?user:null,
             fileType,
             filename,
             ClouinaryUrl:document?.url,
             public_id_fromCloudinary:public_id,
             isSaved:false,
-            expiresAt:expiresAtFromnow,
-            fileHash
+            expiresAt:user?expiresAtFromnow:expiresForGuest,
+            fileHash,
+            isGuest:user?false:true
         })
         const savedDocument = await newdocument.save();
-
         if(!savedDocument){
             fs.unlinkSync(filePath);
             throw new ApiError(400,"Something went wrong while saving document!")

@@ -15,3 +15,8 @@ export const limiter = rateLimit({
     },
     message: "You have reached the limit of Uploading document . Please try after some time"
 })
+export const guestLimiter = rateLimit({
+    limit:5,
+    windowMs:60*60*60,
+    message: "You have reached the limit of Uploading document . Please register or wait for 1 hr"
+})
