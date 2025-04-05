@@ -5,7 +5,8 @@ export interface IDocument extends Document{
     ClouinaryUrl:string,
     UploadedBy:Types.ObjectId|string,
     createdAt:Date;
-    fileType:string
+    fileType:string;
+    public_id_fromCloudinary:string
 } 
 const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    filename:{
@@ -22,6 +23,10 @@ const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    fileType:{
     type: String,
     enum:["pdf","docx","jpg","jpeg","png"],
+    required:true
+   },
+   public_id_fromCloudinary:{
+    type:String,
     required:true
    },
     createdAt:{
