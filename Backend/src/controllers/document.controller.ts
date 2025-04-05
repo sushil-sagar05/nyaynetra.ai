@@ -5,9 +5,32 @@ import DocumentModel from "../models/document.model";
 import { deleteFromCloudinary, ifFileExists, uploadOnCloudinary } from "../utils/cloudinary";
 import { User } from "../models/user.model";
 import fs from 'fs'
+import crypto from 'crypto'
 interface authRequest extends Request{
     user?:User
 }
+
+const generateFileHash = (filePath: string): Promise<string> => {
+    //generate a crypto hash for filepath 
+    return new Promise((resolve, reject) => {
+        const hash = crypto.createHash('sha256');
+        const stream = fs.createReadStream(filePath);
+        
+        stream.on('data', (chunk) => {
+            hash.update(chunk);
+        });
+        
+        stream.on('end', () => {
+            resolve(hash.digest('hex'));  
+        });
+        
+        stream.on('error', (err) => {
+            reject(err);
+        });
+    });
+};
+
+
 
 const uploadDocument = async(req:authRequest,res:Response)=>{
     //check if file is uploaded
@@ -35,6 +58,12 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
                 fs.unlinkSync(filePath);
                 throw new ApiError(400,"File Type is invalid ")
             }
+            const fileHash = await generateFileHash(filePath);
+            const checkExisting = await DocumentModel.findOne({fileHash})
+            if(checkExisting){
+                fs.unlinkSync(filePath);
+                throw new ApiError(409,"Document Already Uploaded by user")
+            }
             const document = await uploadOnCloudinary(filePath,fileType)
             const {public_id} = document;
             // console.log("Public id get in response",public_id) 
@@ -51,11 +80,13 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             ClouinaryUrl:document?.url,
             public_id_fromCloudinary:public_id,
             isSaved:false,
-            expiresAt:expiresAtFromnow
+            expiresAt:expiresAtFromnow,
+            fileHash
         })
         const savedDocument = await newdocument.save();
 
         if(!savedDocument){
+            fs.unlinkSync(filePath);
             throw new ApiError(400,"Something went wrong while saving document!")
         }
         res.status(200)
@@ -64,7 +95,7 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             if(fs.existsSync(filePath)){
                 fs.unlinkSync(filePath)
             }
-        }, 5*60*1000);
+        }, 2*60*1000);
     }  catch (error:any) {
         console.error("Error details: ", error); 
         if (error instanceof ApiError) {

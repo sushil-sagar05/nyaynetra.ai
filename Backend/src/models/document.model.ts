@@ -9,7 +9,8 @@ export interface IDocument extends Document{
     public_id_fromCloudinary:string,
     isSaved:Boolean,
     savedAt:Date,
-    expiresAt:Date
+    expiresAt:Date,
+    fileHash:String
 } 
 const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    filename:{
@@ -35,6 +36,10 @@ const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    isSaved:{
     type:Boolean,
     default:false,
+    required:true
+   },
+   fileHash:{
+    type:String,
     required:true
    },
    savedAt:{

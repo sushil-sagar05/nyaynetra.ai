@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response,NextFunction } from "express";
 const connect = require('./DB/db')
 const dotenv = require("dotenv")
 dotenv.config({
@@ -38,4 +38,6 @@ import userRoutes from './routes/user.routes'
 import documentRoutes from './routes/document.routes'
 app.use('/user',userRoutes);
 app.use('/document',documentRoutes)
+import errorHandler from "./globalError";
+app.use(errorHandler);
 module.exports = app;
