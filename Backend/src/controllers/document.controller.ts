@@ -23,7 +23,7 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
         if(!file){
             throw new ApiError(400,"No Document is uploaded")  
         }
-        console.log("Mimi-type",file.mimetype)
+        // console.log("Mimi-type",file.mimetype)
         const filePath = file.path
         const filename=file.filename
         if(!filePath){
@@ -37,7 +37,9 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             }
             const document = await uploadOnCloudinary(filePath,fileType)
             const {public_id} = document;
-            console.log("Public id get in response",public_id) 
+            // console.log("Public id get in response",public_id) 
+            const expiresAtFromnow = new Date(); 
+            expiresAtFromnow.setDate(expiresAtFromnow.getDate() + 7);
             if(!document){
                 throw new ApiError(400,"Something went wrong while uploading document on cloudinary ")   
             }
@@ -47,7 +49,9 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             fileType,
             filename,
             ClouinaryUrl:document?.url,
-            public_id_fromCloudinary:public_id
+            public_id_fromCloudinary:public_id,
+            isSaved:false,
+            expiresAt:expiresAtFromnow
         })
         const savedDocument = await newdocument.save();
 
@@ -119,6 +123,7 @@ try {
        res.status(500).json({ success: false, message: "Internal Server Error" })
 }
 }
+
 const deleteDocument = async(req:authRequest,res:Response)=>{
     //delete document from authenticated user's document model
    try {
@@ -134,8 +139,8 @@ const deleteDocument = async(req:authRequest,res:Response)=>{
     throw new ApiError(400,"No Document Found");
      }
      const public_id = Document.public_id_fromCloudinary
-     console.log("Public id retreived",public_id);
-     console.log("Whole document: ",Document)
+    //  console.log("Public id retreived",public_id);
+    //  console.log("Whole document: ",Document)
      const fileType = Document.fileType
      const fileExistsOncloudinary = await ifFileExists(public_id,fileType)
      if(!fileExistsOncloudinary){

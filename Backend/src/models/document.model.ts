@@ -6,7 +6,10 @@ export interface IDocument extends Document{
     UploadedBy:Types.ObjectId|string,
     createdAt:Date;
     fileType:string;
-    public_id_fromCloudinary:string
+    public_id_fromCloudinary:string,
+    isSaved:Boolean,
+    savedAt:Date,
+    expiresAt:Date
 } 
 const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
    filename:{
@@ -29,10 +32,24 @@ const DocumentSchema:Schema<IDocument> = new mongoose.Schema({
     type:String,
     required:true
    },
+   isSaved:{
+    type:Boolean,
+    default:false,
+    required:true
+   },
+   savedAt:{
+        type:Date,
+        required:true,
+        default:0
+   },
     createdAt:{
         type:Date,
         required:true,
         default:Date.now
+    },
+    expiresAt:{
+        type:Date,
+        required:true
     }
 })
 const DocumentModel = mongoose.model<IDocument>("Document",DocumentSchema)

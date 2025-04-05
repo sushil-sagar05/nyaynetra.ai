@@ -29,7 +29,8 @@ const corsOptions:CorsOptions = {
   app.use(cookieparser());
   app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-
+import {ScheduledDeletion} from './cron/Schedule-deletion'
+ScheduledDeletion();
 app.get('/', (req:Request,res:Response)=>{
     res.send('Hello World');
 });

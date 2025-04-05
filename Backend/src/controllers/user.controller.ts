@@ -3,6 +3,9 @@ import { Request, Response } from "express";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { CookieOptions } from "express";
+import DocumentModel from "../models/document.model";
+import mongoose from "mongoose";
+import { deleteFromCloudinary } from "../utils/cloudinary";
 interface authRequest extends Request{
     user?:User
 }
@@ -111,9 +114,88 @@ try {
 const profile =async(req:authRequest,res:Response)=>{
     res.status(200).json({user:req.user})
 }
+const saveDocument=async(req:authRequest,res:Response)=>{
+    const user = req.user
+    if(!user){
+        throw new ApiError(409,"User not found")
+    }
+    const userId = user.id
+    const documentId = req.params.id
+    const newDateForExpiry = new Date()
+    newDateForExpiry.setDate(newDateForExpiry.getDate()+14);
+    const ObjectId = new mongoose.Types.ObjectId(documentId)
+    const retreivedDocument = await DocumentModel.findByIdAndUpdate(
+        {_id:documentId},
+        {
+            $set:{
+                isSaved:true,
+                savedAt:Date.now(),
+                expiresAt:newDateForExpiry
+            }
+        },
+        {new:true}
+    )
+    if(!retreivedDocument){
+        throw new ApiError(409,"Document not found or it is saved ")
+    }
+    const retrievedUser = await UserModel.findOneAndUpdate({_id:userId},{
+        $addToSet:{
+            documents:ObjectId
+        }
+    },{new:true})
+    if(!retrievedUser){
+        throw new ApiError(400,"Failed to Update User's saved List")
+    }
+    res.status(200)
+    .json(new ApiResponse(200," Document Added Successfully"))
+}
+const listAllSavedDocument=async(req:authRequest,res:Response)=>{
+    const User = req.user
+    if(!User){
+        new ApiError(400,"You need to be authenticated to view this page")
+    }
+ const retrievedUser =   await UserModel.findById({_id:User?.id})
+    if(!retrievedUser){
+        new ApiError(400,"No user Found")
+    }
+    const SavedList = retrievedUser?.documents
+    res.status(200)
+    .json(new ApiResponse(200,SavedList,"Saved List Found"))
+}
+const DeleteSavedDocument = async(req:authRequest,res:Response)=>{
+    const User = req.user
+    if(!User){
+         new ApiError(400,"You need to be authenticated to perform this task")
+    }
+    const documentId = req.params.documentId || req.body.documentId;
+    const Document = await DocumentModel.findById({_id:documentId})
+    if(!Document){
+        throw new ApiError(400,"No Document Found");
+    }
+    const public_id=Document.public_id_fromCloudinary
+    const fileType=Document.fileType
+    await deleteFromCloudinary(public_id,fileType);
+    const deletedDocument = await DocumentModel.findOneAndDelete({
+        _id: documentId,
+        UploadedBy: User?.id,  
+    });
+    if(!deletedDocument){
+            throw new ApiError(400,"Document not found or user is not authorized for this task!")
+     }
+     await UserModel.findOneAndUpdate(
+        {_id:User?.id},
+        {$pull:{documents:documentId}},
+        {new:true}
+    )
+    res.status(200)
+    .json(new ApiResponse(200,"Document Successfully deleted"))
+}
 const userController = {
     register,
     login,
-    profile
+    profile,
+    saveDocument,
+    listAllSavedDocument,
+    DeleteSavedDocument
 }
 export default userController

@@ -55,7 +55,6 @@ const UserSchema:Schema<User>=new mongoose.Schema({
     documents:[{
         type:Schema.Types.ObjectId,
         ref:"Document"
-
     }]
 },{timestamps:true})
 
