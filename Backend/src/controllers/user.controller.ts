@@ -114,6 +114,29 @@ try {
 const profile =async(req:authRequest,res:Response)=>{
     res.status(200).json({user:req.user})
 }
+const logout = async(req:authRequest,res:Response)=>{
+    try {
+        const user = req.user
+        if(!user){
+            throw new ApiError(400,"User in not available")
+        }
+        await UserModel.findByIdAndUpdate(
+         user._id,
+         {$unset:{refreshToken:1}},
+         {new:true}
+        )
+        const options = {
+            httpOnly:true,
+            secure:true
+        }
+        res.status(200)
+        .clearCookie("token",options)
+        .clearCookie("refreshToken",options)
+        .json(new ApiResponse(200,{},"User logged out"))
+    } catch (error) {
+        console.log(error)
+    }
+}
 const saveDocument=async(req:authRequest,res:Response)=>{
     const user = req.user
     if(!user){
@@ -194,6 +217,7 @@ const userController = {
     register,
     login,
     profile,
+    logout,
     saveDocument,
     listAllSavedDocument,
     DeleteSavedDocument

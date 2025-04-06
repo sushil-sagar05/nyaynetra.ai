@@ -38,6 +38,7 @@ import userRoutes from './routes/user.routes'
 import documentRoutes from './routes/document.routes'
 app.use('/user',userRoutes);
 app.use('/document',documentRoutes)
-import errorHandler from "./globalError";
-app.use(errorHandler);
+import errors from "./globalError";
+app.use(errors.MulterError)
+app.use(errors.ApiErrors)
 module.exports = app;

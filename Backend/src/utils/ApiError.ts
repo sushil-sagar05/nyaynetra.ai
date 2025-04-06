@@ -3,6 +3,7 @@ class ApiError extends Error {
     data:any;
     success:boolean;
     errors:any[];
+    message: string;
 
     constructor(
         statusCode:number,

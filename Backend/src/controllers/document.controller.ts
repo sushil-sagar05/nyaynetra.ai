@@ -122,7 +122,7 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
     }
 }
 
-const getAllUploadedDocument = async(req:authRequest,res:Response)=>{
+const getAllUploadedDocument = async(req:authRequest,res:Response): Promise<void>=>{
 // Retrieve all the documents of authenticated user
 // send res them
 try {
@@ -145,10 +145,19 @@ try {
     res.status(200).json(new ApiResponse(200, formattedDocuments, "Documents retrieved successfully"));
 } catch (error) {
     if (error instanceof ApiError) {
-        res.status(error.statusCode).json({ success: false, message: error.message });
-        return;
-       }
-       res.status(500).json({ success: false, message: "Internal Server Error" })
+        console.error("Caught ApiError: ", error);
+         res.status(error.statusCode).json({
+            success: false,
+            message: error.message,
+        });
+        return
+    }
+    console.error("Unexpected error: ", error);
+     res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+    });
+
 }
 }
 const getDocumentById = async(req:authRequest,res:Response)=>{

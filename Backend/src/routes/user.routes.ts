@@ -11,6 +11,7 @@ router.post('/register',validationSchema(registerSchema),userController.register
 router.post('/login',validationSchema(loginSchema),userController.login)
 //secured Routes
 router.get('/profile',authUser,userController.profile);
+router.post('/logout',authUser,userController.logout);
 router.post('/:id/save-document',authUser,userController.saveDocument)
 router.post('/saved-list',authUser,userController.listAllSavedDocument)
 router.post('/delete-save-document/:documentId',authUser,userController.DeleteSavedDocument)
