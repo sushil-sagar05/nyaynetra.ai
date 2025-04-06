@@ -1,0 +1,32 @@
+ [
+      {
+        "name": "Ajay Kumar",
+        "position": "Corporate Lawyer",
+        "company": "Kumar & Associates",
+        "feedback": "This platform has been an absolute game-changer for our firm. The AI quickly analyzes complex legal documents, extracting key information in seconds. It saves us hours of manual work every week, making our processes far more efficient.",
+        "rating": 5
+      },
+      {
+        "name": "Sakshi Sharma",
+        "position": "Legal Advisor",
+        "company": "TechStart",
+        "feedback": "As a legal advisor in a tech startup, I need to review numerous contracts daily. This tool has significantly streamlined my work. The AI understands legal terminology and provides precise insights with minimal effort. I highly recommend it.",
+        "rating": 5
+      },
+      {
+        "name": "Mukesh Yadav",
+        "position": "Attorney",
+        "company": "Yadav & Co.",
+        "feedback": "Security is a top priority for our firm, and this platform provides just that. I can trust that our documents are processed securely, without compromising privacy. It's been a reliable and indispensable tool for us.",
+        "rating": 5
+      },
+      {
+        "name": "Neelam Singh",
+        "position": "General Counsel",
+        "company": "Global Enterprises",
+        "feedback": "We've used several legal document analysis tools before, but none compare to the accuracy and speed of this platform. The ability to analyze vast amounts of text and extract meaningful insights is invaluable.",
+        "rating": 5
+      }
+    ]
+  
+  
