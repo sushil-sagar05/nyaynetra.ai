@@ -28,8 +28,8 @@ export default function RootLayout({
       <body
        
       >
-       <div className="relative w-full flex items-center justify-center bg-white ">
-       <Navbar/>
+       <div className=" w-full flex flex-col bg-white ">
+        <Navbar />
        </div>
         {children}
       </body>

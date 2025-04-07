@@ -12,10 +12,10 @@ function FAQ() {
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
         Frequently Asked Questions
       </h1>
-    <section className='h-[100vh]  p-4 flex justify-center ' >
+    <section className='h-full  p-4 flex justify-center ' >
       <div className='w-[75vw] h-full  items-center '>
         <div className="inner h-full w-full ">
-        <Accordion className='w-full h-[16vh] p-8  bg-white text-black' type="single" collapsible>
+        <Accordion className='w-full  p-8  bg-white text-black' type="single" collapsible>
   <AccordionItem value="item-1">
     <AccordionTrigger className='text-xl py-4 px-6'>What is Legal Document Analysis?</AccordionTrigger>
     <AccordionContent className='text-lg px-6  py-3'>
@@ -23,7 +23,7 @@ function FAQ() {
     </AccordionContent>
   </AccordionItem>
         </Accordion>
-        <Accordion className='w-full h-[16vh] p-8 bg-white text-black' type="single" collapsible>
+        <Accordion className='w-full  p-8 bg-white text-black' type="single" collapsible>
   <AccordionItem value="item-2">
     <AccordionTrigger className='text-xl py-4 px-6'>How does the AI work in analyzing documents?</AccordionTrigger>
     <AccordionContent className='text-lg px-6  py-3'>
@@ -31,7 +31,7 @@ function FAQ() {
     </AccordionContent>
   </AccordionItem>
         </Accordion>
-        <Accordion className='w-full h-[16vh] p-8 bg-white text-black' type="single" collapsible>
+        <Accordion className='w-full  p-8 bg-white text-black' type="single" collapsible>
   <AccordionItem value="item-3">
     <AccordionTrigger className='text-xl py-4 px-6'>Is my data secure while using the platform?</AccordionTrigger>
     <AccordionContent className='text-lg px-6  py-3'>
@@ -39,7 +39,7 @@ function FAQ() {
     </AccordionContent>
   </AccordionItem>
         </Accordion>
-        <Accordion className='w-full h-[16vh] p-8 bg-white text-black' type="single" collapsible>
+        <Accordion className='w-full  p-8 bg-white text-black' type="single" collapsible>
   <AccordionItem value="item-4">
     <AccordionTrigger className='text-xl py-4 px-6'>Is i have to register for using this?</AccordionTrigger>
     <AccordionContent className='text-lg px-6  py-3'>

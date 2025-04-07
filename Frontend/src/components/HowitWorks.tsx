@@ -12,12 +12,13 @@ import { Button } from './ui/button'
 
 function HowitWorks() {
   return (
-    <section className='h-full '>
+    <>
          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
         How it Works
       </h1>
-      <div className='grid  h-[50vh]   text-black sm:grid-cols-12 gap-4  mt-8 '>
-      <div className='sm:col-span-3  h-[50vh] w-[20vw] '>
+    <section className='h-full  '>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4     text-black  gap-4  mt-8 '>
+      <div className='flex justify-center  min-h-[50vh]  '>
       <Card className='h-full  bg-white text-black'>
       <CardTitle className='flex justify-center items-center'>Step 1</CardTitle>
   <CardContent className='h-[25vh] flex justify-center items-center'>
@@ -34,7 +35,7 @@ function HowitWorks() {
             </CardHeader>
         </Card>
         </div>
-        <div className='sm:col-span-3   h-[50vh] w-[20vw] '>
+        <div className='flex justify-center  min-h-[50vh] '>
       <Card className='h-full  bg-white text-black'>
       <CardTitle className='flex justify-center items-center'>Step 2</CardTitle>
   <CardContent className='h-[25vh] flex justify-center items-center'>
@@ -51,7 +52,7 @@ function HowitWorks() {
             </CardHeader>
         </Card>
         </div>
-        <div className='sm:col-span-3   h-[50vh] w-[20vw] '>
+        <div className='flex justify-center  min-h-[50vh] '>
       <Card className='h-full  bg-white text-black'>
       <CardTitle className='flex justify-center items-center'>Step 3</CardTitle>
   <CardContent className='h-[25vh] flex justify-center items-center'>
@@ -68,11 +69,11 @@ function HowitWorks() {
             </CardHeader>
         </Card>
         </div>
-        <div className='sm:col-span-3   h-[50vh] w-[20vw] '>
+        <div className='flex justify-center  min-h-[50vh] '>
       <Card className='h-full  bg-white text-black'>
       <CardTitle className='flex justify-center items-center'>Step 4</CardTitle>
-  <CardContent className='h-[25vh] flex justify-center items-center'>
-            <Save size={100}/>
+  <CardContent className='h-[25vh]  flex justify-center items-center'>
+            <Save size={150}/>
             </CardContent>
             <CardHeader >
             <CardTitle className='flex justify-center items-center'>Save</CardTitle>
@@ -81,13 +82,14 @@ function HowitWorks() {
         </Card>
         </div>
       </div>
-      <div className="CTA mt-12 h-[8vh] w-[40vw] ">
-                <Button
-                className='w-[15vw] h-full mr-4 bg-[#1338BE] text-white'>Upload Document</Button>
-                <Button className='w-[15vw] h-full'>Try as a Guest</Button>
-
-            </div>
+         <div className="CTA mt-12  lg:w-[18vw] lg:h-[8vh] flex ">
+                     <Button
+                     className='mb-1 lg:h-full lg:w-full mr-4 bg-[#1338BE] text-white'>Upload Document</Button>
+                     <Button className='lg:h-full lg:w-full'>Try as a Guest</Button>
+     
+                 </div>
     </section>
+    </>
   )
 }
 

@@ -10,19 +10,19 @@ function page() {
   return (
     <main className="min-h-screen bg-white">
       <HeroSection/>
-      <section className=" p-8 ">
+      <section className=" min-h-screen p-8 ">
         <FeaturesSection />
       </section>
-      <section className=" p-8 ">
+      <section className="min-h-screen p-8 ">
         <HowitWorks />
       </section>
-      <section className=" p-8">
+      <section className=" min-h-screen p-8">
         <ComparisonTable />
       </section>
-      <section className=" p-8">
+      <section className="min-h-screen p-8">
         <Testimonials />
       </section>
-      <section className=" p-8">
+      <section className=" min-h-screen p-8">
         <CTASection/>
       </section>
       <section className=" p-8">
