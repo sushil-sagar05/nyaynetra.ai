@@ -9,6 +9,8 @@ const cors = require('cors')
 const app = express()
 import cookieparser from 'cookie-parser'
 import { CorsOptions } from "cors";
+app.set("trust proxy",1);
+
 const corsOptions:CorsOptions = {
     origin: (origin, callback) => {
   
@@ -25,6 +27,14 @@ const corsOptions:CorsOptions = {
     methods: ['GET', 'POST', 'OPTIONS','DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   };
+  
+  app.use(cors(corsOptions));
+  
+
+app.use((req,res,next)=>{
+    res.setHeader('Access-Control-Allow-Credentials','true');
+    next()
+})
   app.use(cors(corsOptions));
   app.use(cookieparser());
   app.use(express.json());
