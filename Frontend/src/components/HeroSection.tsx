@@ -1,9 +1,14 @@
-'use child'
+'use client'
 import React from 'react'
 import photo from '../../public/heroPhoto.jpg'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
+import { useRouter } from 'next/navigation';
 function HeroSection() {
+   const router = useRouter();
+      const handleBtnClick = (route:string)=>{
+        router.push(route)
+      }
   return (
     <section className=' p-8'>
        <div className='grid  h-full  sm:grid-cols-12 '>
@@ -12,8 +17,11 @@ function HeroSection() {
             <h3 className="scroll-m-20 text-xl font-semibold tracking-tight pt-8">Analyze your legal document with our cutting-edge ai technology </h3>
             <div className="CTA mt-12  lg:w-[18vw] lg:h-[8vh] flex ">
                 <Button
+                onClick={()=>handleBtnClick('upload')}
                 className='mb-1 lg:h-full lg:w-full mr-4 bg-[#1338BE] text-white'>Upload Document</Button>
-                <Button className='lg:h-full lg:w-full'>Try as a Guest</Button>
+                <Button
+                onClick={()=>handleBtnClick('upload')}
+                className='lg:h-full lg:w-full'>Try as a Guest</Button>
 
             </div>
          </div>

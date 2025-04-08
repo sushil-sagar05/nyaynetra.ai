@@ -15,6 +15,7 @@ import { toast, useSonner } from "sonner"
 import { loginSchema } from "@/Schemas/login.schema"
 import photo from '../../../../public/Mobile login-bro.png'
 import Image from 'next/image'
+import { useUser } from "@/context/UserContext"
 interface ErrorResponse {
   message: string;
 }
@@ -22,7 +23,7 @@ function page() {
 const router = useRouter();
 const [identifier,setIdentifier] = useState('')
 const [isSubmitting,setIsSubmiting] = useState(false)
-
+const {user,setUser} = useUser()
 //zod implementation 
 const form = useForm<z.infer<typeof loginSchema>>({
   resolver:zodResolver(loginSchema),
@@ -35,9 +36,14 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   setIsSubmiting(true)
   try {
    const response =  await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/login`,data)
+   console.log(response.data)
+   const {username} = response.data.data.user
+   console.log(username)
    if(response.status===201){
+    setUser(response.data.data.user)
+    localStorage.setItem('token',response.data.data.accessToken)
     toast(response.data.message)
-    router.replace(`${process.env.NEXT_PUBLIC_Backend_Url}/${identifier}/dashboard`)
+    router.push(`/dashboard/${username}`)
     setIsSubmiting(false)
    }
   } catch (error) {
@@ -49,6 +55,7 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   }
 
 }
+ 
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-white text-black">
@@ -99,7 +106,7 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
           {
             isSubmitting?<>
             <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Please wait
-            </>:("Register")
+            </>:("login")
           }
         </Button>
         <p className="text-center ml-4">

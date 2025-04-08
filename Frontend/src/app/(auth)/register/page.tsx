@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z  from "zod"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useState,useContext } from "react"
 import { Toaster } from "@/components/ui/sonner"
 import { useRouter } from "next/navigation"
 import axios,{AxiosError} from 'axios'
@@ -15,6 +15,7 @@ import { toast, useSonner } from "sonner"
 import { registerSchema } from "@/Schemas/register.schema"
 import photo from '../../../../public/Sign up-bro.png'
 import Image from 'next/image'
+import { useUser } from "@/context/UserContext"
 interface ErrorResponse {
   message: string;
 }
@@ -25,7 +26,7 @@ const [username,setUsername] = useState('')
 // const [firstname,setFirstname] = useState('')
 // const [password,setPassword] = useState('')
 const [isSubmitting,setIsSubmiting] = useState(false)
-
+const {user,setUser} =useUser();
 //zod implementation 
 const form = useForm<z.infer<typeof registerSchema>>({
   resolver:zodResolver(registerSchema),
@@ -44,6 +45,7 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
   try {
    const response =  await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/register`,data)
    if(response.status===201){
+    setUser(response.data.user)
     toast(response.data.message)
     router.replace(`/${username}/dashboard`)
     setIsSubmiting(false)
