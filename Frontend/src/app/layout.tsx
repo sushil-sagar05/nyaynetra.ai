@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { usePathname } from 'next/navigation';
 import { UserProvider } from "@/context/UserContext";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 
 export default function RootLayout({
   children,
@@ -29,8 +31,9 @@ export default function RootLayout({
             </>
           )}
 
-          {/* Main content */}
+          <SidebarProvider >
           {children}
+          </SidebarProvider>
 
           {/* Toaster Notifications */}
           <Toaster />

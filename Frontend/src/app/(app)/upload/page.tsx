@@ -55,7 +55,6 @@ const ClientComponent = () => {
       setisSubmitting(true);
       const formData = new FormData();
       formData.append('document', SelectedFile);
-      formData.append('public', data.public.toString()); 
     try {
       const token = localStorage.getItem('token')
       const route = user?'/document/upload':'/document/guest/upload'
