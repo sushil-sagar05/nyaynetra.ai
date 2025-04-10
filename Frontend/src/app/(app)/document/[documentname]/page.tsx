@@ -1,47 +1,44 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import { AppSidebar } from '@/components/app-sidebar'
-import { Sidebar } from '@/components/ui/sidebar'
-import { Separator } from '@/components/ui/separator'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { SendHorizontal,WrapText,Download } from 'lucide-react'
-import { useRouter } from 'next/router'
-import { useParams } from 'next/navigation'
-import SavedDocument from '@/components/SavedDocument'
-
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+import { FileDown, Share2 } from 'lucide-react'
+import React from 'react'
 
 function page() {
-  const [activeTab, setActiveTab] = useState("summary")
-  const [isSaved, setIsSaved] = useState(false);
-  // const router = useRouter()
-  const [documentId, setDocumentId] = useState<string | undefined>(undefined)
-
-  const params = useParams()
-  const filename = params?.filename 
-  console.log(documentId)
-  if (!filename) {
-    return <div>Loading...</div>
-  }
-  useEffect(() => {
-    console.log(`Document filename: ${filename}`)
-  }, [filename])
   return (
-    <div className='bg-white  w-full ' >
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl pl-6 p-4 text-black" >Unlock Critical Insights: AI Legal Document Analysis in Action</h1>
-      <Separator className='my-1' />
-      <div className="grid grid-cols-12 h-[75vh]">
-        <div className='col-span-2 '>
-          <AppSidebar activeTab={activeTab} setActiveTab={setActiveTab} documentId={filename as string}  />
+    <div className='h-full w-full  bg-white'>
+     <div className='h-[8vh]  flex justify-around items-center'>
+     <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl p-4 text-black ">
+     Viewing: [Document Name]
+      </h1>
+      <div>
+      <div className='col-span-2 text-black gap-3 mt-4 flex '>
+               <span className='flex gap-2'>share <Share2/></span>
+               <span className='flex gap-2'>Save Document <FileDown/></span>
+               <Button>Delete Document</Button>
+               </div>
+      </div>
+     </div>
+
+      <div className='grid grid-cols-12 p-5 gap-3'>
+        <div className='col-span-3 h-[45vh] '>
+            <Card className='h-full'>
+                <CardTitle className='text-center'>Document.pdf</CardTitle>
+                <CardContent>
+
+                </CardContent>
+                <CardFooter>
+                
+                </CardFooter>
+            </Card>
+           
         </div>
-        <div className='col-span-7 b'>
-        <Card className='h-full bg-white text-black '>
+        <div className='col-span-9  '>
+      <Card className='h-full w-full  text-white '>
           <CardContent className=''>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="w-full justify-start gap-4 mb-4">
+          <Tabs  className="w-full">
+      <TabsList defaultValue={'Summary'} className="w-full justify-start gap-4 mb-4 space-x-4 ">
         <TabsTrigger value="Summary">Summary</TabsTrigger>
         <TabsTrigger value="Key clause">Key Clauses</TabsTrigger>
         <TabsTrigger value="Risk flag">Risk Flags</TabsTrigger>
@@ -127,26 +124,14 @@ function page() {
           </CardContent>
         </Card>
         </div>
-       <div className='md:col-span-3 '>
-        <Card className='h-full bg-white'>
-          <CardTitle className='text-black p-1 flex justify-around'><span className='flex gap-2'><WrapText/>Agreement.pdf</span><span><Download/></span></CardTitle>
-          <CardContent>
-          <ScrollArea className="h-[375px]  rounded-md border p-4">
-        
-        </ScrollArea>
-          </CardContent>
-          <CardFooter className='gap-2'>
-            <Input className='border-black '></Input>
-            <Button><SendHorizontal/></Button>
-          </CardFooter>
-        </Card>
-        </div>
       </div>
-    <div>
-
-    </div>
     </div>
   )
 }
 
 export default page
+{/* <div className='col-span-2  p-3 min-h-[100px]'>
+               <span className='flex gap-2'>share <Share2/></span>
+               <span className=''>Save Document <Switch/></span>
+               <Button>Delete Document</Button>
+               </div> */}

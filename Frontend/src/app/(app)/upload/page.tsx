@@ -65,10 +65,11 @@ const ClientComponent = () => {
         },
       })
      
-      const {filename} = response.data.data
+      const {_id} = response.data.data
+      console.log(response.data.data)
       if(response.status===200)
       {
-      router.push(`/analysis/${filename}`)
+      router.push(`/analysis/${_id}`)
       toast.success(response.data.message);
       setisSubmitting(false)
 

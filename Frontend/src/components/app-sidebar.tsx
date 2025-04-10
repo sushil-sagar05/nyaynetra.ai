@@ -10,7 +10,17 @@ import {
     SidebarMenuItem,
   } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile";
+import axios from "axios";
 import { AlignLeft,WrapText,FileWarning,MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "./ui/button";
+interface AppSidebarProps {
+  documentId: string | string[] | undefined 
+  activeTab: string
+  setActiveTab: (tab: string) => void
+
+}
   const items = [
     {
       title: "Summary",
@@ -33,9 +43,30 @@ import { AlignLeft,WrapText,FileWarning,MessageCircle } from "lucide-react";
       icon: MessageCircle,
     }
   ]
-
-export function AppSidebar({ activeTab, setActiveTab }:any) {
+  export function AppSidebar({ activeTab, setActiveTab,documentId}: AppSidebarProps) {
     const isMobile = useIsMobile();
+      console.log("Docid",documentId)
+      const handleSubmit = async ()=>{
+        if (!documentId) {
+          console.error("No document ID found.")
+          return
+        }
+        try {
+          const token = localStorage.getItem('token')
+          console.log(token)
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${documentId}/save-document`,{},{
+            headers:{
+              Authorization: `Bearer ${token}` 
+            },
+          
+          })
+          console.log("Document saved:", response.data)
+          toast(response.data.data)
+        } catch (error) {
+          
+        }
+      }
+
   return (
     <div className="outer h-full  w-[20vw]  ">
     <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md bg-white text-black ">
@@ -66,6 +97,11 @@ export function AppSidebar({ activeTab, setActiveTab }:any) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="mb-8">
+        <Button
+        className="cursor-pointer
+        "
+        onClick={handleSubmit}
+        >Save Document</Button>
         <p>Upload: 24 April , 2024</p>
         <p>File Size: 1.54MB</p>
       </SidebarFooter>
