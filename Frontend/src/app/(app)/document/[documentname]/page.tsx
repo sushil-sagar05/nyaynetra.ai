@@ -1,40 +1,142 @@
+'use client'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { FileDown, Share2 } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import axios, { AxiosError } from 'axios'
+import { toast } from 'sonner'
+import Delete from '@/components/Delete'
 
+interface ErrorResponse {
+  message: string;
+}
+interface Document{
+  id:string
+  filename:string,
+    ClouinaryUrl:string,
+    createdAt:Date;
+    fileType:string;
+    public_id_fromCloudinary:string,
+    isSaved:Boolean,
+    savedAt:Date,
+    expiresAt:Date,
+    fileHash:String,
+    isGuest:Boolean,
+    _id:string
+}
 function page() {
+      const router = useRouter()
+      const params = useParams()
+      console.log(params)
+      const [document, setdocument] = useState<Document>()
+
+    useEffect(()=>{
+      const fetchDocuments = async()=>{
+        try {
+          const token = localStorage.getItem('token')
+          console.log(token)
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`,{
+            headers:{
+              Authorization: `Bearer ${token}` 
+            },
+          
+          })
+          console.log("Document", response.data.data)
+          setdocument(response.data.data[0])
+        } catch (error) {
+          
+        }
+      }
+      fetchDocuments()
+    },[params.documentname])
+
+
+
+      // console.log(document[0])
+
+    const handleSaveSubmit = async()=>{
+      try {
+        const token = localStorage.getItem('token')
+        console.log(token)
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${params.documentname}/save-document`,{},{
+          headers:{
+            Authorization: `Bearer ${token}` 
+          },
+        
+        })
+        console.log("Document saved:", response.data)
+        toast(response.data.data)
+      } catch (error) {
+        
+      }
+    }
+    const handleDeleteSubmit = async()=>{
+      try {
+        const token = localStorage.getItem('token')
+        console.log(token)
+        const response = await axios.delete(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`,{
+          headers:{
+            Authorization: `Bearer ${token}` 
+          },
+        
+        })
+        toast(response.data.data)
+        router.push('/dashboard')
+      } catch (error:any) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+           let errorMessage= axiosError.response?.data.message;
+           toast(errorMessage)
+      }
+    }
+
+
   return (
-    <div className='h-full w-full  bg-white'>
-     <div className='h-[8vh]  flex justify-around items-center'>
-     <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl p-4 text-black ">
-     Viewing: [Document Name]
-      </h1>
-      <div>
-      <div className='col-span-2 text-black gap-3 mt-4 flex '>
-               <span className='flex gap-2'>share <Share2/></span>
-               <span className='flex gap-2'>Save Document <FileDown/></span>
-               <Button>Delete Document</Button>
-               </div>
-      </div>
-     </div>
+    <div className=' w-full  bg-white'>
+   <div className="sm:h-[8vh] flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4">
+  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-black">
+    Viewing: {document?.filename+'.'+document?.fileType!}
+  </h1>
+  <div className="flex flex-wrap gap-3 text-black items-center">
+    <span className="flex items-center gap-2">
+      Share <Share2 />
+    </span>
+   
+      <Button
+      className='cursor-pointer'
+      onClick={handleSaveSubmit}
+      >Save Document <FileDown /></Button>
+    
+<div className='bg-red-500 rounded-md'>
+<Delete
+    onConfirm={() => {
+        handleDeleteSubmit();
+    }}
+    />
+</div>
+  </div>
+</div>
+
 
       <div className='grid grid-cols-12 p-5 gap-3'>
-        <div className='col-span-3 h-[45vh] '>
+        <div className=' col-span-12 sm:col-span-3 h-[45vh] '>
             <Card className='h-full'>
-                <CardTitle className='text-center'>Document.pdf</CardTitle>
+                <CardTitle className='text-center'>{document?.filename!}</CardTitle>
                 <CardContent>
-
+                 <CardDescription>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit, sapiente dicta! Obcaecati distinctio quisquam fugit voluptatem, exercitationem sint et quia, ut praesentium possimus in cumque dicta magnam dignissimos, repellat amet.
+                 </CardDescription>
                 </CardContent>
                 <CardFooter>
-                
+                  <p className='w-full'>Status: Analysed</p>
+                <p >Created At: {new Date(document?.createdAt!).toLocaleDateString()}</p>
                 </CardFooter>
             </Card>
            
         </div>
-        <div className='col-span-9  '>
+        <div className='col-span-12 sm:col-span-9  '>
       <Card className='h-full w-full  text-white '>
           <CardContent className=''>
           <Tabs  className="w-full">

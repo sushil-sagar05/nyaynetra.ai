@@ -22,7 +22,9 @@ const Delete: React.FC<DeleteProps> = ({ onConfirm }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Document</Button>
+        <Button
+        className='cursor-pointer'
+        variant="destructive">Delete Document</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -32,8 +34,10 @@ const Delete: React.FC<DeleteProps> = ({ onConfirm }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>
+          <AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>
+          <AlertDialogAction 
+          className='cursor-pointer'
+          onClick={onConfirm}>
             Yes, Delete
           </AlertDialogAction>
         </AlertDialogFooter>

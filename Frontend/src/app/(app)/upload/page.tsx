@@ -151,11 +151,11 @@ const ClientComponent = () => {
 
         </div>
        {user ===null && (
-        <div className='h-[55vh] w-full  '>
+        <div className='  '>
             <h2 className='ml-6 font-bold text-black'>Comparisions</h2>
           <div className="inner ">
-            <div className="cards grid grid-cols-12   p-3 ">
-            <div className='col-span-3  min-h-[50vh]  flex justify-center items-center  '>
+            <div className="cards sm:grid grid-cols-12   p-3 ">
+            <div className='sm:col-span-3  min-h-[50vh]  flex justify-center items-center  '>
               <Card className='h-full w-full bg-white text-black'>
                 <CardTitle className='text-center'>Guest</CardTitle>
                 <CardContent className='text-sm space-y-2' >
@@ -167,7 +167,8 @@ const ClientComponent = () => {
                 </CardContent>
               </Card>
             </div>
-            <div className='col-span-3  min-h-[50vh]  flex justify-center items-center '>
+            <p className='text-black text-center font-bold'>v/s</p>
+            <div className='sm:col-span-3  min-h-[50vh]  flex justify-center items-center '>
             <Card className='h-full w-full bg-white text-black'>
                 <CardTitle className='text-center'>Authenticated</CardTitle>
                 <CardContent className='text-sm space-y-2'>
@@ -180,6 +181,15 @@ const ClientComponent = () => {
               </Card>
             </div>
             </div>
+           <div className='flex   lg:w-[18vw] lg:h-[8vh] p-4'>
+           <Button   
+            onClick={()=>router.push('/register')}        
+              className=' bg-[#1338BE] text-white'>Sign In</Button>
+              <p>or</p>
+              <Button  
+              onClick={()=>router.push('/upload')}           
+              className=' bg-[#1338BE] text-white'>Continue as a guest</Button>
+           </div>
           </div>
         
         </div>

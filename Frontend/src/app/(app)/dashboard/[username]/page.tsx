@@ -21,12 +21,13 @@ interface Document{
     savedAt:Date,
     expiresAt:Date,
     fileHash:String,
-    isGuest:Boolean
+    isGuest:Boolean,
+    _id:string
 }
 function page() {
   const [document,setDocument] = useState<Document[]>([])
   const router = useRouter();
-  // const documentname = 'ravi'
+  const username = 'ravi1234'
   // const { user } = useUser();  
   // console.log(user)
   useEffect(()=>{
@@ -38,7 +39,7 @@ function page() {
             Authorization: `Bearer ${token}` 
           },
         })
-        // console.log(response)
+        console.log(response.data.data)
         setDocument(response.data.data)
       } catch (error) {
         
@@ -47,17 +48,23 @@ function page() {
     fetchDocuments();
   },[])
   return (
-    <div className=' bg-white h-full text-black w-full'>
+    <main className='w-full h-full'>
+    <div className=' bg-white h-full text-black '>
       <div className=' grid grid-cols-12 '>
-      <div className=' col-span-9'>
+      <div className='col-span-12 sm:col-span-9'>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl p-4 ">
         Welcome, User
       </h1>
       <h3 className="scroll-m-20 text-xl  tracking-tight pl-3">Your analyzed document at a glance </h3>
       </div>
+      <div className='w-full  flex gap-4'>
       <SavedDocument/>
+      <p 
+      onClick={()=>router.push(`${username}/settings`)}
+      className='p-3 text-blue-400'>Settings</p>
       </div>
-     <div className="grid grid-cols-12 gap-3 p-4">
+      </div>
+     <div className="grid sm:grid-cols-12 gap-3 p-8 sm:p-4">
       <div className='col-span-3 min-h-[35vh] '>
       <Card className='h-full bg-blue-300 text-black'>
       <CardHeader >
@@ -87,49 +94,40 @@ function page() {
       </div>
       </div>
       <h3 className="scroll-m-20 text-2xl  tracking-tight pl-3 font-semibold">Recent Documents </h3>
-      <div className=' grid grid-cols-12 gap-3 p-4 h-full'>
-        <div className='col-span-9   '>
-      <Table className='border-2 border-gray-200 shadow-md  rounded-md'>
-        <TableRow className='font-semibold border  border-gray-200'>
-          <TableCell>
-            Name
-          </TableCell>
-          <TableCell>
-            Date
-          </TableCell>
-          <TableCell>
-            size
-          </TableCell>
-          <TableCell>
-            Status
-          </TableCell>
-        </TableRow>
-        {
-          document.map((doc)=>(
-          <TableRow
-          key={doc.id}
-        onClick={()=>router.push(`/document/${doc.filename}`)}
-        className='border  border-gray-200'>
-          <TableCell>
-           {doc?.filename}
-          </TableCell>
-          <TableCell>
-            {new Date(doc.createdAt).toLocaleDateString()}
-          </TableCell>
-          <TableCell>
-            1.5 MB
-          </TableCell>
-          <TableCell>
-            Analyzed
-          </TableCell>
-        </TableRow>
-          ))
-        }
-      
+      <p className='text-sm text-red-400 pl-3'>Documents present here will be deleted from the date of creation, It is advisable to save the document</p>
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 p-4 h-full">
+  <div className="col-span-12 sm:col-span-9">
+    <div className="overflow-x-auto">
+      <Table className="min-w-full border-2 border-gray-200 shadow-md rounded-md">
+        <thead>
+          <TableRow className="font-semibold border border-gray-200 bg-gray-50">
+            <TableCell>Name</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell>Size</TableCell>
+            <TableCell>Status</TableCell>
+          </TableRow>
+        </thead>
+        <tbody>
+          {document.map((doc) => (
+            <TableRow
+              key={doc.id}
+              onClick={() => router.push(`/document/${doc._id}`)}
+              className="border border-gray-200 cursor-pointer hover:bg-gray-50 transition"
+            >
+              <TableCell>{doc?.filename}</TableCell>
+              <TableCell>{new Date(doc.createdAt).toLocaleDateString()}</TableCell>
+              <TableCell>1.5 MB</TableCell>
+              <TableCell>Analyzed</TableCell>
+            </TableRow>
+          ))}
+        </tbody>
       </Table>
-      </div>
-      </div>
     </div>
+  </div>
+</div>
+
+    </div>
+    </main>
   )
 }
 

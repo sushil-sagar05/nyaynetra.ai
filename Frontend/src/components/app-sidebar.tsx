@@ -15,6 +15,7 @@ import { AlignLeft,WrapText,FileWarning,MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 interface AppSidebarProps {
   documentId: string | string[] | undefined 
   activeTab: string
@@ -44,9 +45,12 @@ interface AppSidebarProps {
     }
   ]
   export function AppSidebar({ activeTab, setActiveTab,documentId}: AppSidebarProps) {
+    const router = useRouter()
+    const [isSaved, setisSaved] = useState(false)
     const isMobile = useIsMobile();
       console.log("Docid",documentId)
-      const handleSubmit = async ()=>{
+      const handleSubmit = async (e:any)=>{
+        e.preventDefault()
         if (!documentId) {
           console.error("No document ID found.")
           return
@@ -62,6 +66,7 @@ interface AppSidebarProps {
           })
           console.log("Document saved:", response.data)
           toast(response.data.data)
+          setisSaved(true)
         } catch (error) {
           
         }
@@ -98,10 +103,11 @@ interface AppSidebarProps {
       </SidebarContent>
       <SidebarFooter className="mb-8">
         <Button
+        disabled={isSaved}
         className="cursor-pointer
         "
-        onClick={handleSubmit}
-        >Save Document</Button>
+        onClick={(e)=>handleSubmit(e)}
+        >{isSaved?"Document Saved":"Save Document"}</Button>
         <p>Upload: 24 April , 2024</p>
         <p>File Size: 1.54MB</p>
       </SidebarFooter>
