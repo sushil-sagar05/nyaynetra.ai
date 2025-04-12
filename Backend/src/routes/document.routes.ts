@@ -9,7 +9,7 @@ import { limiter,guestLimiter } from "../middlewares/rate-limit.middleware";
 const router = express.Router();
 router.post('/upload',upload.single("document"),authUser,limiter,documentController.uploadDocument)
 router.post('/guest/upload',upload.single("document"),guestLimiter,documentController.uploadDocument)
-router.post('/get-documents',authUser,documentController.getAllUploadedDocument)
+router.get('/get-documents',authUser,documentController.getAllUploadedDocument)
 router.get('/get-documents/:id',authUser,documentController.getDocumentById)
 router.delete('/get-documents/:id',authUser,documentController.deleteDocument)
 export default router;

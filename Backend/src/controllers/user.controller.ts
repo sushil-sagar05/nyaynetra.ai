@@ -1,5 +1,5 @@
 import UserModel,{User} from "../models/user.model";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { CookieOptions } from "express";
@@ -169,6 +169,7 @@ const saveDocument=async(req:authRequest,res:Response)=>{
     if(!retrievedUser){
         throw new ApiError(400,"Failed to Update User's saved List")
     }
+    
     res.status(200)
     .json(new ApiResponse(200," Document Added Successfully"))
 }
@@ -177,7 +178,7 @@ const listAllSavedDocument=async(req:authRequest,res:Response)=>{
     if(!User){
         new ApiError(400,"You need to be authenticated to view this page")
     }
- const retrievedUser =   await UserModel.findById({_id:User?.id})
+ const retrievedUser =   await UserModel.findById({_id:User?.id}).populate('documents')
     if(!retrievedUser){
         new ApiError(400,"No user Found")
     }
@@ -186,33 +187,173 @@ const listAllSavedDocument=async(req:authRequest,res:Response)=>{
     .json(new ApiResponse(200,SavedList,"Saved List Found"))
 }
 const DeleteSavedDocument = async(req:authRequest,res:Response)=>{
-    const User = req.user
-    if(!User){
-         new ApiError(400,"You need to be authenticated to perform this task")
+    try {
+        const User = req.user
+        if(!User){
+             new ApiError(400,"You need to be authenticated to perform this task")
+        }
+        const documentId = req.params.documentId || req.body.documentId;
+        const Document = await DocumentModel.findById({_id:documentId})
+        if(!Document){
+            throw new ApiError(400,"No Document Found");
+        }
+        const public_id=Document.public_id_fromCloudinary
+        const fileType=Document.fileType
+        await deleteFromCloudinary(public_id,fileType);
+        const deletedDocument = await DocumentModel.findOneAndDelete({
+            _id: documentId,
+            UploadedBy: User?.id,  
+        });
+        if(!deletedDocument){
+                throw new ApiError(400,"Document not found or user is not authorized for this task!")
+         }
+         await UserModel.findOneAndUpdate(
+            {_id:User?.id},
+            {$pull:{documents:documentId}},
+            {new:true}
+        )
+        res.status(200)
+        .json(new ApiResponse(200,"Document Successfully deleted"))
+    } catch (error) {
+        if (error instanceof ApiError) {
+            res.status(error.statusCode).json({ success: false, message: error.message });
+            return;
+           }
+           res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-    const documentId = req.params.documentId || req.body.documentId;
-    const Document = await DocumentModel.findById({_id:documentId})
-    if(!Document){
-        throw new ApiError(400,"No Document Found");
-    }
-    const public_id=Document.public_id_fromCloudinary
-    const fileType=Document.fileType
-    await deleteFromCloudinary(public_id,fileType);
-    const deletedDocument = await DocumentModel.findOneAndDelete({
-        _id: documentId,
-        UploadedBy: User?.id,  
-    });
-    if(!deletedDocument){
-            throw new ApiError(400,"Document not found or user is not authorized for this task!")
-     }
-     await UserModel.findOneAndUpdate(
-        {_id:User?.id},
-        {$pull:{documents:documentId}},
-        {new:true}
-    )
-    res.status(200)
-    .json(new ApiResponse(200,"Document Successfully deleted"))
 }
+
+const AccountUpdation = async(req:authRequest,res:Response)=>{
+    try {
+        const user = req.user
+        const {fullname} = req.body;
+        if(!user){
+            throw new ApiError(400,"You are not authenticated to do this task")
+        }
+        const retrievedUser = await UserModel.findByIdAndUpdate(user._id,
+            {
+                $set:{
+                    fullname,
+                }
+            },{new:true}
+        ).select('-password')
+         res.status(200)
+        .json(new ApiResponse(200,retrievedUser,"Account Updation successfully"))
+
+    } catch (error) {
+        if (error instanceof ApiError) {
+            res.status(error.statusCode).json({ success: false, message: error.message });
+            return;
+           }
+           res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+const EmailUpdation = async(req:authRequest,res:Response,next:NextFunction)=>{
+   try {
+     const  user = req.user
+     if(!user){
+         throw new ApiError(400,"You are not authenticated for this task")
+     }
+     const {newemail,currPassword} = req.body
+     if(!newemail||!currPassword){
+         throw new ApiError(400,"Please provide email and Password to update")
+     }
+     const emailNormalization = newemail.toLowerCase().trim();
+     const retrievedUser = await UserModel.findById({_id:user._id})
+     if(!retrievedUser){
+         throw new ApiError(400,"User doesnot exist")
+     }
+     const isPasswordValid = await retrievedUser.comparePassword(currPassword)
+     if(!isPasswordValid){
+     throw new ApiError(400,"Password is incorrect,please try again")
+     }
+     if(emailNormalization ===retrievedUser.email.toLocaleLowerCase()){
+        throw new ApiError(400,"This is your current email,Please provide new Email")
+     }
+     const checkEmailAvailable = await UserModel.findOne({email:emailNormalization})
+     if(checkEmailAvailable&& checkEmailAvailable._id.toString()!=user._id.toString()){
+     throw new ApiError(400,"Email is already taken by another user")
+     }
+     const newEmailUpdate = await UserModel.findByIdAndUpdate(user._id,
+         {
+             $set:{email:emailNormalization}
+         },{new:true}
+     ).select('-password')
+     if(!newEmailUpdate){
+         throw new ApiError(400,"Something went wrong while updating user's email")
+     }
+           res.status(200)
+     .json(new ApiResponse(200,newEmailUpdate,"Email updated Successfully"))
+   } catch (error) {
+    next(error);
+   }
+}
+const usernameUpdation = async(req:authRequest,res:Response,next:NextFunction)=>{
+    try {
+      const  user = req.user
+      if(!user){
+          throw new ApiError(400,"You are not authenticated for this task")
+      }
+      const {newUsername,currPassword} = req.body
+      if(!newUsername|| !currPassword){
+          throw new ApiError(400,"Please provide username and password to update")
+      }
+      const retrievedUser = await UserModel.findById({_id:user._id})
+      if(!retrievedUser){
+          throw new ApiError(400,"User doesnot exist")
+      }
+      const isPasswordValid = await retrievedUser.comparePassword(currPassword)
+      if(!isPasswordValid){
+      throw new ApiError(400,"Password is incorrect,please try again")
+      }
+      if(newUsername ===retrievedUser.username){
+         throw new ApiError(400,"This is your current username,Please provide new username")
+      }
+      const checkusernameAvailable = await UserModel.findOne({username:newUsername})
+      if(checkusernameAvailable&& checkusernameAvailable._id.toString()!=user._id.toString()){
+      throw new ApiError(400,"username is already taken by another user")
+      }
+      const newUsernameUpdate = await UserModel.findByIdAndUpdate(user._id,
+          {
+              $set:{username:newUsername}
+          },{new:true}
+      ).select('-password')
+      if(!newUsernameUpdate){
+          throw new ApiError(400,"Something went wrong while updating user's email")
+      }
+       res.status(200)
+      .json(new ApiResponse(200,newUsernameUpdate,"username updated Successfully"))
+    } catch (error) {
+        next(error);
+    }
+ }
+const passwordUpdate = async(req:authRequest,res:Response,next:NextFunction)=>{
+        try {
+            const user = req.user
+            if(!user){
+                throw new ApiError(400,"You are not authenticated to this task")
+            }
+            const {oldPassword,newPassword} =req.body
+            if(!newPassword){
+                throw new ApiError(400,"Please provide password to update")
+            }
+            const retrievedUser= await UserModel.findById({_id:user._id})
+            if(!retrievedUser){
+                throw new ApiError(400,"User doesnot exist")
+            }
+           const isPasswordValid= await retrievedUser.comparePassword(oldPassword)
+           if(!isPasswordValid){
+            throw new ApiError(400,"incorrect password")
+           }
+           const hashedPassword = await UserModel.hashPassword(newPassword)
+           retrievedUser.password=hashedPassword;
+           await retrievedUser.save({validateBeforeSave:false})
+            res.status(200)
+           .json(new ApiResponse(200,{},"PasswordUpdated Successfully"))
+        } catch (error) {
+            next(error);
+        }
+    }
 const userController = {
     register,
     login,
@@ -220,6 +361,10 @@ const userController = {
     logout,
     saveDocument,
     listAllSavedDocument,
-    DeleteSavedDocument
+    DeleteSavedDocument,
+    AccountUpdation,
+    EmailUpdation,
+    usernameUpdation,
+    passwordUpdate
 }
 export default userController
