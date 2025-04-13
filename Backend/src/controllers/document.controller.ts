@@ -6,6 +6,9 @@ import { deleteFromCloudinary, ifFileExists, uploadOnCloudinary } from "../utils
 import { User } from "../models/user.model";
 import fs from 'fs'
 import crypto from 'crypto'
+import SettingModel from "../models/settings.model";
+import userController from "./user.controller";
+import { saveUserDocument } from "../Services/save.service";
 interface authRequest extends Request{
     user?:User
 }
@@ -79,6 +82,10 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
                     isGuest:user?false:true
                 })
              const savedDocument = await newdocument.save();
+             const retreivedUserSetting =   await SettingModel.findOne({userId:user})
+            if(retreivedUserSetting?.autoSave===true){
+                await saveUserDocument(user, savedDocument.id);
+            }
              res.status(200)
             .json(new ApiResponse(201,savedDocument,"Document Created (from existing)"))
             return
@@ -89,23 +96,27 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             if(!document){
                 throw new ApiError(400,"Something went wrong while uploading document on cloudinary ")   
             }
-        const newdocument =new DocumentModel ({
-            UploadedBy:user?user:null,
-            fileType,
-            filename,
-            ClouinaryUrl:document?.url,
-            public_id_fromCloudinary:public_id,
-            isSaved:false,
-            expiresAt:user?expiresAtFromnow:expiresForGuest,
-            fileHash,
-            isGuest:user?false:true
-        })
-        const savedDocument = await newdocument.save();
-        if(!savedDocument){
-            fs.unlinkSync(filePath);
-            throw new ApiError(400,"Something went wrong while saving document!")
-        }
-        res.status(200)
+            const newdocument =new DocumentModel ({
+                UploadedBy:user?user:null,
+                fileType,
+                filename,
+                ClouinaryUrl:document?.url,
+                public_id_fromCloudinary:public_id,
+                isSaved:false,
+                expiresAt:user?expiresAtFromnow:expiresForGuest,
+                fileHash,
+                isGuest:user?false:true
+            })
+            const savedDocument = await newdocument.save();
+            if(!savedDocument){
+                fs.unlinkSync(filePath);
+                throw new ApiError(400,"Something went wrong while saving document!")
+            }
+            const retreivedUserSetting =   await SettingModel.findOne({userId:user})
+            if(retreivedUserSetting?.autoSave===true){
+                await saveUserDocument(user, savedDocument.id);
+            }
+            res.status(200)
         .json(new ApiResponse(201,savedDocument,"Document Created"))
         setTimeout(() => {
             if(fs.existsSync(filePath)){

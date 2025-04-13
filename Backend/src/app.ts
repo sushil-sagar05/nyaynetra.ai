@@ -48,8 +48,10 @@ app.get('/', (req:Request,res:Response)=>{
 });
 import userRoutes from './routes/user.routes'
 import documentRoutes from './routes/document.routes'
+import settingRoutes from './routes/settings.route'
 app.use('/user',userRoutes);
 app.use('/document',documentRoutes)
+app.use('/settings',settingRoutes)
 import errors from "./globalError";
 app.use(errors.MulterError)
 app.use(errors.ApiErrors)

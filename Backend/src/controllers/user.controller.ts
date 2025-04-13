@@ -6,6 +6,8 @@ import { CookieOptions } from "express";
 import DocumentModel from "../models/document.model";
 import mongoose from "mongoose";
 import { deleteFromCloudinary } from "../utils/cloudinary";
+import SettingModel from "../models/settings.model";
+import { saveUserDocument } from "../Services/save.service";
 interface authRequest extends Request{
     user?:User
 }
@@ -48,6 +50,10 @@ const register = async(req:Request,res:Response)=>{
         documents:[]
      })
      await newUser.save();
+      const newSetting = new SettingModel({
+        userId:newUser._id
+      })
+      await newSetting.save()
      const createdUser = await UserModel.findById(newUser._id).select("-password")
 
      const token = newUser.generateAuthToken();
@@ -149,31 +155,7 @@ const saveDocument=async(req:authRequest,res:Response)=>{
     }
     const userId = user.id
     const documentId = req.params.id
-    const newDateForExpiry = new Date()
-    newDateForExpiry.setDate(newDateForExpiry.getDate()+14);
-    const ObjectId = new mongoose.Types.ObjectId(documentId)
-    const retreivedDocument = await DocumentModel.findByIdAndUpdate(
-        {_id:documentId},
-        {
-            $set:{
-                isSaved:true,
-                savedAt:Date.now(),
-                expiresAt:newDateForExpiry
-            }
-        },
-        {new:true}
-    )
-    if(!retreivedDocument){
-        throw new ApiError(409,"Document not found or it is saved ")
-    }
-    const retrievedUser = await UserModel.findOneAndUpdate({_id:userId},{
-        $addToSet:{
-            documents:ObjectId
-        }
-    },{new:true})
-    if(!retrievedUser){
-        throw new ApiError(400,"Failed to Update User's saved List")
-    }
+    await saveUserDocument(user.id, documentId);
     
     res.status(200)
     .json(new ApiResponse(200," Document Added Successfully"))
