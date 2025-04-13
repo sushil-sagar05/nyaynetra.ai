@@ -19,6 +19,7 @@ router.patch('/update-fullname',authUser,userController.AccountUpdation)
 router.patch('/update-email',authUser,userController.EmailUpdation)
 router.patch('/update-username',authUser,userController.usernameUpdation)
 router.post('/update-password',authUser,validationSchema(passwordUpdateSchema),userController.passwordUpdate)
+router.post('/delete-account',authUser,userController.accountDeletion)
 
 
 

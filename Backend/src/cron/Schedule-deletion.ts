@@ -33,4 +33,32 @@ try {
     console.error("Error in scheduled deletion:", error);
 }
 }
+
+export const DeleteDeactivateUser = async()=>{
+    try {
+        const sevenDaysAgo = new Date(Date.now() - 7*24*60*60*1000)
+        const usersToDelete = await UserModel.find({
+            isdeleted:true,
+            deletionRequestedAt:{$lt:sevenDaysAgo}
+        })
+        for(const user of usersToDelete){
+            for(const docId of user.documents){
+             const doc =  await DocumentModel.findById(docId)
+             if(doc){
+                await deleteFromCloudinary(doc.public_id_fromCloudinary,doc.fileType)
+                await DocumentModel.findByIdAndDelete(docId)
+             }
+
+            }
+            await UserModel.findByIdAndDelete(user._id)
+            console.log(`user ${user.username, user.email} is permanently deleted`)
+        }
+
+
+    } catch (error) {
+        console.log("error deleting user by cron",error)
+    }
+}
+
 cron.schedule("0 0 * * *",ScheduledDeletion)
+cron.schedule("0 1 * * *",DeleteDeactivateUser)

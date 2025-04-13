@@ -40,7 +40,9 @@ app.use((req,res,next)=>{
   app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 import {ScheduledDeletion} from './cron/Schedule-deletion'
+import { DeleteDeactivateUser } from "./cron/Schedule-deletion";
 ScheduledDeletion();
+DeleteDeactivateUser();
 app.get('/', (req:Request,res:Response)=>{
     res.send('Hello World');
 });

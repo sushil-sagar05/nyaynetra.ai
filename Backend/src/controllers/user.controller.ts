@@ -85,6 +85,11 @@ try {
     if(!isPasswordValid){
         throw new ApiError(409,"Password is incorrect,Try again")
     }
+    if(user.isdeleted===true&&user.deletionRequestedAt!< new Date()){
+        user.isdeleted=false;
+        user.deletionRequestedAt=null
+        await user.save()
+    }
     const {accessToken,refreshToken}=await generateAccessandRefreshToken(user._id.toString())
     const loggedInUser = await UserModel.findById(user._id).select('-password -refreshToken')
     const options = {
@@ -354,6 +359,39 @@ const passwordUpdate = async(req:authRequest,res:Response,next:NextFunction)=>{
             next(error);
         }
     }
+const accountDeletion = async(req:authRequest,res:Response,next:NextFunction)=>{
+    try {
+        const user = req.user
+        if(!user){
+            throw new ApiError(400,"User is not authenticated")
+        }
+        const {currPassword} = req.body
+        const retrievedUser = await UserModel.findById(user._id)
+        if(!retrievedUser){
+            throw new ApiError(400,"User does not exist")
+        }
+        const isPasswordValid =await retrievedUser.comparePassword(currPassword)
+        if(!isPasswordValid){
+            throw new ApiError(400,"Password is incorrect")
+        }
+        retrievedUser.refreshToken=null
+        retrievedUser.isdeleted=true
+        retrievedUser.deletionRequestedAt=new Date()
+        await retrievedUser.save()
+        const options = {
+            httpOnly:true,
+            secure:true
+        }
+        res.status(200)
+        .clearCookie("token",options)
+        .clearCookie("refreshToken",options)
+        .json(new ApiResponse(200,{},"Account deleted sucessfully you can reactivate it within 7 days by login back otherwise will be deleted permanently"))
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 const userController = {
     register,
     login,
@@ -365,6 +403,8 @@ const userController = {
     AccountUpdation,
     EmailUpdation,
     usernameUpdation,
-    passwordUpdate
+    passwordUpdate,
+    accountDeletion,
+
 }
 export default userController

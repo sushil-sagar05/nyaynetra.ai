@@ -14,11 +14,13 @@ export interface User extends Document{
     username:string;
     email:string;
     password:string;
-    refreshToken:string;
+    refreshToken:string|null;
     documents:Types.ObjectId[];
     generateAuthToken():string;
     generateRefreshToken():string;
     comparePassword(password:string):Promise<boolean>
+    isdeleted:Boolean;
+    deletionRequestedAt:Date|null
 
 }
 interface hashPasswordInterface extends Model<User>{
@@ -50,7 +52,16 @@ const UserSchema:Schema<User>=new mongoose.Schema({
         required:true,
     },
     refreshToken:{
-        type:String
+        type:String,
+        default:null
+    },
+    isdeleted:{
+        type:Boolean,
+        default:false
+    },
+    deletionRequestedAt:{
+        type:Date,
+        default:null
     },
     documents:[{
         type:Schema.Types.ObjectId,
