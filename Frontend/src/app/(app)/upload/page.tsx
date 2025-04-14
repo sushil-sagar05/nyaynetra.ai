@@ -3,7 +3,7 @@ import { useUser } from '../../../context/UserContext';
 import { useCallback, useEffect, useState } from 'react';
 import photo from '../../../../public/Upload-pana.png';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDropzone } from 'react-dropzone';
 import { Input } from '@/components/ui/input';
 import { Loader2, Upload,X } from 'lucide-react';
@@ -13,6 +13,8 @@ import { Label } from '@/components/ui/label';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { useRouter } from "next/navigation"
+import traditionals from '../../../../public/Questions-rafiki.png'
+import New from '../../../../public/Mention-bro.png'
 interface UploadFormData {
   file:FileList;
   public:boolean;
@@ -152,45 +154,57 @@ const ClientComponent = () => {
         </div>
        {user ===null && (
         <div className='  '>
-            <h2 className='ml-6 font-bold text-black'>Comparisions</h2>
-          <div className="inner ">
-            <div className="cards sm:grid grid-cols-12   p-3 ">
-            <div className='sm:col-span-3  min-h-[50vh]  flex justify-center items-center  '>
-              <Card className='h-full w-full bg-white text-black'>
-                <CardTitle className='text-center'>Guest</CardTitle>
-                <CardContent className='text-sm space-y-2' >
-                  <p >1. AI Responses: Receives basic, generic legal advice with no personalization.</p>
-                  <p>2. Rate Limits: Restricted to a limited number of queries per day.</p>
-                  <p>3. Save & Track: Cannot save or track past queries or responses.</p>
-                  <p>4. Access to Resources: Can only access simple legal templates and basic information.</p>
-                  <p>5. Download & Export: Cannot download or export generated legal content.</p>
-                </CardContent>
-              </Card>
-            </div>
-            <p className='text-black text-center font-bold'>v/s</p>
-            <div className='sm:col-span-3  min-h-[50vh]  flex justify-center items-center '>
-            <Card className='h-full w-full bg-white text-black'>
-                <CardTitle className='text-center'>Authenticated</CardTitle>
-                <CardContent className='text-sm space-y-2'>
-                  <p>1. AI Responses: Receives personalized, in-depth legal advice tailored to their profile.</p>
-                  <p>2. Rate Limits: Can ask unlimited questions and get follow-up answers.</p>
-                  <p>3. Save & Track: Can save and revisit all past interactions with the AI.</p>
-                  <p>4. Access to Resources: Can access advanced, tailored legal documents and resources.</p>
-                  <p>5. Download & Export: Can download and export customized legal documents and reports.</p>
-                </CardContent>
-              </Card>
-            </div>
-            </div>
-           <div className='flex   lg:w-[18vw] lg:h-[8vh] p-4'>
-           <Button   
+             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
+        Comparisons
+      </h1>
+            <section className="mt-3 px-4 sm:px-8 md:px-16 py-8">
+  <div className="flex justify-center items-center w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl bg-white shadow-md border-2 border-gray-500 border-dotted rounded-md p-4 sm:p-8">
+      <div className="p-4">
+        <Card className="h-full">
+          <CardTitle className="text-center">Guest User</CardTitle>
+          <CardContent className="flex flex-col sm:flex-row items-center gap-4">
+            <Image
+              className="h-[25vh] w-[35vh] rounded-lg object-cover"
+              src={traditionals}
+              alt="Document Image"
+              layout="intrinsic"
+            />
+            <ul className="font-semibold list-disc pl-5 space-y-2">
+              <li> AI Responses: Receives basic, generic legal advice with no personalization.</li>
+              <li>Rate Limits: Restricted to a limited number of queries per day.</li>
+              <li>Save & Track: Cannot save or track past queries or responses.</li>
+            </ul>
+          </CardContent>
+          <CardFooter>
+          <Button   
             onClick={()=>router.push('/register')}        
               className=' bg-[#1338BE] text-white'>Sign In</Button>
-              <p>or</p>
-              <Button  
-              onClick={()=>router.push('/upload')}           
-              className=' bg-[#1338BE] text-white'>Continue as a guest</Button>
-           </div>
-          </div>
+          </CardFooter>
+        </Card>
+      </div>
+      <div className="p-4">
+        <Card className="h-full">
+          <CardTitle className="text-center">Register User</CardTitle>
+          <CardContent className="flex flex-col sm:flex-row items-center gap-4">
+            <Image
+              className="h-[25vh] w-[30vh] rounded-lg object-cover"
+              src={New}
+              alt="Document Image"
+              layout="intrinsic"
+            />
+            <ul className="font-semibold list-disc pl-5 space-y-2">
+              <li>AI Responses: Receives personalized, in-depth legal advice tailored to their profile.</li>
+              <li>Rate Limits: Can ask unlimited questions and get follow-up answers.</li>
+              <li>Save & Track: Can save and revisit all past interactions with the AI</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+      
+    </div>
+  </div>
+</section>
         
         </div>
         )}

@@ -1,62 +1,66 @@
 import {
   Card,
+  CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Clock, CheckCheck, IndianRupee, ShieldAlert, Cable } from "lucide-react";
-
+import traditionals from '../../public/Reading list-bro.png'
+import New from '../../public/Online report-bro.png'
+import Image from 'next/image'
 function ComparisonTable() {
   return (
     <>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
         Comparisons
       </h1>
-      <section className="h-full sm:flex justify-center items-center mt-8">
-        <div className="flex justify-center items-center w-full sm:w-[80vw] mt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 w-full">
-            <div className="min-h-[25vh] flex flex-col justify-between bg-white text-black p-6 rounded-lg shadow-lg">
-              <CardTitle className="text-center text-xl sm:text-2xl font-semibold">
-                Features
-              </CardTitle>
-              <CardHeader className="text-center flex gap-2 items-center">
-                Time Taken <Clock />
-              </CardHeader>
-              <CardHeader className="text-center flex gap-2 items-center">
-                Accuracy <CheckCheck />
-              </CardHeader>
-              <CardHeader className="text-center flex gap-2 items-center">
-                Cost <IndianRupee />
-              </CardHeader>
-              <CardHeader className="text-center flex gap-2 items-center">
-                Accessibility <Cable />
-              </CardHeader>
-              <CardHeader className="text-center flex gap-2 items-center">
-                Security <ShieldAlert />
-              </CardHeader>
-            </div>
-            <div className="min-h-[25vh] flex flex-col justify-between bg-white text-black p-6 rounded-lg shadow-lg">
-              <CardTitle className="text-center text-xl sm:text-2xl font-semibold">
-                Traditional Legal Review
-              </CardTitle>
-              <CardHeader className="text-center">Days</CardHeader>
-              <CardHeader className="text-center">Depends on User</CardHeader>
-              <CardHeader className="text-center">High</CardHeader>
-              <CardHeader className="text-center">Manual Access</CardHeader>
-              <CardHeader className="text-center">Low/Depends on Storage</CardHeader>
-            </div>
-            <div className="min-h-[25vh] flex flex-col justify-between bg-white text-black p-6 rounded-lg shadow-lg">
-              <CardTitle className="text-center text-xl sm:text-2xl font-semibold">
-                Nyaynetra
-              </CardTitle>
-              <CardHeader className="text-center">Seconds</CardHeader>
-              <CardHeader className="text-center">AI powered consistent</CardHeader>
-              <CardHeader className="text-center">Free/Low</CardHeader>
-              <CardHeader className="text-center">Upload from anywhere</CardHeader>
-              <CardHeader className="text-center">Encrypted, Cloud Secure</CardHeader>
-            </div>
-          </div>
-        </div>
-      </section>
+      <section className="mt-3 px-4 sm:px-8 md:px-16 py-8">
+  <div className="flex justify-center items-center w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl bg-white shadow-md border-2 border-gray-500 border-dotted rounded-md p-4 sm:p-8">
+      <div className="p-4">
+        <Card className="h-full">
+          <CardTitle className="text-center">Traditional</CardTitle>
+          <CardContent className="flex flex-col sm:flex-row items-center gap-4">
+            <Image
+              className="h-[25vh] w-[35vh] rounded-lg object-cover"
+              src={traditionals}
+              alt="Document Image"
+              layout="intrinsic"
+            />
+            <ul className="font-semibold list-disc pl-5 space-y-2">
+              <li>Manual Efforts</li>
+              <li>Time Consuming</li>
+              <li>Error Prone</li>
+              <li>Costly</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="p-4">
+        <Card className="h-full">
+          <CardTitle className="text-center">NyayNetra</CardTitle>
+          <CardContent className="flex flex-col sm:flex-row items-center gap-4">
+            <Image
+              className="h-[25vh] w-[30vh] rounded-lg object-cover"
+              src={New}
+              alt="Document Image"
+              layout="intrinsic"
+            />
+            <ul className="font-semibold list-disc pl-5 space-y-2">
+              <li>AI Powered Insights</li>
+              <li>Time Efficient</li>
+              <li>Fast Document Analysis</li>
+              <li>Reduced Human Bias</li>
+              <li>Free or Very Low Cost</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
     </>
   );
 }
