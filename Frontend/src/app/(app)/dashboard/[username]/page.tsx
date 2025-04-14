@@ -4,7 +4,7 @@ import { Switch } from '@/components/ui/switch'
 import { Table, TableCell, TableRow } from '@/components/ui/table'
 import { Tabs } from '@/components/ui/tabs'
 import { TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { ChartColumn, Ellipsis, Save, TriangleAlert, Upload } from 'lucide-react'
+import { ChartColumn, Ellipsis, Save, Settings, TriangleAlert, Upload } from 'lucide-react'
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from 'react'
 import SavedDocument from '@/components/SavedDocument'
@@ -27,7 +27,7 @@ interface Document{
 function page() {
   const [document,setDocument] = useState<Document[]>([])
   const router = useRouter();
-  const username = 'ravi1234'
+  const username = 'sagario'
   // const { user } = useUser();  
   // console.log(user)
   useEffect(()=>{
@@ -60,8 +60,8 @@ function page() {
       <div className='w-full  flex gap-4'>
       <SavedDocument/>
       <p 
-      onClick={()=>router.push(`${username}/settings`)}
-      className='p-3 text-blue-400'>Settings</p>
+      onClick={()=>router.push(`/settings/${username}`)}
+      className='p-3 text-black cursor-pointer flex'>Settings<Settings/></p>
       </div>
       </div>
      <div className="grid sm:grid-cols-12 gap-3 p-8 sm:p-4">

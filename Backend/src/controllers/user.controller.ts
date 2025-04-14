@@ -348,7 +348,7 @@ const accountDeletion = async(req:authRequest,res:Response,next:NextFunction)=>{
             throw new ApiError(400,"User is not authenticated")
         }
         const {currPassword} = req.body
-        const retrievedUser = await UserModel.findById(user._id)
+        const retrievedUser = await UserModel.findById({_id:user._id})
         if(!retrievedUser){
             throw new ApiError(400,"User does not exist")
         }
