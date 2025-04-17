@@ -13,12 +13,12 @@ function FeaturesSection() {
 
   
   return (
-    <section className='  p-4 ' >
+    <section className=' p-4 ' >
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
         Features
       </h1>
-      <div className='grid  sm:h-[90vh]  text-black sm:grid-cols-12 gap-4 mt-8'>
-        <div className='sm:col-span-4 min-h-[20vh]   '>
+      <div className='grid   text-black sm:grid-cols-12 gap-4 mt-8'>
+        <div className='sm:col-span-4    '>
         <Card className=' bg-white  flex justify-center  text-black'>
             <CardContent className='flex justify-center items-center   '>
             <Zap color="#1338BE" size={100} className='bg-slate-100 rounded-lg' />

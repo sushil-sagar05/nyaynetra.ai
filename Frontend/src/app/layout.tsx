@@ -21,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body>
-        {/* Only render the Navbar and Footer if the page is not the login or register page */}
         <UserProvider>
           {!isAuth && (
             <>
@@ -34,11 +33,7 @@ export default function RootLayout({
           <SidebarProvider >
           {children}
           </SidebarProvider>
-
-          {/* Toaster Notifications */}
           <Toaster />
-
-          {/* Footer only shown for non-auth pages */}
           {!isAuth && <Footer />}
         </UserProvider>
       </body>

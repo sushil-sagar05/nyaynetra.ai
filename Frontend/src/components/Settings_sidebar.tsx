@@ -13,6 +13,11 @@ import {
   import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "./ui/button";
 import { url } from "inspector";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { useUser } from "@/context/UserContext";
   interface AppSidebarProps {
     activeTab: string
     setActiveTab: (tab: string) => void
@@ -36,7 +41,22 @@ import { url } from "inspector";
       }
     ]
 function Setting_sidebar({ activeTab, setActiveTab}: AppSidebarProps) {
+  const { setUser } = useUser();
     const isMobile = useIsMobile();
+    const router =useRouter()
+    const handleLogout =async()=>{
+      try {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/logout`,{}, { withCredentials: true })
+        if(response.status===200){
+          toast.success(response.data.message)
+          setUser(null)
+          router.push('/login')
+        }
+      } catch (error:any) {
+        toast.error(error.response.data.message)
+      }
+   
+    }
   return (
     <div className="outer h-full  w-[20vw] bg-white  ">
     <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md bg-white text-black ">
@@ -65,7 +85,9 @@ function Setting_sidebar({ activeTab, setActiveTab}: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button className="bg-blue-500">Logout</Button>
+        <Button
+        onClick={()=>handleLogout()}
+        className="bg-blue-500">Logout</Button>
       </SidebarFooter>
     </Sidebar>
   </div>

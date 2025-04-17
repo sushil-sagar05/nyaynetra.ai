@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation'
 import Delete from './Delete'
 import axios, { AxiosError } from 'axios'
 import { toast } from 'sonner'
-
+import { useUser } from '@/context/UserContext'
 interface Document{
   id:string
   filename:string,
@@ -34,15 +34,20 @@ interface ErrorResponse {
   message: string;
 }
 function SavedDocument() {
-
+  const {user} = useUser()
   const router = useRouter()
   const documentname = 'Agreement.pdf'
   const [document,setDocument] = useState<Document[]>([])
   useEffect(()=>{
+    if(!user){
+      return
+    }
     const fetchDocuments = async ()=>{
+      if(!user){
+        return
+      }
       try {
         const token = localStorage.getItem('token')
-        console.log(token)
         const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/saved-list`,{},{
           headers:{
             Authorization: `Bearer ${token}` 
@@ -57,7 +62,7 @@ function SavedDocument() {
       }
     }
     fetchDocuments();
-  },[])
+  },[user])
 
 
   const handleDeleteSubmit = async(documentId:string)=>{

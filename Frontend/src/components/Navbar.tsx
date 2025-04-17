@@ -18,7 +18,7 @@ function Navbar() {
         user==null?(
           <a href='/login' className="font-bold text-3xl ">Login</a>
         ):(
-          <a href={`/dashboard/${user?.fullName}`} className="font-bold text-3xl "><span className='flex gap-2'>Profile<User size={35}/></span></a>
+          <a href={`/dashboard/${user?.username}`} className="font-bold text-3xl "><span className='flex gap-2'>Profile<User size={35}/></span></a>
         )
       }
       </div>

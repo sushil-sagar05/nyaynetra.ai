@@ -1,11 +1,14 @@
+import axios from "axios";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { toast } from "sonner";
 
 type User = {
   email: string;
-  fullName: {
+  fullname: {
     firstname: string;
     lastname: string;
   };
+  username:string
   token:string
 };
 
@@ -29,18 +32,28 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const base64Payload = token.split(".")[1];
-        const decodedPayload = atob(base64Payload);
-        const parsedUser = JSON.parse(decodedPayload);
-        setUser(parsedUser);
-      } catch (err) {
-        console.error("Failed to parse JWT:", err);
+    if (!token) return;
+
+   const response =  axios
+      .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        const userData = {
+          ...res.data.user,
+          token,
+        };
+        setUser(userData);
+      })
+      .catch((err) => {
+        console.error("Failed to load user profile:", err);
+        toast(err.response.data.message)
         setUser(null);
-      }
-    }
-  }, []);; 
+      });
+  }, []);
+  
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

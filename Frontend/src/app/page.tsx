@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import HeroSection from '../components/HeroSection'
 import FeaturesSection from '@/components/FeaturesSection'
@@ -10,7 +11,7 @@ function page() {
   return (
     <main className="min-h-screen bg-white">
       <HeroSection/>
-      <section className=" min-h-screen p-8 ">
+      <section className="  p-8 ">
         <FeaturesSection />
       </section>
       <section className="min-h-screen p-8 ">
@@ -22,7 +23,7 @@ function page() {
       <section className="min-h-screen p-8">
         <Testimonials />
       </section>
-      <section className=" min-h-screen p-8">
+      <section className=" p-8">
         <CTASection/>
       </section>
       <section className=" p-8">

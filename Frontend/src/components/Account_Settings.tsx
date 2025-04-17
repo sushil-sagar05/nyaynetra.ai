@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { ChevronRight, Pencil, User } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -16,13 +16,19 @@ import axios from 'axios';
 import { toast, useSonner } from "sonner"
 import Account_Delete from './Account_Delete'
 import AutoSave from './AutoSave';
+import { useUser } from '@/context/UserContext';
 function Account_Settings() {
   const inputUsernameRef = useRef<HTMLInputElement>(null);
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
-
-  const [username, setUsername] = useState('sagar');
-  const [email, setemail] = useState('sagar@sagar.com');
+  const {user} = useUser()
+  useEffect(() => {
+    if (user?.username) {
+      setUsername(user.username);
+    }
+  }, [user]);
+  const [username, setUsername] = useState("");
+  const [email, setemail] = useState(user?.email);
   const [password, setPassword] = useState('password123');
   const [tempUsername, setTempUsername] = useState(username);
   const [tempEmail, setTempEmail] = useState(email);

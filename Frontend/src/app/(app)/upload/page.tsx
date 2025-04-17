@@ -68,13 +68,11 @@ const ClientComponent = () => {
       })
      
       const {_id} = response.data.data
-      console.log(response.data.data)
       if(response.status===200)
       {
       router.push(`/analysis/${_id}`)
       toast.success(response.data.message);
       setisSubmitting(false)
-
     }
     } catch (error:any) {
       console.error('Error uploading file:', error);
@@ -90,6 +88,13 @@ const ClientComponent = () => {
     <div className='h-full w-[100vw] bg-white'>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl pl-6 p-4 text-black" >Upload Your Legal Files and Let Us Help You Make Informed Decisions</h1>
       <h3 className="scroll-m-20 text-xl font-semibold tracking-tight pt-1 text-black pl-6">Focuses on empowerment and helping users make better legal decisions. </h3>
+      {
+        user?"":<h3 className="scroll-m-20 text-xl font-semibold tracking-tight pt-1 text-red-400 pl-6">You are uploading as a guest...<Button   
+        onClick={()=>router.push('/register')}        
+          className=' bg-[#1338BE] text-white m-2'>Sign In</Button>
+      </h3>
+
+      }
         <div className='grid grid-cols-12 sm:p-1 p-4 justify-center items-center '>
         <div className='col-span-11 sm:col-span-7  min-h-[40vh]  flex justify-center items-center '>
           <div className="inner  border-2 rounded-lg border-blue-500 border-dashed flex justify-center items-center">

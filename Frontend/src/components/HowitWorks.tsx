@@ -16,7 +16,7 @@ function HowitWorks() {
          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
         How it Works
       </h1>
-      <section className="h-full px-4 sm:px-6 md:px-12 lg:px-20 py-8">
+      <section className=" px-4 sm:px-6 md:px-12 lg:px-20 py-8">
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-black mt-8">
     <div className="flex justify-center">
       <Card className="w-full max-w-sm bg-white text-black">

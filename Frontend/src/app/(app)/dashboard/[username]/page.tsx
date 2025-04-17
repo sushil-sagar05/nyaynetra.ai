@@ -27,11 +27,13 @@ interface Document{
 function page() {
   const [document,setDocument] = useState<Document[]>([])
   const router = useRouter();
-  const username = 'sagario'
-  // const { user } = useUser();  
-  // console.log(user)
+  const { user } = useUser();  
+
   useEffect(()=>{
     const fetchDocuments = async ()=>{
+      if(!user){
+        return
+      }
       try {
         const token = localStorage.getItem('token')
         const response = await axios.get(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents`,{
@@ -53,14 +55,14 @@ function page() {
       <div className=' grid grid-cols-12 '>
       <div className='col-span-12 sm:col-span-9'>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl p-4 ">
-        Welcome, User
+        Welcome, {user?.username}
       </h1>
       <h3 className="scroll-m-20 text-xl  tracking-tight pl-3">Your analyzed document at a glance </h3>
       </div>
       <div className='w-full  flex gap-4'>
       <SavedDocument/>
       <p 
-      onClick={()=>router.push(`/settings/${username}`)}
+      onClick={()=>router.push(`/settings/${user?.username}`)}
       className='p-3 text-black cursor-pointer flex'>Settings<Settings/></p>
       </div>
       </div>

@@ -35,7 +35,7 @@ const form = useForm<z.infer<typeof loginSchema>>({
 const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   setIsSubmiting(true)
   try {
-   const response =  await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/login`,data)
+   const response =  await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/login`,data, { withCredentials: true })
    console.log(response.data)
    const {username} = response.data.data.user
    console.log(username)
@@ -59,7 +59,8 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-white text-black">
-      <div className="sm:w-[85vw]  sm:h-[85vh] sm:p-8   rounded-lg shadow-md ">
+      <div className="sm:h-[100vh] sm:p-8   rounded-lg shadow-md ">
+              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-black mb-4" >Nyaynetra👁</h1>
               <div className="grid sm:h-[60vh] grid-cols-12 ">
         <div className="left w-[100vw]  col-span-6 md:w-[30vw] p-4  ">
         <h3 className="scroll-m-20 text-xl font-semibold tracking-tight ">Welcome Back! Log in to Unlock Your Legal Insights.
