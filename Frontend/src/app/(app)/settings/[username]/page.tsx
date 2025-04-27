@@ -8,7 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Tabs,TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import Account_Settings from '@/components/Account_Settings';
+import { useUser } from '@/context/UserContext';
+import { useRouter } from 'next/navigation';
 function page() {
+    const user =useUser()
+    const router = useRouter();
+    if(!user){
+     return  router.push('/login')
+    }
     const [activeTab, setActiveTab] = useState("Account Settings")
   return (
     <div className=" sm:grid sm:grid-cols-12 overflow-y-auto h-[85vh] ">

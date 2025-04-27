@@ -73,7 +73,7 @@ interface AppSidebarProps {
       }
 
   return (
-    <div className="outer h-full  w-[20vw]  ">
+    <div className="outer h-full ">
     <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md bg-white text-black ">
       <SidebarContent > 
         <SidebarGroup>

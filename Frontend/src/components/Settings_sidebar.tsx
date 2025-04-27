@@ -58,8 +58,8 @@ function Setting_sidebar({ activeTab, setActiveTab}: AppSidebarProps) {
    
     }
   return (
-    <div className="outer h-full  w-[20vw] bg-white  ">
-    <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md bg-white text-black ">
+    <div className="outer h-full  w-[20vw] bg-[#f8f7f5] ">
+    <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md bg-[#f8f7f5] text-black">
       <SidebarContent > 
         <SidebarGroup>
           <SidebarGroupLabel className="text-2xl text-black">Settings</SidebarGroupLabel>
@@ -87,7 +87,7 @@ function Setting_sidebar({ activeTab, setActiveTab}: AppSidebarProps) {
       <SidebarFooter>
         <Button
         onClick={()=>handleLogout()}
-        className="bg-blue-500">Logout</Button>
+        className="bg-orange-500">Logout</Button>
       </SidebarFooter>
     </Sidebar>
   </div>

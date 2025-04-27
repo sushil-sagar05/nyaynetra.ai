@@ -95,7 +95,7 @@ function page() {
 
   return (
     <div className=' w-full  bg-white'>
-   <div className="sm:h-[8vh] flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4">
+   <div className=" flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4">
   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-black">
     Viewing: {document?.filename+'.'+document?.fileType!}
   </h1>

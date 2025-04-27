@@ -14,42 +14,47 @@ function FeaturesSection() {
   
   return (
     <section className=' p-4 ' >
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
+        <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center text-black">
         Features
       </h1>
       <div className='grid   text-black sm:grid-cols-12 gap-4 mt-8'>
         <div className='sm:col-span-4    '>
-        <Card className=' bg-white  flex justify-center  text-black'>
+        <Card className=' bg-[#f8f7f5]   flex justify-center  text-black'>
             <CardContent className='flex justify-center items-center   '>
-            <Zap color="#1338BE" size={100} className='bg-slate-100 rounded-lg' />
+            <Zap color="#f97316" size={100} />
             </CardContent>
             <CardHeader >
             <CardTitle className='flex justify-center items-center'>Fast Processing</CardTitle>
-            <CardDescription className='text-black'>Our AI quickly processes your documents, providing accurate and reliable insights in real-time. From contracts and financial reports to complex text-heavy files, it extracts and highlights the most crucial information. This helps you save time, avoid manual analysis, and make data-driven decisions with confidence.</CardDescription>
+            <h2 className='font-bold text-orange-500'>Get results in seconds, not hours.</h2>
+            <CardDescription className='text-black'>Our AI engine swiftly analyzes complex legal documents, helping you save precious time and speed up decision-making.
+
+        </CardDescription>
             </CardHeader>
         </Card>
         </div>
-        <div className='sm:col-span-4 min-h-[20vh]   '>
-        <Card className='  flex justify-center bg-white text-black'>
+        <div className='sm:col-span-4'>
+        <Card className='  flex justify-center bg-[#f8f7f5] text-black'>
             <CardContent className='flex justify-center items-center   '>
-            <BarChart color="#1338BE" size={100} className='bg-slate-100 rounded-lg' />
+            <BarChart color="#f97316" size={100} />
             </CardContent>
             <CardHeader >
             <CardTitle className='flex justify-center items-center'>Accurate Insights</CardTitle>
-            <CardDescription className='text-black'>  Our AI quickly processes your documents, providing accurate and reliable insights in real-time. From contracts and financial reports to complex text-heavy files, it extracts and highlights the most crucial information. This helps you save time, avoid manual analysis, and make data-driven decisions with confidence.
+            <h2 className='font-bold text-orange-500'>Pinpoint the details that matter.</h2>
+            <CardDescription className='text-black'> We deliver precise risk flags, hidden clauses, and compliance issues — so you can act confidently without missing anything important.
 
             </CardDescription>
             </CardHeader>
         </Card>
         </div>
-        <div className='sm:col-span-4 min-h-[20vh]  '>
-        <Card className='  flex justify-center bg-white text-black'>
+        <div className='sm:col-span-4'>
+        <Card className='  flex justify-center bg-[#f8f7f5] text-black'>
             <CardContent className='flex justify-center items-center   '>
-            <ShieldCheck color="#1338BE" size={100} className='bg-slate-100 rounded-lg' />
+            <ShieldCheck color="#f97316" size={100}/>
             </CardContent>
             <CardHeader >
             <CardTitle className='flex justify-center items-center'>Private and Secure</CardTitle>
-            <CardDescription className='text-black'>  Your documents are processed with the utmost security and privacy. We ensure that all data remains confidential, with advanced encryption and secure handling at every step. Whether it's contracts, reports, or sensitive files, you can trust that your information is protected while gaining accurate and actionable insights.</CardDescription>
+            <h2 className='font-bold text-orange-500'>Your data stays yours, always.</h2>
+            <CardDescription className='text-black'>  End-to-end encryption and strict confidentiality ensure that your sensitive documents are analyzed safely without any exposure.</CardDescription>
             </CardHeader>
         </Card>
         </div>

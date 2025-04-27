@@ -20,14 +20,14 @@ function page() {
       <section className=" min-h-screen p-8">
         <ComparisonTable />
       </section>
-      <section className="min-h-screen p-8">
+      <section className=" p-8">
         <Testimonials />
       </section>
       <section className=" p-8">
-        <CTASection/>
+        <FAQ/>
       </section>
       <section className=" p-8">
-        <FAQ/>
+        <CTASection/>
       </section>
     </main>
   )

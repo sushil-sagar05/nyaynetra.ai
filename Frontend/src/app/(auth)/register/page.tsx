@@ -22,9 +22,6 @@ interface ErrorResponse {
 function page() {
 const router = useRouter();
 const [username,setUsername] = useState('')
-// const [email,setEmail] = useState('')
-// const [firstname,setFirstname] = useState('')
-// const [password,setPassword] = useState('')
 const [isSubmitting,setIsSubmiting] = useState(false)
 const {user,setUser} =useUser();
 //zod implementation 
@@ -61,11 +58,13 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
 }
 
   return (
+    <div className="bg-white">
+    <a href='/' className="font-bold text-3xl text-black m-4">👁Nyaynetra</a>
     <div className="flex justify-center items-center min-h-screen bg-white text-black">
-      <div className="sm:w-[85vw]  sm:h-[85vh] sm:p-8   rounded-lg shadow-md ">
-              <div className="grid sm:h-[60vh] grid-cols-12 ">
+      <div className=" sm:p-8   rounded-lg shadow-md ">
+              <div className="grid  grid-cols-12 ">
         <div className="left w-[100vw]  col-span-6 md:w-[30vw] p-4  ">
-        <h3 className="scroll-m-20 text-xl font-semibold tracking-tight ">Join the Future of Legal Innovation – Sign Up Now! </h3>
+        <h3 className="scroll-m-20 text-xl font-semibold tracking-tight ">Join the Future of Legal Innovation – <span className="text-orange-500">Sign Up Now!</span> </h3>
         <Form {...form} >
           <form onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6 h-full  p-4"
@@ -149,7 +148,7 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
         />
        <div className="flex ">
        <Button type="submit" disabled={isSubmitting}
-        className=" bg-[#1338BE] text-white">
+        className=" bg-orange-500 text-white">
           {
             isSubmitting?<>
             <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Please wait
@@ -178,6 +177,7 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
       </div>
 
     </div>
+  </div>
   )
 }
 

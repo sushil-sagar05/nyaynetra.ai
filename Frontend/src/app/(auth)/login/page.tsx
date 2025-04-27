@@ -60,10 +60,12 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   return (
     <div className="flex justify-center items-center min-h-screen bg-white text-black">
       <div className="sm:h-[100vh] sm:p-8   rounded-lg shadow-md ">
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-black mb-4" >Nyaynetra👁</h1>
+              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-black mb-4" >
+              <a href='/' className="">👁Nyaynetra</a>
+              </h1>
               <div className="grid sm:h-[60vh] grid-cols-12 ">
         <div className="left w-[100vw]  col-span-6 md:w-[30vw] p-4  ">
-        <h3 className="scroll-m-20 text-xl font-semibold tracking-tight ">Welcome Back! Log in to Unlock Your Legal Insights.
+        <h3 className="scroll-m-20 text-xl font-semibold tracking-tight ">Welcome Back! Log in to <span className="text-orange-500">Unlock</span> Your Legal Insights.
         </h3>
         <Form {...form} >
           <form onSubmit={form.handleSubmit(onSubmit)}
@@ -103,7 +105,7 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
         />
        <div className="flex ">
        <Button type="submit" disabled={isSubmitting}
-        className=" bg-[#1338BE] text-white">
+        className=" bg-orange-500 text-white">
           {
             isSubmitting?<>
             <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Please wait

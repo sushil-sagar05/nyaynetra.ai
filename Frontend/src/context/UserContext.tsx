@@ -8,13 +8,14 @@ type User = {
     firstname: string;
     lastname: string;
   };
-  username:string
-  token:string
+  username: string;
+  token: string;
 };
 
 type UserContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  loading: boolean; 
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -29,12 +30,16 @@ export const useUser = (): UserContextType => {
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      setLoading(false); 
+      return;
+    }
 
-   const response =  axios
+    axios
       .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -49,14 +54,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       })
       .catch((err) => {
         console.error("Failed to load user profile:", err);
-        toast(err.response.data.message)
+        toast(err.response?.data?.message || "Failed to load profile");
         setUser(null);
+      })
+      .finally(() => {
+        setLoading(false); 
       });
   }, []);
-  
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );

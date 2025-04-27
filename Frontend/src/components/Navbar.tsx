@@ -11,9 +11,9 @@ function Navbar() {
          <div className="col-span-7 sm:col-span-5 md:col-span-2  flex justify-start items-center ">
           <a href='/' className="font-bold text-3xl ">👁Nyaynetra</a>
       </div>
-      <div className="hidden col-span-7 sm:col-span-9 md:col-span-10 md:flex  gap-4 justify-end items-center">
-      <a href='/upload' className="font-bold text-3xl "><span className='flex gap-2'>Upload<Upload size={35}/></span></a>
-      <a href='/support' className="font-bold text-3xl "><span className='flex gap-2'>Contact<Mail size={35}/></span></a>
+      <div className="hidden  col-span-7 sm:col-span-9 md:col-span-10 md:flex  gap-8 justify-end items-center">
+      <a href='/upload' className="font-bold text-3xl "><span className='flex gap-4 '>Upload<Upload size={35}/></span></a>
+      {/* <a href='/support' className="font-bold text-3xl "><span className='flex gap-2'>Contact<Mail size={35}/></span></a> */}
       {
         user==null?(
           <a href='/login' className="font-bold text-3xl ">Login</a>

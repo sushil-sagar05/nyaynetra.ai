@@ -263,7 +263,7 @@ function Account_Settings() {
               className=' cursor-pointer'
               variant="outline" onClick={cancelConfirmation}>Cancel</Button>
               <Button
-              className='bg-blue-500 cursor-pointer'
+              className='bg-orange-500 cursor-pointer'
               onClick={confirmAndSave}>Confirm</Button>
             </div>
           </div>

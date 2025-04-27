@@ -39,7 +39,7 @@ function page() {
           <AppSidebar activeTab={activeTab} setActiveTab={setActiveTab} documentId={filename as string}  />
         </div>
         <div className='col-span-12  overflow-y-auto sm:col-span-7 '>
-        <Card className=' bg-white  text-black '>
+        <Card className='   text-black bg-[#f8f7f5]'>
           <CardContent className=''>
           <Tabs value={activeTab} onValueChange={setActiveTab} >
       <TabsList className=" justify-start gap-4 mb-4">
@@ -49,12 +49,12 @@ function page() {
         <TabsTrigger value="chat">Chat</TabsTrigger>
       </TabsList>
       <TabsContent value="Summary">
-        <Card className="sm:p-4 ">
+        <Card className="sm:p-4 bg-white text-black">
           <CardHeader>
             <CardTitle className="text-xl">Summary</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 ">
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+            <ul className="list-disc list-inside space-y-2  text-black">
               <li>
                 This agreement defines the responsibilities of both parties and
                 outlines the service-level expectations clearly.
@@ -72,7 +72,7 @@ function page() {
                 jurisdiction.
               </li>
             </ul>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+            <ul className="list-disc list-inside space-y-2 ">
               <li>
                 This agreement defines the responsibilities of both parties and
                 outlines the service-level expectations clearly.

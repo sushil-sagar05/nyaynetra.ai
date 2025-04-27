@@ -86,12 +86,12 @@ const ClientComponent = () => {
 
   return (
     <div className='h-full w-[100vw] bg-white'>
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl pl-6 p-4 text-black" >Upload Your Legal Files and Let Us Help You Make Informed Decisions</h1>
-      <h3 className="scroll-m-20 text-xl font-semibold tracking-tight pt-1 text-black pl-6">Focuses on empowerment and helping users make better legal decisions. </h3>
+      <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl pl-6 p-4 text-black" >Upload Your Legal Files and Let Us Help You Make <span className='text-orange-500'>Informed Decisions</span></h1>
+      <h3 className="scroll-m-20 text-xl font-md tracking-tight pt-1 text-black pl-6">Focuses on empowerment and helping users make better legal decisions. </h3>
       {
-        user?"":<h3 className="scroll-m-20 text-xl font-semibold tracking-tight pt-1 text-red-400 pl-6">You are uploading as a guest...<Button   
+        user?"":<h3 className="scroll-m-20 text-xl font-bold tracking-tight pt-1 text-red-600 pl-6">You are uploading as a guest...<Button   
         onClick={()=>router.push('/register')}        
-          className=' bg-[#1338BE] text-white m-2'>Sign In</Button>
+          className=' bg-orange-500 text-white m-2'>Sign In</Button>
       </h3>
 
       }
@@ -159,14 +159,14 @@ const ClientComponent = () => {
         </div>
        {user ===null && (
         <div className='  '>
-             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center text-black">
+             <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center text-black">
         Comparisons
       </h1>
             <section className="mt-3 px-4 sm:px-8 md:px-16 py-8">
   <div className="flex justify-center items-center w-full">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl bg-white shadow-md border-2 border-gray-500 border-dotted rounded-md p-4 sm:p-8">
       <div className="p-4">
-        <Card className="h-full">
+        <Card className="h-full bg-[#f8f7f5] text-black">
           <CardTitle className="text-center">Guest User</CardTitle>
           <CardContent className="flex flex-col sm:flex-row items-center gap-4">
             <Image
@@ -189,7 +189,7 @@ const ClientComponent = () => {
         </Card>
       </div>
       <div className="p-4">
-        <Card className="h-full">
+        <Card className="h-full bg-[#f8f7f5] text-black">
           <CardTitle className="text-center">Register User</CardTitle>
           <CardContent className="flex flex-col sm:flex-row items-center gap-4">
             <Image
