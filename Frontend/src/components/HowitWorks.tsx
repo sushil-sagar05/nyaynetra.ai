@@ -55,13 +55,13 @@ function HowitWorks() {
 
   return (
     <>
-      <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center text-black my-8">
+      <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center  my-8">
         How it Works
       </h1>
       <section className="px-4 sm:px-6 md:px-12 lg:px-20 py-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <div className="md:col-span-5">
-            <Sidebar collapsible={isMobile ? "offcanvas" : "none"} className="w-full bg-white text-black">
+            <Sidebar collapsible={isMobile ? "offcanvas" : "none"} className="w-full ">
               <SidebarContent>
                 <SidebarGroupContent>
                   <SidebarMenu className="space-y-4 p-4">
@@ -72,7 +72,7 @@ function HowitWorks() {
                             onClick={() => setActiveTab(item.title)}
                             className={`
                               flex flex-col items-start w-full text-left rounded-lg transition-all duration-300 
-                              ${activeTab === item.title ? 'bg-orange-500 shadow-lg' : 'bg-[#f8f7f5]'} 
+                              ${activeTab === item.title ? 'bg-orange-500 shadow-lg' : ''} 
                               hover:bg-orange-50 p-4
                             `}
                           >
@@ -94,7 +94,7 @@ function HowitWorks() {
             </Sidebar>
           </div>
           <div className="md:col-span-7">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full p-2">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className=" p-2">
               {items.map((item) => (
                 <TabsContent key={item.title} value={item.title} className="rounded-lg border-2 border-black bg-white p-4">
                   <Image
@@ -103,7 +103,7 @@ function HowitWorks() {
                     className="rounded-lg w-full h-auto object-cover"
                     layout="responsive"
                   />
-                  <h2 className="font-semibold text-black mt-4">{item.step}</h2>
+                  <h2 className="font-semibold  mt-4">{item.step}</h2>
                 </TabsContent>
               ))}
             </Tabs>

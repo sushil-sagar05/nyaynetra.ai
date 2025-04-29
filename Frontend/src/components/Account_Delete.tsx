@@ -15,11 +15,13 @@ import { Button } from "@/components/ui/button";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"
+import { useUser } from "@/context/UserContext";
 interface ErrorResponse {
     message: string;
   }
 
 export default function PasswordConfirmationDialog() {
+  const { user } = useUser();  
     const router = useRouter();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showError, setShowError] = useState(false);
@@ -42,7 +44,7 @@ export default function PasswordConfirmationDialog() {
            if(response.status===200){
              setConfirmPassword(confirmPassword)
              toast(response.data.message)
-             router.push('/login')
+             router.push(`/settings/${user?.username}/account-delete`);
            }
            setConfirmPassword("");
        } catch (error) {

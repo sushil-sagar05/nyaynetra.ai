@@ -36,7 +36,7 @@ function AutoSave() {
 
   return (
     <div>
-      <Card className="h-full flex justify-center mt-2 bg-white text-black">
+      <Card className="h-full flex justify-center mt-2 ">
         <CardContent className="flex gap-8 items-center">
           <div className="flex gap-4 items-center w-full">
             <p className="font-bold">Auto Save</p>

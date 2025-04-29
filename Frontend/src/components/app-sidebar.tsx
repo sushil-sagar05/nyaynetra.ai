@@ -74,11 +74,11 @@ interface AppSidebarProps {
 
   return (
     <div className="outer h-full ">
-    <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md bg-white text-black ">
+    <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md  ">
       <SidebarContent > 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-2xl text-black">Agreement.pdf</SidebarGroupLabel>
-          <SidebarGroupLabel className="text-black">Analyzed</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-2x">Agreement.pdf</SidebarGroupLabel>
+          <SidebarGroupLabel>Analyzed</SidebarGroupLabel>
           <SidebarGroupContent>
           <SidebarMenu>
               {items.map((item) => (

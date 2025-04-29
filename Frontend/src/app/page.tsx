@@ -9,7 +9,7 @@ import CTASection from '@/components/CTASection'
 import FAQ from '@/components/FAQ'
 function page() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen ">
       <HeroSection/>
       <section className="  p-8 ">
         <FeaturesSection />

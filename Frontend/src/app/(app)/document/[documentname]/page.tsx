@@ -94,12 +94,12 @@ function page() {
 
 
   return (
-    <div className=' w-full  bg-white'>
+    <div className=' w-full  '>
    <div className=" flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4">
-  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-black">
+  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ">
     Viewing: {document?.filename+'.'+document?.fileType!}
   </h1>
-  <div className="flex flex-wrap gap-3 text-black items-center">
+  <div className="flex flex-wrap gap-3  items-center">
     <span className="flex items-center gap-2">
       Share <Share2 />
     </span>
@@ -137,7 +137,7 @@ function page() {
            
         </div>
         <div className='col-span-12 sm:col-span-9  '>
-      <Card className='h-full w-full  text-white '>
+      <Card className='h-full w-full   '>
           <CardContent className=''>
           <Tabs  className="w-full">
       <TabsList defaultValue={'Summary'} className="w-full justify-start gap-4 mb-4 space-x-4 ">
@@ -232,8 +232,3 @@ function page() {
 }
 
 export default page
-{/* <div className='col-span-2  p-3 min-h-[100px]'>
-               <span className='flex gap-2'>share <Share2/></span>
-               <span className=''>Save Document <Switch/></span>
-               <Button>Delete Document</Button>
-               </div> */}

@@ -31,16 +31,16 @@ function page() {
   }, [filename])
   return (
     <main className='min-h-screen min-w-full'>
-    <div className='bg-white min-h-screen ' >
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl pl-6 p-4 text-black" >Unlock Critical Insights: AI Legal Document Analysis in Action</h1>
+    <div className=' min-h-screen ' >
+      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl pl-6 p-4 " >Unlock Critical Insights: AI Legal Document Analysis in Action</h1>
       <Separator className='my-1' />
-      <div className=" sm:grid sm:grid-cols-12 overflow-y-auto sm:h-[75vh]">
+      <div className=" sm:grid sm:grid-cols-12 overflow-y-auto ">
         <div className='hidden sm:block sm:col-span-2 '>
           <AppSidebar activeTab={activeTab} setActiveTab={setActiveTab} documentId={filename as string}  />
         </div>
         <div className='col-span-12  overflow-y-auto sm:col-span-7 '>
-        <Card className='   text-black bg-[#f8f7f5]'>
-          <CardContent className=''>
+        <Card >
+          <CardContent >
           <Tabs value={activeTab} onValueChange={setActiveTab} >
       <TabsList className=" justify-start gap-4 mb-4">
         <TabsTrigger value="Summary">Summary</TabsTrigger>
@@ -49,12 +49,12 @@ function page() {
         <TabsTrigger value="chat">Chat</TabsTrigger>
       </TabsList>
       <TabsContent value="Summary">
-        <Card className="sm:p-4 bg-white text-black">
+        <Card className="sm:p-4 ">
           <CardHeader>
             <CardTitle className="text-xl">Summary</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 ">
-            <ul className="list-disc list-inside space-y-2  text-black">
+            <ul className="list-disc list-inside space-y-2  ">
               <li>
                 This agreement defines the responsibilities of both parties and
                 outlines the service-level expectations clearly.
@@ -129,8 +129,8 @@ function page() {
         </Card>
         </div>
        <div className='hidden sm:block sm:col-span-3 '>
-        <Card className='h-full bg-white'>
-          <CardTitle className='text-black p-1 flex justify-around'><span className='flex gap-2'><WrapText/>Agreement.pdf</span><span><Download/></span></CardTitle>
+        <Card className='h-full '>
+          <CardTitle className=' p-1 flex justify-around'><span className='flex gap-2'><WrapText/>Agreement.pdf</span><span><Download/></span></CardTitle>
           <CardContent>
           <ScrollArea className="h-[375px]  rounded-md border p-4">
         

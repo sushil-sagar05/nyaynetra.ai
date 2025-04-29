@@ -127,12 +127,3 @@ function SavedDocument() {
 }
 
 export default SavedDocument
-{/* <SheetTitle className='cursor-pointer' onClick={()=>router.push(`/document/${documentname}`)}>Agreement.pdf</SheetTitle>
-  <SheetDescription>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel reprehenderit eligendi accusamus molestiae inventore officia omnis qui voluptate nostrum iste, veniam ipsum, officiis fugit obcaecati dolores esse a aut incidunt.
-  Eveniet culpa sed nihil sequi ducimus tempora voluptate amet sit autem ab quo dolorem officia pariatur molestiae non ratione voluptas veritatis in natus quia voluptates, ut debitis commodi! Expedita, unde.
-  <SheetFooter>
-  <Delete onConfirm={() => {
-    console.log("Document deleted!")
-  }} />
-</SheetFooter>
-  </SheetDescription> */}

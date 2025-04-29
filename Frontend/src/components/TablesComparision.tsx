@@ -10,7 +10,7 @@ import Image from 'next/image'
 function ComparisonTable() {
   return (
     <>
-      <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center text-black">
+      <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center ">
         Comparisons
       </h1>
       <section className="mt-3 px-4 sm:px-8 md:px-12 py-8">
@@ -18,7 +18,7 @@ function ComparisonTable() {
   <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl bg-off-white shadow-md border-2 border-gray-500 border-dotted rounded-md p-4">
   <div className="hidden md:block absolute top-6 bottom-6  left-1/2 -translate-x-1/2 w-1 border-l-2 border-dotted border-orange-500"></div>
   <div className="p-2">
-    <Card className="h-full bg-[#f8f7f5] text-black">
+    <Card className="h-full  ">
       <CardTitle className="text-center">Traditional</CardTitle>
       <CardContent className="flex flex-col sm:flex-row items-center gap-4">
         <Image
@@ -40,7 +40,7 @@ function ComparisonTable() {
     </Card>
   </div>
   <div className="p-2">
-    <Card className="h-full bg-[#f8f7f5] text-black">
+    <Card className="h-full  ">
       <CardTitle className="text-center">NyayNetra</CardTitle>
       <CardContent className="flex flex-col sm:flex-row items-center gap-4">
         <Image

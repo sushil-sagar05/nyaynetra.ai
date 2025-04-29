@@ -1,49 +1,54 @@
-'use client'
-import React, { useState } from 'react'
-import Setting_sidebar from '@/components/Settings_sidebar';
-import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
-import { ChevronRight, User } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
-import { Tabs,TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+'use client';
 
+import React, { useState, useEffect } from 'react';
+import Setting_sidebar from '@/components/Settings_sidebar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Account_Settings from '@/components/Account_Settings';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
-function page() {
-    const user =useUser()
-    const router = useRouter();
-    if(!user){
-     return  router.push('/login')
+
+function Page() {
+  const { user } = useUser();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState('Account Settings');
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
     }
-    const [activeTab, setActiveTab] = useState("Account Settings")
+  }, [user, router]);
+
+  const tabs = [
+    { label: 'Account Settings', content: <Account_Settings /> },
+    { label: 'Preferences', content: <h1 className="text-3xl font-semibold">Preferences</h1> },
+    { label: 'Privacy', content: <h1 className="text-3xl font-semibold">Privacy</h1> },
+    { label: 'Help', content: <h1 className="text-3xl font-semibold">Help</h1> },
+  ];
+
   return (
-    <div className=" sm:grid sm:grid-cols-12 overflow-y-auto h-[85vh] ">
-        <div className='hidden sm:block sm:col-span-2  '>
-           <Setting_sidebar activeTab={activeTab} setActiveTab={setActiveTab}/>
-        </div>
-        <div className='col-span-12   overflow-y-auto sm:col-span-10 text-black bg-white'>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className=" justify-start gap-4 mb-4">
-      <TabsContent value="Account Settings">
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Account Settings</h1>
-            <Account_Settings />
-          </TabsContent>
+    <div className="min-h-screen grid grid-cols-1 sm:grid-cols-12">
+      <aside className="hidden sm:block sm:col-span-2 h-full border-r">
+        <Setting_sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      </aside>
+      <main className="col-span-12 sm:col-span-10 p-4 overflow-y-auto">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="flex flex-wrap gap-2 sm:ml-4 mb-6">
+            {tabs.map((tab) => (
+              <TabsTrigger key={tab.label} value={tab.label}>
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-          <TabsContent value="Prefrences">
-            <h1 className="text-3xl font-semibold">Prefrences</h1>
-          </TabsContent>
-
-          <TabsContent value="Privacy">
-            <h1 className="text-3xl font-semibold">Privacy</h1>
-          </TabsContent>
-
-          <TabsContent value="Help">
-            <h1 className="text-3xl font-semibold">Help</h1>
-          </TabsContent>
+          {tabs.map((tab) => (
+            <TabsContent key={tab.label} value={tab.label}>
+              {tab.content}
+            </TabsContent>
+          ))}
         </Tabs>
-        </div>
-        </div>
-  )
+      </main>
+    </div>
+  );
 }
 
-export default page
+export default Page;

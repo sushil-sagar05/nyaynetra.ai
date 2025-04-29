@@ -1,42 +1,48 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight, Pencil, User } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Input } from './ui/input';
+import { useTheme } from 'next-themes';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from '@/components/ui/accordion';
 import axios from 'axios';
-import { toast, useSonner } from "sonner"
-import Account_Delete from './Account_Delete'
+import { toast } from 'sonner';
+import Account_Delete from './Account_Delete';
 import AutoSave from './AutoSave';
 import { useUser } from '@/context/UserContext';
+
 function Account_Settings() {
   const inputUsernameRef = useRef<HTMLInputElement>(null);
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
-  const {user} = useUser()
-  useEffect(() => {
-    if (user?.username) {
-      setUsername(user.username);
-    }
-  }, [user]);
-  const [username, setUsername] = useState("");
+  const { theme, setTheme } = useTheme();
+  const { user } = useUser();
+
+  const [username, setUsername] = useState('');
   const [email, setemail] = useState(user?.email);
   const [password, setPassword] = useState('password123');
-  const [tempUsername, setTempUsername] = useState(username);
+  const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState(email);
   const [tempPassword, setTempPassword] = useState('');
   const [editingField, setEditingField] = useState<"username" | "email" | "password" | null>(null);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [pendingField, setPendingField] = useState<"username" | "email" | "password" | null>(null);
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  useEffect(() => {
+    if (user?.username) {
+      setUsername(user.username);
+      setTempUsername(user.username);
+    }
+  }, [user]);
 
   const handleEdit = (field: typeof editingField) => {
     setEditingField(field);
@@ -59,67 +65,52 @@ function Account_Settings() {
     setShowPasswordConfirm(true);
   };
 
-
-  
-
-  const confirmAndSave = async() => {
+  const confirmAndSave = async () => {
     if (confirmPassword.length < 1) return;
 
-   try {
-    const token = localStorage.getItem('token');
-    if(pendingField==='username'){
-       const response = await axios.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-username`,
-        {
-            newUsername:tempUsername,
-            currPassword:confirmPassword
-        },
-           { headers: {
-              Authorization: `Bearer ${token}`,
-            }}
-       )
-      if(response.status===200){
-        setUsername(tempUsername)
-        toast(response.data.message)
+    try {
+      const token = localStorage.getItem('token');
+      let response;
+
+      if (pendingField === 'username') {
+        response = await axios.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-username`, {
+          newUsername: tempUsername,
+          currPassword: confirmPassword,
+        }, { headers: { Authorization: `Bearer ${token}` } });
+        if (response.status === 200) {
+          setUsername(tempUsername);
+          toast(response.data.message);
+        }
       }
-    }
-    if(pendingField==='email'){
-        const response = await axios.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-email`,
-            {
-                newemail:tempEmail,
-                currPassword:confirmPassword
-            },
-               { headers: {
-                  Authorization: `Bearer ${token}`,
-                }}
-           )
-          if(response.status===200){
-            setemail(tempEmail)
-            toast(response.data.message)
-          }
-    }
-    if(pendingField==='password'){
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-password`,
-            {
-                newPassword:tempPassword,
-                oldPassword:confirmPassword
-            },
-               { headers: {
-                  Authorization: `Bearer ${token}`,
-                }}
-           )
-          if(response.status===200){
-            setPassword(tempPassword)
-            toast(response.data.message)
-          }
-    }
-    setEditingField(null);
-    setShowPasswordConfirm(false);
-    setConfirmPassword('');
-   } catch (error) {
-    
-   }
 
+      if (pendingField === 'email') {
+        response = await axios.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-email`, {
+          newemail: tempEmail,
+          currPassword: confirmPassword,
+        }, { headers: { Authorization: `Bearer ${token}` } });
+        if (response.status === 200) {
+          setemail(tempEmail);
+          toast(response.data.message);
+        }
+      }
 
+      if (pendingField === 'password') {
+        response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-password`, {
+          newPassword: tempPassword,
+          oldPassword: confirmPassword,
+        }, { headers: { Authorization: `Bearer ${token}` } });
+        if (response.status === 200) {
+          setPassword(tempPassword);
+          toast(response.data.message);
+        }
+      }
+
+      setEditingField(null);
+      setShowPasswordConfirm(false);
+      setConfirmPassword('');
+    } catch (error) {
+      toast("Error updating information. Please try again.");
+    }
   };
 
   const cancelConfirmation = () => {
@@ -127,144 +118,134 @@ function Account_Settings() {
     setConfirmPassword('');
   };
 
-
-
   return (
-    <div className="card p-8 w-[75vw]">
-      <div className="inner p-6 h-full w-[35vw]">
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>
-              <Card className="bg-white text-black">
-                <CardContent className="flex items-center justify-between p-4">
-                  <div className="flex gap-4 items-center">
-                    <User size={40} className="border-2 rounded-full" />
-                    <div>
-                      <p className="font-bold">{username}</p>
-                      <p className="text-sm text-muted">{email}</p>
+    <div className="w-full px-4 md:px-8 py-6">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+        <div className="w-full">
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item-1">
+              <AccordionTrigger>
+                <Card>
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex gap-4 items-center">
+                      <User size={40} className="border-2 rounded-full" />
+                      <div>
+                        <p className="font-bold">{username}</p>
+                        <p className="text-sm text-muted">{email}</p>
+                      </div>
                     </div>
-                  </div>
+                    <ChevronRight />
+                  </CardContent>
+                </Card>
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4 mt-4">
+                <Card className="p-4 border-dotted border-2">
+                  {editingField === 'username' ? (
+                    <div className="space-y-2">
+                      <Input
+                        ref={inputUsernameRef}
+                        value={tempUsername}
+                        onChange={(e) => setTempUsername(e.target.value)}
+                      />
+                      <div className="flex gap-2 justify-end">
+                        <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                        <Button onClick={() => handleSaveWithConfirmation("username")}>Save</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <p className="font-bold">{username}</p>
+                      <Pencil size={16} className="cursor-pointer" onClick={() => handleEdit("username")} />
+                    </div>
+                  )}
+                </Card>
+                <Card className="p-4 border-dotted border-2">
+                  {editingField === 'email' ? (
+                    <div className="space-y-2">
+                      <Input
+                        ref={inputEmailRef}
+                        value={tempEmail}
+                        onChange={(e) => setTempEmail(e.target.value)}
+                      />
+                      <div className="flex gap-2 justify-end">
+                        <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                        <Button onClick={() => handleSaveWithConfirmation("email")}>Save</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <p>{email}</p>
+                      <Pencil size={16} className="cursor-pointer" onClick={() => handleEdit("email")} />
+                    </div>
+                  )}
+                </Card>
+                <Card className="p-4 border-dotted border-2">
+                  {editingField === 'password' ? (
+                    <div className="space-y-2">
+                      <Input
+                        ref={inputPasswordRef}
+                        type="password"
+                        placeholder="New password"
+                        value={tempPassword}
+                        onChange={(e) => setTempPassword(e.target.value)}
+                      />
+                      <div className="flex gap-2 justify-end">
+                        <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                        <Button onClick={() => handleSaveWithConfirmation("password")}>Save</Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <p>••••••••</p>
+                      <Pencil size={16} className="cursor-pointer" onClick={() => handleEdit("password")} />
+                    </div>
+                  )}
+                </Card>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold tracking-tight">Appearance</h3>
+            <div className="mt-4 space-y-4">
+              <Card>
+                <CardContent className="flex justify-between items-center p-4">
+                  <p className="font-bold">English (en)</p>
                   <ChevronRight />
                 </CardContent>
               </Card>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 mt-4">
-              <Card className="p-4 bg-white border-dotted border-2 border-black text-black">
-                {editingField === 'username' ? (
-                  <div className="space-y-2">
-                    <Input
-                      ref={inputUsernameRef}
-                      value={tempUsername}
-                      onChange={(e) => setTempUsername(e.target.value)}
-                    />
-                    <div className="flex gap-2 justify-end">
-                      <Button variant="outline" onClick={handleCancel}>Cancel</Button>
-                      <Button onClick={() => handleSaveWithConfirmation("username")}>Save</Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <p className="font-bold">{username}</p>
-                    <Pencil size={16} className="cursor-pointer" onClick={() => handleEdit("username")} />
-                  </div>
-                )}
+
+              <Card>
+                <CardContent className="flex justify-between items-center p-4">
+                  <p className="font-bold">Dark Mode</p>
+                  <Switch
+                    checked={theme === 'dark'}
+                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                  />
+                </CardContent>
               </Card>
-              <Card className="p-4 bg-white border-dotted border-2 border-black text-black">
-                {editingField === 'email' ? (
-                  <div className="space-y-2">
-                    <Input
-                      ref={inputEmailRef}
-                      value={tempEmail}
-                      onChange={(e) => setTempEmail(e.target.value)}
-                    />
-                    <div className="flex gap-2 justify-end">
-                      <Button variant="outline" onClick={handleCancel}>Cancel</Button>
-                      <Button onClick={() => handleSaveWithConfirmation("email")}>Save</Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <p className="">{email}</p>
-                    <Pencil size={16} className="cursor-pointer" onClick={() => handleEdit("email")} />
-                  </div>
-                )}
-              </Card>
-              <Card className="p-4 bg-white border-dotted border-2 border-black text-black">
-                {editingField === 'password' ? (
-                  <div className="space-y-2">
-                    <Input
-                      ref={inputPasswordRef}
-                      type="password"
-                      placeholder="New password"
-                      value={tempPassword}
-                      onChange={(e) => setTempPassword(e.target.value)}
-                    />
-                    <div className="flex gap-2 justify-end">
-                      <Button variant="outline" onClick={handleCancel}>Cancel</Button>
-                      <Button onClick={() => handleSaveWithConfirmation("password")}>Save</Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <p className="">••••••••</p>
-                    <Pencil size={16} className="cursor-pointer" onClick={() => handleEdit("password")} />
-                  </div>
-                )}
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <h3 className="text-xl font-semibold tracking-tight pt-4">Appearance</h3>
-        <div className="card1  mt-2 ">
-                    <Card className='h-full  flex justify-center bg-white text-black '>
-                    <CardContent className='flex gap-8' >
-                     <div className='w-full flex gap-8 '>
-                       <span >
-                        <p className='font-bold'>English (en)</p>
-                       </span>
-                       </div>
-                      <div>
-                      <ChevronRight/>
-                      </div>
-                    </CardContent>
-                    </Card>
-                </div>
-                <div className="card1 mt-2 ">
-                    <Card className='h-full  flex justify-center bg-white text-black '>
-                    <CardContent className='flex gap-8' >
-                     <div className='w-full flex gap-8 '>
-                       <span >
-                        <p className='font-bold'>Dark Mode</p>
-                       </span>
-                       </div>
-                      <div>
-                      <Switch></Switch>
-                      </div>
-                    </CardContent>
-                    </Card>
-                    <AutoSave/>
-                </div>
-        <div className="mt-6">
-          <Account_Delete />
+
+              <AutoSave />
+            </div>
+
+            <div className="mt-6">
+              <Account_Delete />
+            </div>
+          </div>
         </div>
       </div>
       {showPasswordConfirm && (
-        <div className="fixed inset-0 z-10 bg-opacity-100 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-md shadow-lg w-[28vw] border-2 border-rounded border-black space-y-4">
-            <h2 className="font-bold text-lg">Confirm your password</h2>
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-4">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-md shadow-lg w-full max-w-md">
+            <h2 className="font-bold text-lg mb-4">Confirm your password</h2>
             <Input
               type="password"
               placeholder="Enter password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <div className="flex justify-end gap-2">
-              <Button 
-              className=' cursor-pointer'
-              variant="outline" onClick={cancelConfirmation}>Cancel</Button>
-              <Button
-              className='bg-orange-500 cursor-pointer'
-              onClick={confirmAndSave}>Confirm</Button>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={cancelConfirmation}>Cancel</Button>
+              <Button className="bg-orange-500" onClick={confirmAndSave}>Confirm</Button>
             </div>
           </div>
         </div>

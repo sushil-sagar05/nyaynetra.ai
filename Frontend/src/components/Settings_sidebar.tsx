@@ -58,11 +58,11 @@ function Setting_sidebar({ activeTab, setActiveTab}: AppSidebarProps) {
    
     }
   return (
-    <div className="outer h-full  w-[20vw] bg-[#f8f7f5] ">
-    <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md bg-[#f8f7f5] text-black">
+    <div className="outer h-full">
+    <Sidebar collapsible={isMobile ? "offcanvas" : "none"}  className=" rounded-md ">
       <SidebarContent > 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-2xl text-black">Settings</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-2xl ">Settings</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
               {items.map((item) => (

@@ -61,7 +61,7 @@ function Page() {
   }, [user])
 
   return (
-    <main className="w-full min-h-screen bg-white text-black">
+    <main className="w-full min-h-screen ">
       <section className="p-6 sm:p-8">
         <div className="grid grid-cols-12 gap-4 items-center">
           <div className="col-span-12 sm:col-span-9">
@@ -76,7 +76,7 @@ function Page() {
             <SavedDocument />
             <Button
               onClick={() => router.push(`/settings/${user?.username}`)}
-              className="p-3 gap-2 text-black flex items-center rounded-full shadow-md hover:bg-gray-100 cursor-pointer"
+              className="p-3 gap-2  flex items-center rounded-full shadow-md hover:bg-gray-100 cursor-pointer"
             >
               <Settings />
             </Button>
@@ -85,7 +85,7 @@ function Page() {
       </section>
       <section className="grid grid-cols-12 gap-4 p-6 sm:p-8">
         <div className="col-span-12 sm:col-span-4">
-          <Card className="h-full bg-orange-500 text-black">
+          <Card className="h-full bg-orange-500 ">
             <CardHeader>
               <Upload size={80} />
               <CardTitle className="text-2xl sm:text-3xl mt-2">Documents Uploaded</CardTitle>
@@ -94,7 +94,7 @@ function Page() {
           </Card>
         </div>
         <div className="col-span-12 sm:col-span-4">
-          <Card className="h-full bg-[#f8f7f5] text-black">
+          <Card className="h-full  ">
             <CardHeader>
               <ChartColumn size={80} />
               <CardTitle className="text-2xl sm:text-3xl mt-2">Total Analysis</CardTitle>
@@ -103,7 +103,7 @@ function Page() {
           </Card>
         </div>
         <div className="col-span-12 sm:col-span-4">
-          <Card className="h-full bg-[#f8f7f5] text-black">
+          <Card className="h-full  ">
             <CardHeader>
               <TriangleAlert size={80} />
               <CardTitle className="text-2xl sm:text-3xl mt-2">Risk Flags</CardTitle>
@@ -123,7 +123,7 @@ function Page() {
             <div className="overflow-x-auto">
               <Table className="min-w-full border-2 border-gray-200 shadow-md rounded-md">
                 <thead>
-                  <TableRow className="font-semibold border border-gray-200 bg-gray-50">
+                  <TableRow className="font-semibold border border-gray-200 ">
                     <TableCell>Name</TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell>Size</TableCell>
@@ -135,7 +135,7 @@ function Page() {
                     <TableRow
                       key={doc.id}
                       onClick={() => router.push(`/document/${doc._id}`)}
-                      className="border border-gray-200 cursor-pointer hover:bg-gray-50 transition"
+                      className="border border-gray-200 cursor-pointer  transition"
                     >
                       <TableCell>{doc.filename}</TableCell>
                       <TableCell>{new Date(doc.createdAt).toLocaleDateString()}</TableCell>
