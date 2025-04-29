@@ -9,6 +9,7 @@ import crypto from 'crypto'
 import SettingModel from "../models/settings.model";
 import userController from "./user.controller";
 import { saveUserDocument } from "../Services/save.service";
+import { guestrateLimiter } from "../middlewares/rate-limiter";
 interface authRequest extends Request{
     user?:User
 }
@@ -86,6 +87,9 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             if(retreivedUserSetting?.autoSave===true){
                 await saveUserDocument(user, savedDocument.id);
             }
+            if (!user) {
+                await guestrateLimiter.consume(req.ip as string); 
+            }
              res.status(200)
             .json(new ApiResponse(201,savedDocument,"Document Created (from existing)"))
             return
@@ -112,19 +116,39 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
                 fs.unlinkSync(filePath);
                 throw new ApiError(400,"Something went wrong while saving document!")
             }
+            if (!user) {
+                await guestrateLimiter.consume(req.ip as string); // Apply rate limit for guests
+              }
             const retreivedUserSetting =   await SettingModel.findOne({userId:user})
             if(retreivedUserSetting?.autoSave===true){
                 await saveUserDocument(user, savedDocument.id);
             }
             res.status(200)
         .json(new ApiResponse(201,savedDocument,"Document Created"))
+
         setTimeout(() => {
-            if(fs.existsSync(filePath)){
-                fs.unlinkSync(filePath)
+            console.log(`Checking if the file exists at ${filePath}`);  // Debug: Check file path
+            if (fs.existsSync(filePath)) {
+              console.log(`File found, deleting ${filePath}`);
+              try {
+                fs.unlinkSync(filePath);
+                console.log('File deleted successfully');
+              } catch (error) {
+                console.error('Error deleting file:', error);  // Error logging
+              }
+            } else {
+              console.log('File does not exist or already deleted');
             }
-        }, 2*60*1000);
+          }, 1 * 60 * 1000); 
     }  catch (error:any) {
         console.error("Error details: ", error); 
+        if (error.msBeforeNext) {
+            res.status(429).json({
+              success: false,
+              message: "Upload limit reached. Please wait 1 hour or register.",
+            });
+            return
+          }
         if (error instanceof ApiError) {
             res.status(error.statusCode).json({ success: false, message: error.message });
         } else {

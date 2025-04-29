@@ -2,6 +2,8 @@ import cron from 'node-cron'
 import UserModel from '../models/user.model'
 import DocumentModel from '../models/document.model'
 import { deleteFromCloudinary } from '../utils/cloudinary';
+import fs from 'fs';
+import path from 'path';
 export const ScheduledDeletion = async()=>{
 try {
   const retreivedDocument =  await DocumentModel.find({
@@ -59,6 +61,38 @@ export const DeleteDeactivateUser = async()=>{
         console.log("error deleting user by cron",error)
     }
 }
+export const ScheduledDeletionforMulter = async()=>{
+const temp_Upload_Dir = path.join('./public/temp');
+const file_Expire_Time = 5*60*1000;
+    fs.readdir(temp_Upload_Dir, (err, files) => {
+      if (err) {
+        return console.error('Error reading temp upload dir:', err);
+      }
+  
+      const now = Date.now();
+  
+      files.forEach((file) => {
+        const filePath = path.join(temp_Upload_Dir, file);
+        fs.stat(filePath, (err, stats) => {
+          if (err) {
+            return console.error(' Error reading file stats:', err);
+          }
+  
+          const fileAge = now - stats.mtime.getTime();
+          if (fileAge > file_Expire_Time) {
+            fs.unlink(filePath, (err) => {
+              if (err) {
+                console.error(` Failed to delete ${file}:`, err);
+              } else {
+                console.log(` Deleted temp file: ${file}`);
+              }
+            });
+          }
+        });
+      });
+    });
+}
 
 cron.schedule("0 0 * * *",ScheduledDeletion)
 cron.schedule("0 1 * * *",DeleteDeactivateUser)
+cron.schedule("* * * * *",ScheduledDeletionforMulter)

@@ -8,6 +8,8 @@ import mongoose from "mongoose";
 import { deleteFromCloudinary } from "../utils/cloudinary";
 import SettingModel from "../models/settings.model";
 import { saveUserDocument } from "../Services/save.service";
+import jwt from 'jsonwebtoken'
+import { authLimiter } from "../middlewares/rate-limiter";
 interface authRequest extends Request{
     user?:User
 }
@@ -61,7 +63,7 @@ const register = async(req:Request,res:Response)=>{
         httpOnly:true,
         secure:true,
         sameSite:"none",
-         maxAge:7 * 24 * 60 * 60 * 1000,
+         maxAge:1 * 60 * 60 * 1000,
      }
     res.status(201)
   .cookie("token", token, options)
@@ -85,10 +87,12 @@ try {
         $or:[{email:identifier},{username:identifier}]
     })
     if(!user){
+        await authLimiter.consume(req.ip as string)
         throw new ApiError(409,"User does not exist")
     }
     const isPasswordValid = await user.comparePassword(password)
     if(!isPasswordValid){
+        await authLimiter.consume(req.ip as string)
         throw new ApiError(409,"Password is incorrect,Try again")
     }
     if(user.isdeleted===true&&user.deletionRequestedAt!< new Date()){
@@ -100,7 +104,8 @@ try {
     const loggedInUser = await UserModel.findById(user._id).select('-password -refreshToken')
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     }
      res.status(201)
     .cookie("token",accessToken,options)
@@ -114,7 +119,14 @@ try {
             "User logged In Successfully"
         )
     )
-} catch (error) {
+} catch (error:any) {
+    if (error.msBeforeNext) {
+        res.status(429).json({
+         success: false,
+         message: 'Too many failed login attempts. Try again after 10 min.',
+       });
+       return
+   }
     if (error instanceof ApiError) {
         res.status(error.statusCode).json({ success: false, message: error.message });
         return;
@@ -147,6 +159,43 @@ const logout = async(req:authRequest,res:Response)=>{
     } catch (error) {
         console.log(error)
     }
+}
+const refreshAccessToken = async(req:authRequest,res:Response,next:NextFunction)=>{
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+    if(!incomingRefreshToken) {
+        throw new ApiError(401, "unathorized request")
+    }
+   try {
+    const decodedToken = jwt.verify(
+        incomingRefreshToken,
+        process.env.REFRESH_TOKEN_SECRET!
+    ) as { _id: string };
+    const user = await UserModel.findById(decodedToken?._id)
+    if(!user) {
+        throw new ApiError(401, "Invalid refresh token")
+    }
+    if (incomingRefreshToken !== user?.refreshToken) {
+        throw new ApiError(401, "Refresh Token is expired or used")
+    }
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+    const {accessToken,refreshToken} = await  generateAccessandRefreshToken(user._id.toString())
+    res
+      .status(200)
+      .cookie("accessToken",accessToken,options)
+      .cookie("accessToken",refreshToken,options)
+      .json(
+        new ApiResponse(
+            200,
+            {accessToken,refreshToken},
+            "Access token generated"
+        )
+      )
+   } catch (error) {
+    next(error)
+   }
 }
 const saveDocument=async(req:authRequest,res:Response)=>{
     const user = req.user

@@ -3,6 +3,7 @@ import { NextFunction,Response,Request } from "express";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { User } from "../models/user.model";
+import { settingsLimiter } from "../middlewares/rate-limiter";
 interface authRequest extends Request{
     user?:User
 }
@@ -38,10 +39,18 @@ const updateSettings=async(req:authRequest,res:Response,next:NextFunction)=>{
         if(!UpdatedSetting){
             throw new ApiError(400,"Something went wrong in updating setting")
         }
+        await settingsLimiter.consume(req.user?.id)
         res.status(200)
         .json(new ApiResponse(200,UpdatedSetting,"Setting Updated Successfully"))
 
-    } catch (error) {
+    } catch (error:any) {
+        if (error.msBeforeNext) {
+             res.status(429).json({
+              success: false,
+              message: 'Settings can only be updated once every 7 days.',
+            });
+            return
+        }
         next(error)
     }
 }
