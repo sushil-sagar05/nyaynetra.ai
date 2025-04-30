@@ -9,12 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Loader2, Upload,X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useForm } from "react-hook-form"
-import { Label } from '@/components/ui/label';
-import axios from 'axios';
 import { toast } from 'sonner';
 import { useRouter } from "next/navigation"
 import traditionals from '../../../../public/Questions-rafiki.png'
 import New from '../../../../public/Mention-bro.png'
+import api from '@/lib/api';
 interface UploadFormData {
   file:FileList;
   public:boolean;
@@ -57,17 +56,20 @@ const ClientComponent = () => {
       setisSubmitting(true);
       const formData = new FormData();
       formData.append('document', SelectedFile);
-    try {
-      const token = localStorage.getItem('token')
-      const route = user?'/document/upload':'/document/guest/upload'
-     const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}${route}`,formData,{
-        headers:{
-          ...(user  ? { Authorization: `Bearer ${token}` } : {}),
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-     
-      const {_id} = response.data.data
+      try {
+        const route = user ? '/document/upload' : '/document/guest/upload';
+      
+        const response = await api.post(
+          `${process.env.NEXT_PUBLIC_Backend_Url}${route}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+      
+        const { _id } = response.data.data;
       if(response.status===200)
       {
       router.push(`/analysis/${_id}`)

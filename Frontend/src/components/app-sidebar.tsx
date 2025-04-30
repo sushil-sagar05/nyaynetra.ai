@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import api from "@/lib/api";
 interface AppSidebarProps {
   documentId: string | string[] | undefined 
   activeTab: string
@@ -56,15 +57,7 @@ interface AppSidebarProps {
           return
         }
         try {
-          const token = localStorage.getItem('token')
-          console.log(token)
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${documentId}/save-document`,{},{
-            headers:{
-              Authorization: `Bearer ${token}` 
-            },
-          
-          })
-          console.log("Document saved:", response.data)
+          const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${documentId}/save-document`,{})
           toast(response.data.data)
           setisSaved(true)
         } catch (error) {

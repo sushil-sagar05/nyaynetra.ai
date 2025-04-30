@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Card, CardContent } from "./ui/card";
 import { Switch } from "./ui/switch";
-import axios from "axios";
+import api from "@/lib/api";
+import{AxiosError} from "axios";
 import { toast } from "sonner";
-
+interface ErrorResponse {
+  message: string;
+}
 function AutoSave() {
   const [isAutoSave, setIsAutoSave] = useState(false);
 
@@ -11,26 +14,21 @@ function AutoSave() {
     setIsAutoSave(checked); 
 
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await axios.patch(
+    const response = await api.patch(
         `${process.env.NEXT_PUBLIC_Backend_Url}/settings/update-settings`,
         {
             autoSave: checked, 
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
     );
     if(response.status===200){
        toast(response.data.message) 
     }
-
-      console.log("AutoSave updated:", response.data);
     } catch (error) {
       console.error("Failed to update AutoSave:", error);
+      const axiosError = error as AxiosError<ErrorResponse>;
+        let errorMessage= axiosError.response?.data.message;
+        toast(errorMessage)
+
     }
   };
 

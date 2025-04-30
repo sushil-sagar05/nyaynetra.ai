@@ -14,6 +14,7 @@ import axios from 'axios'
 import { Button } from '@/components/ui/button'
 import emptyPhoto from '../../../../../public/Empty-bro.png'
 import Image from 'next/image'
+import api from '@/lib/api'
 
 interface Document {
   id: string
@@ -45,13 +46,7 @@ function Page() {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const token = localStorage.getItem('token')
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        console.log(response.data.data)
+        const response = await api.get(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents`)
         setDocument(response.data.data)
       } catch (error) {
         console.error('Error fetching documents:', error)
@@ -118,7 +113,7 @@ function Page() {
         {document && document.length > 0 ? (
           <>
             <p className="text-sm text-red-400 mb-4">
-              Documents will be auto-deleted after a time. Please save important files.
+              Documents will be auto-deleted after 7 days. Please save important files.
             </p>
             <div className="overflow-x-auto">
               <Table className="min-w-full border-2 border-gray-200 shadow-md rounded-md">

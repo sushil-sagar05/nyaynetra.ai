@@ -16,6 +16,7 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"
 import { useUser } from "@/context/UserContext";
+import api from "@/lib/api";
 interface ErrorResponse {
     message: string;
   }
@@ -31,14 +32,10 @@ export default function PasswordConfirmationDialog() {
     setShowError(false);
     if(confirmPassword.length>=6){
        try {
-         const token = localStorage.getItem('token');
-         const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/delete-account`,
+         const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/delete-account`,
              {
                  currPassword:confirmPassword
              },
-                { headers: {
-                   Authorization: `Bearer ${token}`,
-                 }}
             )
             console.log(response.data)
            if(response.status===200){

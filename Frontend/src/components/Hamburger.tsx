@@ -13,11 +13,26 @@ import { Button } from './ui/button'
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext'
 import ThemeToggle from './toggle'
+import api from '@/lib/api'
+import { toast } from 'sonner'
 function Hamburger() {
-  const {user} = useUser()
+  const {user,setUser} = useUser()
   const router = useRouter();
   const handleBtnClick = (route:string)=>{
     router.push(route)
+  }
+  const handleLogout =async()=>{
+    try {
+      const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/logout`,{})
+      if(response.status===200){
+        toast.success(response.data.message)
+        setUser(null)
+        router.push('/login')
+      }
+    } catch (error:any) {
+      toast.error(error.response.data.message)
+    }
+ 
   }
   return (
     <div>
@@ -57,11 +72,18 @@ function Hamburger() {
     {
       user!=null?<>
       <SheetTitle className='mt-4 ml-3'><Button
-    onClick={()=>router.push(`/Settings/${user?.username}`)}
+    onClick={()=>router.push(`/settings/${user?.username}`)}
     ><span className='flex gap-2'> Settings <Settings/></span></Button></SheetTitle>
     <SheetDescription className='p-4'>
      Go to Settings and check or update your credentials
       </SheetDescription>
+      </>:""
+    }
+    {
+      user!=null?<>
+      <SheetTitle className='mt-4 ml-3'><Button
+    onClick={()=>handleLogout()}
+    ><span className='flex gap-2'> Logout </span></Button></SheetTitle>
       </>:""
     }
   <p className=' text-center p-4'>© 2025 👁Nyaynetra. All rights reserved.</p>

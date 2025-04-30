@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useEffect, useState,useContext } from "react"
 import { Toaster } from "@/components/ui/sonner"
 import { useRouter } from "next/navigation"
+import api from "@/lib/api"
 import axios,{AxiosError} from 'axios'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -40,7 +41,7 @@ const form = useForm<z.infer<typeof registerSchema>>({
 const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
   setIsSubmiting(true)
   try {
-   const response =  await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/register`,data)
+   const response =  await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/register`,data)
    if(response.status===201){
     setUser(response.data.user)
     toast(response.data.message)

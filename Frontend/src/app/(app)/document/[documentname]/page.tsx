@@ -9,6 +9,7 @@ import { useParams, useRouter } from 'next/navigation'
 import axios, { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import Delete from '@/components/Delete'
+import api from '@/lib/api'
 
 interface ErrorResponse {
   message: string;
@@ -30,21 +31,12 @@ interface Document{
 function page() {
       const router = useRouter()
       const params = useParams()
-      console.log(params)
       const [document, setdocument] = useState<Document>()
 
     useEffect(()=>{
       const fetchDocuments = async()=>{
         try {
-          const token = localStorage.getItem('token')
-          console.log(token)
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`,{
-            headers:{
-              Authorization: `Bearer ${token}` 
-            },
-          
-          })
-          console.log("Document", response.data.data)
+          const response = await api.get(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`)
           setdocument(response.data.data[0])
         } catch (error) {
           
@@ -53,21 +45,9 @@ function page() {
       fetchDocuments()
     },[params.documentname])
 
-
-
-      // console.log(document[0])
-
     const handleSaveSubmit = async()=>{
       try {
-        const token = localStorage.getItem('token')
-        console.log(token)
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${params.documentname}/save-document`,{},{
-          headers:{
-            Authorization: `Bearer ${token}` 
-          },
-        
-        })
-        console.log("Document saved:", response.data)
+        const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${params.documentname}/save-document`,{})
         toast(response.data.data)
       } catch (error) {
         
@@ -75,14 +55,7 @@ function page() {
     }
     const handleDeleteSubmit = async()=>{
       try {
-        const token = localStorage.getItem('token')
-        console.log(token)
-        const response = await axios.delete(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`,{
-          headers:{
-            Authorization: `Bearer ${token}` 
-          },
-        
-        })
+        const response = await api.delete(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`)
         toast(response.data.data)
         router.push('/dashboard')
       } catch (error:any) {

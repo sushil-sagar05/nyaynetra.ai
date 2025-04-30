@@ -96,7 +96,7 @@ function HowitWorks() {
           <div className="md:col-span-7">
             <Tabs value={activeTab} onValueChange={setActiveTab} className=" p-2">
               {items.map((item) => (
-                <TabsContent key={item.title} value={item.title} className="rounded-lg border-2 border-black bg-white p-4">
+                <TabsContent key={item.title} value={item.title} className="rounded-lg border-2 p-4">
                   <Image
                     src={item.image}
                     alt={item.title}

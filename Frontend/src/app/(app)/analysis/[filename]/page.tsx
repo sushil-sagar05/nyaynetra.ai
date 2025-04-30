@@ -9,25 +9,29 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { SendHorizontal,WrapText,Download } from 'lucide-react'
-import { useRouter } from 'next/router'
-import { useParams } from 'next/navigation'
+import { useParams,useRouter } from 'next/navigation'
 import SavedDocument from '@/components/SavedDocument'
-
+import { useUser } from '@/context/UserContext'
 
 function page() {
-  const [activeTab, setActiveTab] = useState("summary")
+  const [activeTab, setActiveTab] = useState("Summary")
   const [isSaved, setIsSaved] = useState(false);
   // const router = useRouter()
   const [documentId, setDocumentId] = useState<string | undefined>(undefined)
-
+  const {user,loading} = useUser()
+  const router = useRouter()
+  useEffect(() => {
+     if (!user && !loading) {
+       router.push("/login");
+     }
+   }, [user, loading, router]);
+   
   const params = useParams()
   const filename = params?.filename 
-  console.log(documentId)
   if (!filename) {
     return <div>Loading...</div>
   }
   useEffect(() => {
-    console.log(`Document filename: ${filename}`)
   }, [filename])
   return (
     <main className='min-h-screen min-w-full'>

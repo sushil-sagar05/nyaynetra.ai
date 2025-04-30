@@ -18,6 +18,8 @@ import { toast } from 'sonner';
 import Account_Delete from './Account_Delete';
 import AutoSave from './AutoSave';
 import { useUser } from '@/context/UserContext';
+import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
 
 function Account_Settings() {
   const inputUsernameRef = useRef<HTMLInputElement>(null);
@@ -43,7 +45,8 @@ function Account_Settings() {
       setTempUsername(user.username);
     }
   }, [user]);
-
+  const { setUser } = useUser();
+      const router =useRouter()
   const handleEdit = (field: typeof editingField) => {
     setEditingField(field);
     setTimeout(() => {
@@ -69,14 +72,13 @@ function Account_Settings() {
     if (confirmPassword.length < 1) return;
 
     try {
-      const token = localStorage.getItem('token');
       let response;
 
       if (pendingField === 'username') {
-        response = await axios.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-username`, {
+        response = await api.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-username`, {
           newUsername: tempUsername,
           currPassword: confirmPassword,
-        }, { headers: { Authorization: `Bearer ${token}` } });
+        });
         if (response.status === 200) {
           setUsername(tempUsername);
           toast(response.data.message);
@@ -84,10 +86,10 @@ function Account_Settings() {
       }
 
       if (pendingField === 'email') {
-        response = await axios.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-email`, {
+        response = await api.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-email`, {
           newemail: tempEmail,
           currPassword: confirmPassword,
-        }, { headers: { Authorization: `Bearer ${token}` } });
+        });
         if (response.status === 200) {
           setemail(tempEmail);
           toast(response.data.message);
@@ -95,10 +97,10 @@ function Account_Settings() {
       }
 
       if (pendingField === 'password') {
-        response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-password`, {
+        response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-password`, {
           newPassword: tempPassword,
           oldPassword: confirmPassword,
-        }, { headers: { Authorization: `Bearer ${token}` } });
+        });
         if (response.status === 200) {
           setPassword(tempPassword);
           toast(response.data.message);
@@ -112,7 +114,19 @@ function Account_Settings() {
       toast("Error updating information. Please try again.");
     }
   };
-
+  const handleLogout =async()=>{
+    try {
+      const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/logout`,{})
+      if(response.status===200){
+        toast.success(response.data.message)
+        setUser(null)
+        router.push('/login')
+      }
+    } catch (error:any) {
+      toast.error(error.response.data.message)
+    }
+ 
+  }
   const cancelConfirmation = () => {
     setShowPasswordConfirm(false);
     setConfirmPassword('');
@@ -230,6 +244,9 @@ function Account_Settings() {
             <div className="mt-6">
               <Account_Delete />
             </div>
+            <Button
+        onClick={()=>handleLogout()}
+        className="bg-orange-500 mt-4 sm:hidden">Logout</Button>
           </div>
         </div>
       </div>

@@ -6,7 +6,8 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Toaster } from "@/components/ui/sonner"
 import { useRouter } from "next/navigation"
-import axios,{AxiosError} from 'axios'
+import api from "@/lib/api"
+import {AxiosError} from 'axios'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -35,13 +36,12 @@ const form = useForm<z.infer<typeof loginSchema>>({
 const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   setIsSubmiting(true)
   try {
-   const response =  await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/login`,data, { withCredentials: true })
+   const response =  await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/login`,data)
    console.log(response.data)
    const {username} = response.data.data.user
    console.log(username)
    if(response.status===201){
     setUser(response.data.data.user)
-    localStorage.setItem('token',response.data.data.accessToken)
     toast(response.data.message)
     router.push(`/dashboard/${username}`)
     setIsSubmiting(false)

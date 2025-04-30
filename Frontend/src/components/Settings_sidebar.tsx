@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useUser } from "@/context/UserContext";
+import api from "@/lib/api";
   interface AppSidebarProps {
     activeTab: string
     setActiveTab: (tab: string) => void
@@ -46,7 +47,7 @@ function Setting_sidebar({ activeTab, setActiveTab}: AppSidebarProps) {
     const router =useRouter()
     const handleLogout =async()=>{
       try {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/logout`,{}, { withCredentials: true })
+        const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/logout`,{})
         if(response.status===200){
           toast.success(response.data.message)
           setUser(null)

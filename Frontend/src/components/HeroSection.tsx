@@ -26,7 +26,7 @@ function HeroSection() {
             }
                 <Button
                 onClick={()=>handleBtnClick('upload')}
-                className='mb-1 lg:h-full lg:w-full mr-4 bg-orange-500  text-lg hover:bg-orange-700 cursor-pointer border-1 border-black'>{
+                className='mb-4 lg:h-full lg:w-full mr-4 bg-orange-500  text-lg hover:bg-orange-700 cursor-pointer border-1 border-black'>{
                   user?("Upload Document"):("Try it free - No Signup")
                   
                 }</Button>
@@ -34,7 +34,7 @@ function HeroSection() {
 
             </div>
          </div>
-        <div className="relative h-[400px] w-full sm:col-span-5 rounded-lg"> 
+        <div className="relative min-h-[400px] w-full sm:col-span-5 rounded-lg"> 
         <Image
         className="h-full w-full rounded-lg object-cover"
         src={photo}

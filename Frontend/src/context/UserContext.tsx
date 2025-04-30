@@ -1,3 +1,4 @@
+import api from "@/lib/api";
 import axios from "axios";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { toast } from "sonner";
@@ -9,7 +10,6 @@ type User = {
     lastname: string;
   };
   username: string;
-  token: string;
 };
 
 type UserContextType = {
@@ -33,24 +33,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false); 
-      return;
-    }
-
-    axios
-      .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    api
+      .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`,
+        )
       .then((res) => {
-        const userData = {
-          ...res.data.user,
-          token,
-        };
-        setUser(userData);
+        setUser(res.data.user);
       })
       .catch((err) => {
         console.error("Failed to load user profile:", err);

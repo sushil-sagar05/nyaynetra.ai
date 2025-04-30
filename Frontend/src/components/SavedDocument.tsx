@@ -16,6 +16,7 @@ import Delete from './Delete'
 import axios, { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import { useUser } from '@/context/UserContext'
+import api from '@/lib/api'
 interface Document{
   id:string
   filename:string,
@@ -47,18 +48,13 @@ function SavedDocument() {
         return
       }
       try {
-        const token = localStorage.getItem('token')
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/saved-list`,{},{
-          headers:{
-            Authorization: `Bearer ${token}` 
-          },
-        
-        })
-        
-        console.log(response.data)
+        const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/saved-list`,{})
         setDocument(response.data.data)
       } catch (error) {
-        
+        console.error("Error in signup of User ",error)
+        const axiosError = error as AxiosError<ErrorResponse>;
+        let errorMessage= axiosError.response?.data.message;
+        toast(errorMessage)
       }
     }
     fetchDocuments();
@@ -67,12 +63,7 @@ function SavedDocument() {
 
   const handleDeleteSubmit = async(documentId:string)=>{
     try {
-      const token = localStorage.getItem('token')
-      console.log(token)
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_Backend_Url}/user/delete-save-document`,{
-        headers:{
-          Authorization: `Bearer ${token}` 
-        },
+      const response = await api.delete(`${process.env.NEXT_PUBLIC_Backend_Url}/user/delete-save-document`,{
         data:{
           documentId
         }
