@@ -13,17 +13,9 @@ import { useUser } from '@/context/UserContext'
 
 function Page() {
   const [activeTab, setActiveTab] = useState("Summary")
-  const {user,loading} = useUser()
-  const router = useRouter()
   
   const params = useParams()
   const filename = params?.filename 
-  useEffect(() => {
-    if (!user && !loading) {
-      router.push("/login");
-    }
-  }, [user, loading, router]);
-  
   useEffect(() => {
     
   }, [filename]);

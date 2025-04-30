@@ -14,7 +14,7 @@ type User = {
 type UserContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  loading: boolean; 
+  loading: boolean;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -33,15 +33,17 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     api
-      .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`,
-        )
+      .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`)
       .then((res) => {
         setUser(res.data.user);
       })
       .catch((err) => {
         console.error("Failed to load user profile:", err);
-        toast(err.response?.data?.message || "Failed to load profile");
-        setUser(null);
+        if (err.response?.status === 401) {
+          setUser(null); 
+        } else {
+          toast(err.response?.data?.message || "Failed to load profile");
+        }
       })
       .finally(() => {
         setLoading(false); 
