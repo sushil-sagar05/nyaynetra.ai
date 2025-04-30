@@ -13,12 +13,12 @@ const optionalAuthUser = async (req: AuthRequest, res: Response, next: NextFunct
       return next();
     }
 
-    if (!process.env.JWT_SECRET) {
-      console.warn("JWT_SECRET is not set.");
+    if (!process.env.JWT_Secret) {
+      console.warn("JWT_Secret is not set.");
       return next();
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, process.env.JWT_Secret) as JwtPayload;
     const user = await UserModel.findById(decoded._id);
     if (user) {
       req.user = user;

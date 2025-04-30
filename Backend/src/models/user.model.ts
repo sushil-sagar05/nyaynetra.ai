@@ -71,7 +71,7 @@ const UserSchema:Schema<User>=new mongoose.Schema({
 
 UserSchema.methods.generateAuthToken = function():string{
     if (!process.env.JWT_Secret) {
-        throw new Error("JWT_SECRET is not defined");
+        throw new Error("JWT_Secret is not defined");
     }
     const token = jwt.sign({_id:this._id},process.env.JWT_Secret,{expiresIn:'24h'});
     return token;

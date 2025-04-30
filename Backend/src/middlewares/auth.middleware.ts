@@ -16,7 +16,7 @@ const authUser = async(req:authRequest,res:Response,next:NextFunction)=>{
         if(!process.env.JWT_Secret){
           return  next(new ApiError(400, "Secret is not matched"));  
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+        const decoded = jwt.verify(token, process.env.JWT_Secret!) as JwtPayload;
         const user = await UserModel.findById(decoded._id)
         if(!user){
           return  next(new ApiError(400, "Unauthorized User"));  
