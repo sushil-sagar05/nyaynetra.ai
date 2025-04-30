@@ -80,7 +80,7 @@ UserSchema.methods.generateRefreshToken=function():string{
     if(!process.env.REFRESH_TOKEN_SECRET){
      throw new Error("REFRESH_TOKEN_SECRET is not defined");
     }
-    const token = jwt.sign({ _id:this._id,},process.env.REFRESH_TOKEN_SECRET,{expiresIn:"10d"});
+    const token = jwt.sign({ _id:this._id,},process.env.REFRESH_TOKEN_SECRET,{expiresIn:"7d"});
     return token;
 }
 UserSchema.methods.comparePassword = async function(password:string):Promise<boolean>{

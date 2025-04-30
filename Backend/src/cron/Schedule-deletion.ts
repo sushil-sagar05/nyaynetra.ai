@@ -84,7 +84,7 @@ const file_Expire_Time = 5*60*1000;
               if (err) {
                 console.error(` Failed to delete ${file}:`, err);
               } else {
-                console.log(` Deleted temp file: ${file}`);
+                
               }
             });
           }

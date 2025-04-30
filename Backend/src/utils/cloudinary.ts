@@ -12,8 +12,6 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (localFilePath: string,fileType:string) => {
     try {
-       console.log("File type comes: ",fileType)
-       console.log("File Comes: ",localFilePath)
        const imageTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'svg']
        let resourceType: 'image' | 'raw' = 'raw';
        if (imageTypes.includes(fileType)) {
@@ -21,16 +19,12 @@ const uploadOnCloudinary = async (localFilePath: string,fileType:string) => {
     } else  {
         resourceType = 'raw';
     }
-    console.log('Determined resource type:', resourceType);
 
    
     const response = await cloudinary.uploader.upload(localFilePath, {
         folder: 'law documents',  
         resource_type: resourceType,  
     });
-    console.log("File is uploaded on cloudinary",
-        response.url
-    );
     return response;
      } catch (error) {
        
@@ -54,11 +48,9 @@ const ifFileExists = async(publicId:string,fileType:string)=>{
 }
 
 const deleteFromCloudinary = async (publicId: string,fileType:string) => {
-    console.log("Public id given to cloudinary",publicId);
     const resourceType = (fileType === 'pdf' || fileType === 'doc' || fileType === 'docx') ? 'raw' : 'image';
     try {
         const result = await cloudinary.uploader.destroy(publicId,{resource_type:resourceType});
-        console.log("Delete result: ", result); 
         return result
     } catch (error) {
         console.error("Error deleting from Cloudinary: ", error);

@@ -202,7 +202,6 @@ const saveDocument=async(req:authRequest,res:Response)=>{
     if(!user){
         throw new ApiError(409,"Guest is not allowed to save document , Register for this action")
     }
-    const userId = user.id
     const documentId = req.params.id
     await saveUserDocument(user.id, documentId);
     
@@ -436,6 +435,7 @@ const userController = {
     usernameUpdation,
     passwordUpdate,
     accountDeletion,
+    refreshAccessToken
 
 }
 export default userController

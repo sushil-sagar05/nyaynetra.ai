@@ -51,7 +51,6 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
         if(!file){
             throw new ApiError(400,"No Document is uploaded")  
         }
-        // console.log("Mimi-type",file.mimetype)
         const filePath = file.path
         const filename=file.filename
         if(!filePath){
@@ -96,7 +95,6 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
             }
             const document = await uploadOnCloudinary(filePath,fileType)
             const {public_id} = document;
-            // console.log("Public id get in response",public_id) 
             if(!document){
                 throw new ApiError(400,"Something went wrong while uploading document on cloudinary ")   
             }
@@ -127,14 +125,12 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
         .json(new ApiResponse(201,savedDocument,"Document Created"))
 
         setTimeout(() => {
-            console.log(`Checking if the file exists at ${filePath}`);  // Debug: Check file path
+            console.log(`Checking if the file exists at ${filePath}`); 
             if (fs.existsSync(filePath)) {
-              console.log(`File found, deleting ${filePath}`);
               try {
                 fs.unlinkSync(filePath);
-                console.log('File deleted successfully');
               } catch (error) {
-                console.error('Error deleting file:', error);  // Error logging
+                console.error('Error deleting file:', error);
               }
             } else {
               console.log('File does not exist or already deleted');
@@ -176,7 +172,6 @@ try {
             docObj.UploadedBy = docObj.UploadedBy.toString();  
             return docObj;
     }))
-    console.log(formattedDocuments)
     res.status(200).json(new ApiResponse(200, formattedDocuments, "Documents retrieved successfully"));
 } catch (error) {
     if (error instanceof ApiError) {
@@ -230,8 +225,6 @@ const deleteDocument = async(req:authRequest,res:Response)=>{
     throw new ApiError(400,"No Document Found");
      }
      const public_id = Document.public_id_fromCloudinary
-    //  console.log("Public id retreived",public_id);
-    //  console.log("Whole document: ",Document)
      const fileType = Document.fileType
      const fileExistsOncloudinary = await ifFileExists(public_id,fileType)
      if(!fileExistsOncloudinary){
