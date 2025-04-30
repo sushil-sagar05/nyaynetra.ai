@@ -1,5 +1,4 @@
 import api from "@/lib/api";
-import axios from "axios";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { toast } from "sonner";
 

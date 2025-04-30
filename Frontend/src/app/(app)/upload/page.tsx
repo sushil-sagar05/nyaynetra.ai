@@ -14,16 +14,20 @@ import { useRouter } from "next/navigation"
 import traditionals from '../../../../public/Questions-rafiki.png'
 import New from '../../../../public/Mention-bro.png'
 import api from '@/lib/api';
+import { AxiosError } from 'axios';
 interface UploadFormData {
   file:FileList;
   public:boolean;
 };
+interface ErrorResponse {
+  message: string;
+}
 const ClientComponent = () => {
   const { user } = useUser();  
   const [isClient, setIsClient] = useState(false);
   const [SelectedFile, setSelectedFile] = useState<File|null>(null)
   const [isSubmitting, setisSubmitting] = useState(false)
-  const {register,handleSubmit,setValue }=useForm<UploadFormData>();
+  const {handleSubmit}=useForm<UploadFormData>();
   const router = useRouter();
   useEffect(() => {
     setIsClient(true); 
@@ -76,9 +80,10 @@ const ClientComponent = () => {
       toast.success(response.data.message);
       setisSubmitting(false)
     }
-    } catch (error:any) {
-      console.error('Error uploading file:', error);
-      toast.error(error.response.data.error)
+    } catch (error) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      const errorMessage= axiosError.response?.data.message;
+      toast(errorMessage)
     }finally {
       setisSubmitting(false);
       setSelectedFile(null)

@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import traditionals from '../../public/Reading list-bro.png'

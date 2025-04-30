@@ -8,13 +8,14 @@ import {
     SheetTitle,
     SheetTrigger,
   } from "@/components/ui/sheet"
-import { Menu,Upload,BadgeIndianRupee,User,VenetianMask, Settings } from 'lucide-react'
+import { Menu,Upload,User, Settings } from 'lucide-react'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext'
 import ThemeToggle from './toggle'
 import api from '@/lib/api'
 import { toast } from 'sonner'
+import { AxiosError } from 'axios'
 function Hamburger() {
   const {user,setUser} = useUser()
   const router = useRouter();
@@ -29,8 +30,9 @@ function Hamburger() {
         setUser(null)
         router.push('/login')
       }
-    } catch (error:any) {
-      toast.error(error.response.data.message)
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data?.message || "Something went wrong");
     }
  
   }

@@ -17,7 +17,7 @@ api.interceptors.response.use(
         await api.post("/refresh-token"); 
         return api(originalRequest);
       } catch (err) {
-        console.error("Session refresh failed.");
+        console.error("Session refresh failed.",err);
       }
     }
 

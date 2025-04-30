@@ -10,12 +10,11 @@ import {
     SidebarMenuItem,
   } from "@/components/ui/sidebar"
 import { useIsMobile } from "@/hooks/use-mobile";
-import axios from "axios";
 import { AlignLeft,WrapText,FileWarning,MessageCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
+import React from "react";
 import api from "@/lib/api";
 interface AppSidebarProps {
   documentId: string | string[] | undefined 
@@ -46,11 +45,10 @@ interface AppSidebarProps {
     }
   ]
   export function AppSidebar({ activeTab, setActiveTab,documentId}: AppSidebarProps) {
-    const router = useRouter()
     const [isSaved, setisSaved] = useState(false)
     const isMobile = useIsMobile();
       console.log("Docid",documentId)
-      const handleSubmit = async (e:any)=>{
+      const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>)=>{
         e.preventDefault()
         if (!documentId) {
           console.error("No document ID found.")

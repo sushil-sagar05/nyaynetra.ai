@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import {
   Carousel,
   CarouselContent,
@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/carousel"
 import testimonialsData from '../data/testimonials.json'
 interface User{
-    name:String,
-    position:String,
-    company:String,
-    feedback:String,
+    name:string,
+    position:string,
+    company:string,
+    feedback:string,
     rating:number
 }
 

@@ -10,10 +10,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
 import Delete from './Delete'
-import axios, { AxiosError } from 'axios'
+import  { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import { useUser } from '@/context/UserContext'
 import api from '@/lib/api'
@@ -24,10 +23,10 @@ interface Document{
     createdAt:Date;
     fileType:string;
     public_id_fromCloudinary:string,
-    isSaved:Boolean,
+    isSaved:boolean,
     savedAt:Date,
     expiresAt:Date,
-    fileHash:String,
+    fileHash:string,
     isGuest:Boolean,
     _id:string
 }
@@ -37,7 +36,6 @@ interface ErrorResponse {
 function SavedDocument() {
   const {user} = useUser()
   const router = useRouter()
-  const documentname = 'Agreement.pdf'
   const [document,setDocument] = useState<Document[]>([])
   useEffect(()=>{
     if(!user){
@@ -53,7 +51,7 @@ function SavedDocument() {
       } catch (error) {
         console.error("Error in signup of User ",error)
         const axiosError = error as AxiosError<ErrorResponse>;
-        let errorMessage= axiosError.response?.data.message;
+        const errorMessage= axiosError.response?.data.message;
         toast(errorMessage)
       }
     }
@@ -71,10 +69,10 @@ function SavedDocument() {
       })
       setDocument(document.filter(doc=>doc._id!=documentId))
       toast(response.data.data)
-    } catch (error:any) {
+    } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
-         let errorMessage= axiosError.response?.data.message;
-         toast(errorMessage)
+      const errorMessage= axiosError.response?.data.message;
+      toast(errorMessage)
     }
   }
   return (

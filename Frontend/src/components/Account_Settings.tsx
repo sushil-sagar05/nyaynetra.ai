@@ -13,13 +13,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import axios from 'axios';
 import { toast } from 'sonner';
 import Account_Delete from './Account_Delete';
 import AutoSave from './AutoSave';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
+import { AxiosError } from "axios";
 
 function Account_Settings() {
   const inputUsernameRef = useRef<HTMLInputElement>(null);
@@ -30,7 +30,6 @@ function Account_Settings() {
 
   const [username, setUsername] = useState('');
   const [email, setemail] = useState(user?.email);
-  const [password, setPassword] = useState('password123');
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState(email);
   const [tempPassword, setTempPassword] = useState('');
@@ -102,7 +101,6 @@ function Account_Settings() {
           oldPassword: confirmPassword,
         });
         if (response.status === 200) {
-          setPassword(tempPassword);
           toast(response.data.message);
         }
       }
@@ -122,8 +120,9 @@ function Account_Settings() {
         setUser(null)
         router.push('/login')
       }
-    } catch (error:any) {
-      toast.error(error.response.data.message)
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data?.message || "Something went wrong");
     }
  
   }

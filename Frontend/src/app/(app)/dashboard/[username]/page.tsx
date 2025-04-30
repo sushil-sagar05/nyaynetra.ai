@@ -1,16 +1,12 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
 import { Table, TableCell, TableRow } from '@/components/ui/table'
-import { Tabs } from '@/components/ui/tabs'
-import { TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { ChartColumn, Ellipsis, Save, Settings, TriangleAlert, Upload } from 'lucide-react'
+import { ChartColumn, Settings, TriangleAlert, Upload } from 'lucide-react'
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from 'react'
 import SavedDocument from '@/components/SavedDocument'
 import { useUser } from '@/context/UserContext'
-import axios from 'axios'
 import { Button } from '@/components/ui/button'
 import emptyPhoto from '../../../../../public/Empty-bro.png'
 import Image from 'next/image'

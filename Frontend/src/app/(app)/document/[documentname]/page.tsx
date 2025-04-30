@@ -1,12 +1,11 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import { FileDown, Share2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import axios, { AxiosError } from 'axios'
+import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import Delete from '@/components/Delete'
 import api from '@/lib/api'
@@ -21,14 +20,17 @@ interface Document{
     createdAt:Date;
     fileType:string;
     public_id_fromCloudinary:string,
-    isSaved:Boolean,
+    isSaved:boolean,
     savedAt:Date,
     expiresAt:Date,
-    fileHash:String,
-    isGuest:Boolean,
+    fileHash:string,
+    isGuest:boolean,
     _id:string
 }
-function page() {
+interface ErrorResponse {
+  message: string;
+}
+function Page() {
       const router = useRouter()
       const params = useParams()
       const [document, setdocument] = useState<Document>()
@@ -39,7 +41,9 @@ function page() {
           const response = await api.get(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`)
           setdocument(response.data.data[0])
         } catch (error) {
-          
+          const axiosError = error as AxiosError<ErrorResponse>;
+          const errorMessage= axiosError.response?.data.message;
+          toast(errorMessage)
         }
       }
       fetchDocuments()
@@ -50,7 +54,9 @@ function page() {
         const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${params.documentname}/save-document`,{})
         toast(response.data.data)
       } catch (error) {
-        
+        const axiosError = error as AxiosError<ErrorResponse>;
+        const errorMessage= axiosError.response?.data.message;
+        toast(errorMessage)
       }
     }
     const handleDeleteSubmit = async()=>{
@@ -204,4 +210,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

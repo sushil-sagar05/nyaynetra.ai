@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios, { AxiosError } from "axios";
+import  { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"
 import { useUser } from "@/context/UserContext";
@@ -30,7 +30,13 @@ export default function PasswordConfirmationDialog() {
 
   const confirmAndSave = async () => {
     setShowError(false);
-    if(confirmPassword.length>=6){
+    if (confirmPassword.length < 6) {
+      setShowError(true);
+      return;
+    }
+  
+    setIsLoading(true);
+
        try {
          const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/delete-account`,
              {
@@ -46,11 +52,9 @@ export default function PasswordConfirmationDialog() {
            setConfirmPassword("");
        } catch (error) {
          const axiosError = error as AxiosError<ErrorResponse>;
-            let errorMessage= axiosError.response?.data.message;
+            const errorMessage= axiosError.response?.data.message;
             toast(errorMessage)
        }
-    }
-
     setIsLoading(true);
     await new Promise((res) => setTimeout(res, 1500));
     setIsLoading(false);
@@ -94,6 +98,11 @@ export default function PasswordConfirmationDialog() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             disabled={isLoading}
           />
+          {showError && (
+          <p className="text-sm text-red-500 mt-1">
+          Invalid password. Please try again.
+          </p>
+          )}
         </div>
 
         <AlertDialogFooter className="mt-6">

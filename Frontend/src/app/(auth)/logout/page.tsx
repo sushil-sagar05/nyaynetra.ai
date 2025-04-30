@@ -2,7 +2,7 @@
 import axios from 'axios';
 import React, { useEffect } from 'react'
 import { useRouter } from "next/navigation"
-function page() {
+function Page() {
     const router = useRouter()
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -25,4 +25,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

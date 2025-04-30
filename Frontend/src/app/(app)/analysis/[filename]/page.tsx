@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { AppSidebar } from '@/components/app-sidebar'
-import { Sidebar } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,14 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { SendHorizontal,WrapText,Download } from 'lucide-react'
 import { useParams,useRouter } from 'next/navigation'
-import SavedDocument from '@/components/SavedDocument'
 import { useUser } from '@/context/UserContext'
 
-function page() {
+function Page() {
   const [activeTab, setActiveTab] = useState("Summary")
-  const [isSaved, setIsSaved] = useState(false);
-  // const router = useRouter()
-  const [documentId, setDocumentId] = useState<string | undefined>(undefined)
   const {user,loading} = useUser()
   const router = useRouter()
   useEffect(() => {
@@ -155,4 +150,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

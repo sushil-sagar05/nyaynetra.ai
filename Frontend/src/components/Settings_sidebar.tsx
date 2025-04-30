@@ -12,17 +12,18 @@ import {
   } from "@/components/ui/sidebar"
   import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "./ui/button";
-import { url } from "inspector";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import axios from "axios";
 import { toast } from "sonner";
 import { useUser } from "@/context/UserContext";
 import api from "@/lib/api";
+import { AxiosError } from "axios";
   interface AppSidebarProps {
     activeTab: string
     setActiveTab: (tab: string) => void
   
+  }
+  interface ErrorResponse {
+    message: string;
   }
     const items = [
       {
@@ -53,8 +54,10 @@ function Setting_sidebar({ activeTab, setActiveTab}: AppSidebarProps) {
           setUser(null)
           router.push('/login')
         }
-      } catch (error:any) {
-        toast.error(error.response.data.message)
+      } catch (error) {
+       const axiosError = error as AxiosError<ErrorResponse>;
+       const errorMessage= axiosError.response?.data.message;
+      toast(errorMessage)
       }
    
     }

@@ -26,7 +26,7 @@ function AutoSave() {
     } catch (error) {
       console.error("Failed to update AutoSave:", error);
       const axiosError = error as AxiosError<ErrorResponse>;
-        let errorMessage= axiosError.response?.data.message;
+      const errorMessage= axiosError.response?.data.message;
         toast(errorMessage)
 
     }

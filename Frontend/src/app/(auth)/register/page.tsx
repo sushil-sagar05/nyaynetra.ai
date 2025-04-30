@@ -2,29 +2,28 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z  from "zod"
-import Link from "next/link"
-import { useEffect, useState,useContext } from "react"
-import { Toaster } from "@/components/ui/sonner"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import api from "@/lib/api"
-import axios,{AxiosError} from 'axios'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import {AxiosError} from 'axios'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
-import { toast, useSonner } from "sonner"
+import { toast } from "sonner"
 import { registerSchema } from "@/Schemas/register.schema"
 import photo from '../../../../public/Sign up-bro.png'
 import Image from 'next/image'
 import { useUser } from "@/context/UserContext"
+import Link from "next/link"
 interface ErrorResponse {
   message: string;
 }
-function page() {
+function Page() {
 const router = useRouter();
 const [username,setUsername] = useState('')
 const [isSubmitting,setIsSubmiting] = useState(false)
-const {user,setUser} =useUser();
+const {setUser} =useUser();
 //zod implementation 
 const form = useForm<z.infer<typeof registerSchema>>({
   resolver:zodResolver(registerSchema),
@@ -51,7 +50,7 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
   } catch (error) {
     console.error("Error in signup of User ",error)
     const axiosError = error as AxiosError<ErrorResponse>;
-    let errorMessage= axiosError.response?.data.message;
+    const errorMessage= axiosError.response?.data.message;
     toast(errorMessage)
     setIsSubmiting(false)
   }
@@ -60,7 +59,7 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
 
   return (
     <div className="bg-white">
-    <a href='/' className="font-bold text-3xl text-black m-4">👁Nyaynetra</a>
+    <Link href='/' className="font-bold text-3xl text-black m-4">👁Nyaynetra</Link>
     <div className="flex justify-center items-center min-h-screen bg-white text-black">
       <div className=" sm:p-8   rounded-lg shadow-md ">
               <div className="grid  grid-cols-12 ">
@@ -100,21 +99,29 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
             </FormItem>
           )}
         />
-            <FormField
-          name="username"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="username" {...field}
-                className="border-black"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+           <FormField
+         name="username"
+         control={form.control}
+        render={({ field }) => (
+        <FormItem>
+        <FormLabel>Username</FormLabel>
+        <FormControl>
+        <Input
+          placeholder="username"
+          {...field}
+          onChange={(e) => {
+            field.onChange(e);
+            setUsername(e.target.value);
+          }}
+          className="border-black"
         />
+        </FormControl>
+        <FormMessage />
+        </FormItem>
+        )}
+      />
+
+
         <FormField
           name="email"
           control={form.control}
@@ -158,9 +165,9 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
         </Button>
         <p className="text-center ml-4">
   Already a member?{" "}
-  <a href="/login" className="text-blue-500 hover:underline">
+  <Link href="/login" className="text-blue-500 hover:underline">
     Sign In
-  </a>
+  </Link>
 </p>
        </div>
           </form>
@@ -182,4 +189,4 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
   )
 }
 
-export default page
+export default Page

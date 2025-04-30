@@ -2,29 +2,27 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z  from "zod"
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import { Toaster } from "@/components/ui/sonner"
+import {  useState } from "react"
 import { useRouter } from "next/navigation"
 import api from "@/lib/api"
 import {AxiosError} from 'axios'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
-import { toast, useSonner } from "sonner"
+import { toast } from "sonner"
 import { loginSchema } from "@/Schemas/login.schema"
 import photo from '../../../../public/Mobile login-bro.png'
 import Image from 'next/image'
 import { useUser } from "@/context/UserContext"
+import Link from "next/link"
 interface ErrorResponse {
   message: string;
 }
-function page() {
+function Page() {
 const router = useRouter();
-const [identifier,setIdentifier] = useState('')
 const [isSubmitting,setIsSubmiting] = useState(false)
-const {user,setUser} = useUser()
+const {setUser} = useUser()
 //zod implementation 
 const form = useForm<z.infer<typeof loginSchema>>({
   resolver:zodResolver(loginSchema),
@@ -49,7 +47,7 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   } catch (error) {
     console.error("Error in signup of User ",error)
     const axiosError = error as AxiosError<ErrorResponse>;
-    let errorMessage= axiosError.response?.data.message;
+    const errorMessage= axiosError.response?.data.message;
     toast(errorMessage)
     setIsSubmiting(false)
   }
@@ -61,7 +59,7 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
     <div className="flex justify-center items-center min-h-screen bg-white text-black">
       <div className="sm:h-[100vh] sm:p-8   rounded-lg shadow-md ">
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-black mb-4" >
-              <a href='/' className="">👁Nyaynetra</a>
+              <Link href='/' className="">👁Nyaynetra</Link>
               </h1>
               <div className="grid sm:h-[60vh] grid-cols-12 ">
         <div className="left w-[100vw]  col-span-6 md:w-[30vw] p-4  ">
@@ -114,9 +112,9 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
         </Button>
         <p className="text-center ml-4">
   New Here?{" "}
-  <a href="/register" className="text-blue-500 hover:underline">
+  <Link href="/register" className="text-blue-500 hover:underline">
     Sign In
-  </a>
+  </Link>
 </p>
        </div>
           </form>
@@ -137,4 +135,4 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   )
 }
 
-export default page
+export default Page
