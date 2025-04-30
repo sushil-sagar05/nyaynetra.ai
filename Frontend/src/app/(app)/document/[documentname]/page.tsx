@@ -103,7 +103,9 @@ function Page() {
         <div className=' col-span-12 sm:col-span-3 h-[45vh] '>
             <Card className='h-full'>
             <CardTitle className='text-center'>{document?.filename ?? "Untitled"}</CardTitle>
-            <p>Created At: {document?.createdAt ? new Date(document.createdAt).toLocaleDateString() : "Unknown"}</p>
+              <p>
+                Created At: {document?.createdAt ? new Date(document.createdAt).toLocaleDateString() : "Unknown"}
+              </p>
                 <CardContent>
                  <CardDescription>
                   Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit, sapiente dicta! Obcaecati distinctio quisquam fugit voluptatem, exercitationem sint et quia, ut praesentium possimus in cumque dicta magnam dignissimos, repellat amet.
