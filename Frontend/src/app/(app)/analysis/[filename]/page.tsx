@@ -8,8 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { SendHorizontal,WrapText,Download } from 'lucide-react'
-import { useParams,useRouter } from 'next/navigation'
-import { useUser } from '@/context/UserContext'
+import { useParams} from 'next/navigation'
 
 function Page() {
   const [activeTab, setActiveTab] = useState("Summary")
