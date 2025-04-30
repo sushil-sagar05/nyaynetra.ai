@@ -20,7 +20,9 @@ import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { AxiosError } from "axios";
-
+interface ErrorResponse {
+  message: string;
+}
 function Account_Settings() {
   const inputUsernameRef = useRef<HTMLInputElement>(null);
   const inputEmailRef = useRef<HTMLInputElement>(null);
@@ -109,7 +111,10 @@ function Account_Settings() {
       setShowPasswordConfirm(false);
       setConfirmPassword('');
     } catch (error) {
-      toast("Error updating information. Please try again.");
+      const axiosError = error as AxiosError<ErrorResponse>;
+      const errorMessage= axiosError.response?.data.message;
+      toast(errorMessage)
+     
     }
   };
   const handleLogout =async()=>{

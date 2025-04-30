@@ -15,19 +15,22 @@ function Page() {
   const [activeTab, setActiveTab] = useState("Summary")
   const {user,loading} = useUser()
   const router = useRouter()
-  useEffect(() => {
-     if (!user && !loading) {
-       router.push("/login");
-     }
-   }, [user, loading, router]);
-   
+  
   const params = useParams()
   const filename = params?.filename 
-  if (!filename) {
-    return <div>Loading...</div>
-  }
   useEffect(() => {
-  }, [filename])
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+  
+  useEffect(() => {
+    
+  }, [filename]);
+  
+  if (!filename) {
+    return <div>Loading...</div>;
+  }
   return (
     <main className='min-h-screen min-w-full'>
     <div className=' min-h-screen ' >

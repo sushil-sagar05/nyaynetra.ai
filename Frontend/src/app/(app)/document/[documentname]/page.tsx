@@ -64,45 +64,46 @@ function Page() {
         const response = await api.delete(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`)
         toast(response.data.data)
         router.push('/dashboard')
-      } catch (error:any) {
+      } catch (error) {
         const axiosError = error as AxiosError<ErrorResponse>;
-           let errorMessage= axiosError.response?.data.message;
+          const errorMessage= axiosError.response?.data.message;
            toast(errorMessage)
       }
     }
 
 
   return (
-    <div className=' w-full  '>
-   <div className=" flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4">
-  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ">
-    Viewing: {document?.filename+'.'+document?.fileType!}
-  </h1>
-  <div className="flex flex-wrap gap-3  items-center">
-    <span className="flex items-center gap-2">
-      Share <Share2 />
-    </span>
+          <div className=' w-full  '>
+              <div className=" flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 p-4">
+               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ">
+               Viewing: {document ? `${document.filename}.${document.fileType}` : "Loading..."}
+              </h1>
+              <div className="flex flex-wrap gap-3  items-center">
+               <span className="flex items-center gap-2">
+              Share <Share2 />
+              </span>
    
-      <Button
-      className='cursor-pointer'
-      onClick={handleSaveSubmit}
-      >Save Document <FileDown /></Button>
+             <Button
+            className='cursor-pointer'
+            onClick={handleSaveSubmit}
+            >Save Document <FileDown /></Button>
     
-<div className='bg-red-500 rounded-md'>
-<Delete
-    onConfirm={() => {
+            <div className='bg-red-500 rounded-md'>
+          <Delete
+         onConfirm={() => {
         handleDeleteSubmit();
-    }}
-    />
-</div>
-  </div>
-</div>
+         }}
+        />
+      </div>
+     </div>
+      </div>
 
 
       <div className='grid grid-cols-12 p-5 gap-3'>
         <div className=' col-span-12 sm:col-span-3 h-[45vh] '>
             <Card className='h-full'>
-                <CardTitle className='text-center'>{document?.filename!}</CardTitle>
+            <CardTitle className='text-center'>{document?.filename ?? "Untitled"}</CardTitle>
+            <p>Created At: {document?.createdAt ? new Date(document.createdAt).toLocaleDateString() : "Unknown"}</p>
                 <CardContent>
                  <CardDescription>
                   Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit, sapiente dicta! Obcaecati distinctio quisquam fugit voluptatem, exercitationem sint et quia, ut praesentium possimus in cumque dicta magnam dignissimos, repellat amet.

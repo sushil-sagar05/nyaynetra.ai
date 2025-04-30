@@ -16,11 +16,14 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 import React from "react";
 import api from "@/lib/api";
+import { AxiosError } from "axios";
 interface AppSidebarProps {
   documentId: string | string[] | undefined 
   activeTab: string
   setActiveTab: (tab: string) => void
-
+}
+interface ErrorResponse {
+  message: string;
 }
   const items = [
     {
@@ -59,7 +62,9 @@ interface AppSidebarProps {
           toast(response.data.data)
           setisSaved(true)
         } catch (error) {
-          
+          const axiosError = error as AxiosError<ErrorResponse>;
+          const errorMessage= axiosError.response?.data.message;
+          toast(errorMessage)
         }
       }
 

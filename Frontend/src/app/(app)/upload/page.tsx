@@ -51,7 +51,7 @@ const ClientComponent = () => {
   if (!isClient) {
     return <div>Loading...</div>; 
   }
-    const onSubmit=async(data:UploadFormData)=>{
+    const onSubmit=async(_data:UploadFormData)=>{
       if (!SelectedFile) {
         toast('Please select a file to upload.');
         return;
@@ -129,7 +129,7 @@ const ClientComponent = () => {
             </div>
             </>
           ) : (
-           <p>Drag 'n' drop file here, or click to select files</p>
+           <p>Drag &apos;n&apos;drop file here, or click to select files</p>
          )
           }
 

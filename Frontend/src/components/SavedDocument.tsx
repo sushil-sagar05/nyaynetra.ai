@@ -27,7 +27,7 @@ interface Document{
     savedAt:Date,
     expiresAt:Date,
     fileHash:string,
-    isGuest:Boolean,
+    isGuest:boolean,
     _id:string
 }
 interface ErrorResponse {
