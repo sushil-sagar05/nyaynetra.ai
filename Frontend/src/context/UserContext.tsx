@@ -33,7 +33,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     api
-      .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`,{withCredentials:true})
+      .get(`${process.env.NEXT_PUBLIC_Backend_Url}/user/profile`)
       .then((res) => {
         setUser(res.data.user);
       })

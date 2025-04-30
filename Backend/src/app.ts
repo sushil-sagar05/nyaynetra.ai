@@ -6,33 +6,26 @@ dotenv.config({
 });
 connect();
 const cors = require('cors');
-const app = express();
 import cookieparser from 'cookie-parser';
-import { CorsOptions } from "cors";
+const app = express();
+app.use(cookieparser());
 
 app.set("trust proxy", 1);
 
-const corsOptions: CorsOptions = {
-    origin: (origin, callback) => {
-        const allowedOrigin = process.env.FRONTEND_URL;
-
-        if (origin === allowedOrigin || !origin) {
-            callback(null, true);  
-        } else {
-            callback(new Error('Not allowed by CORS'), false);  
-        }
-    },
-    credentials: true, 
-    methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+const corsOptions = {
+  origin: process.env.FRONTEND_URL, 
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
-
 app.use(cors(corsOptions));
-
-app.use(cookieparser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+app.get('/', (req,res)=>{
+  res.send('Hello World');
+});
 import { ScheduledDeletion } from './cron/Schedule-deletion';
 import { DeleteDeactivateUser } from "./cron/Schedule-deletion";
 import { ScheduledDeletionforMulter } from "./cron/Schedule-deletion";
@@ -40,10 +33,6 @@ import { ScheduledDeletionforMulter } from "./cron/Schedule-deletion";
 ScheduledDeletion();
 DeleteDeactivateUser();
 ScheduledDeletionforMulter();
-
-app.get('/', ( res: Response) => {
-    res.send('Hello World');
-});
 
 import userRoutes from './routes/user.routes';
 import documentRoutes from './routes/document.routes';
