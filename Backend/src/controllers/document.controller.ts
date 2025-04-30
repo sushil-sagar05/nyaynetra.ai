@@ -125,6 +125,7 @@ const uploadDocument = async(req:authRequest,res:Response)=>{
         .json(new ApiResponse(201,savedDocument,"Document Created"))
 
         setTimeout(() => {
+            if (file.originalname === '.gitkeep') return;
             console.log(`Checking if the file exists at ${filePath}`); 
             if (fs.existsSync(filePath)) {
               try {

@@ -72,7 +72,7 @@ const file_Expire_Time = 5*60*1000;
       const now = Date.now();
   
       files.forEach((file) => {
-        if (file === '.gitkeep') return;
+        if (file === '.gitkeep') {return;}
         const filePath = path.join(temp_Upload_Dir, file);
         fs.stat(filePath, (err, stats) => {
           if (err) {

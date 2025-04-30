@@ -9,6 +9,7 @@ import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import Delete from '@/components/Delete'
 import api from '@/lib/api'
+import { useUser } from '@/context/UserContext'
 
 interface ErrorResponse {
   message: string;
@@ -34,7 +35,12 @@ function Page() {
       const router = useRouter()
       const params = useParams()
       const [document, setdocument] = useState<Document>()
-
+        const { user,loading } = useUser();
+        useEffect(() => {
+          if (!loading && !user) {
+            router.push('/login');
+          }
+        }, [user, loading, router]);
     useEffect(()=>{
       const fetchDocuments = async()=>{
         try {

@@ -44,7 +44,7 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
    if(response.status===201){
     setUser(response.data.user)
     toast(response.data.message)
-    router.replace(`/${username}/dashboard`)
+    router.replace(`/dashboard/${username}`)
     setIsSubmiting(false)
    }
   } catch (error) {

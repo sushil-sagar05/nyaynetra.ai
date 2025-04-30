@@ -8,15 +8,15 @@ import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
 
 function Page() {
-  const { user } = useUser();
+  const { user,loading } = useUser();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('Account Settings');
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       router.push('/login');
     }
-  }, [user, router]);
+  }, [user, loading, router]);
 
   const tabs = [
     { label: 'Account Settings', content: <Account_Settings /> },
