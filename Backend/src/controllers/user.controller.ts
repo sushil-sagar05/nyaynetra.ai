@@ -134,9 +134,16 @@ try {
        res.status(500).json({ success: false, message: "Internal Server Error" });
 }
 }
-const profile =async(req:authRequest,res:Response)=>{
-    res.status(200).json({user:req.user})
-}
+const profile = async (req: authRequest, res: Response) => {
+    if (!req.user) {
+       res.status(200).json({ user: null, guest: true });
+       return
+    }
+  
+     res.status(200).json({ user: req.user, guest: false });
+     return
+  };
+  
 const logout = async(req:authRequest,res:Response)=>{
     try {
         const user = req.user
