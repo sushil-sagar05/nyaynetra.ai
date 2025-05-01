@@ -42,7 +42,7 @@ const onSubmit = async(data:z.infer<typeof registerSchema>)=>{
   try {
    const response =  await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/register`,data)
    if(response.status===201){
-    setUser(response.data.data.user)
+    setUser(response.data.data)
     toast(response.data.message)
     router.replace(`/dashboard/${username}`)
     setIsSubmiting(false)
