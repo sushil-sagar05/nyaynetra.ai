@@ -68,8 +68,11 @@ function Page() {
     const handleDeleteSubmit = async()=>{
       try {
         const response = await api.delete(`${process.env.NEXT_PUBLIC_Backend_Url}/document/get-documents/${params.documentname}`)
-        toast(response.data.data)
-        router.push('/dashboard')
+        console.log(response.data.data)
+        if(response.data.data.result ==="ok"){
+          toast(response.data.message)
+          router.push(`/dashboard/${user?.username}`)
+        }
       } catch (error) {
         const axiosError = error as AxiosError<ErrorResponse>;
           const errorMessage= axiosError.response?.data.message;

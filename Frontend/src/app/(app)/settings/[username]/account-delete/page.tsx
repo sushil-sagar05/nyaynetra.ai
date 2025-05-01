@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 export default function AccountDeletePage() {
   const router = useRouter();
   return (
-    <section className="w-full min-h-[75vh] p-8 md:p-16 bg-[#f8f7f5] ">
+    <section className="w-full min-h-[75vh] p-8 md:p-16  ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full rounded-lg overflow-hidden">
         <div className="flex flex-col justify-center  p-6">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -20,7 +20,7 @@ export default function AccountDeletePage() {
           <h4 className='mt-3 text-orange-500 text-lg'>You can reactivate your account by logging in again...</h4>
           <Button
                 onClick={()=>router.push('/login')}
-                className='m-4 w-36  bg-orange-500  text-lg hover:bg-orange-700 cursor-pointer border-1 border-black'>
+                className='m-4 w-36  bg-orange-500  text-lg hover:bg-orange-700 cursor-pointer border-1'>
                   LogIn Again
                 </Button>
         </div>
