@@ -16,9 +16,9 @@ function FeaturesSection() {
         <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center ">
         Features
       </h1>
-      <div className='grid   sm:grid-cols-12 gap-4 mt-8'>
+      <div className='grid   sm:grid-cols-12 gap-4 mt-8 space-y-4'>
         <div className='sm:col-span-4    '>
-        <Card className='    flex justify-center  '>
+        <Card className='flex justify-center  '>
             <CardContent className='flex justify-center items-center   '>
             <Zap color="#f97316" size={100} />
             </CardContent>

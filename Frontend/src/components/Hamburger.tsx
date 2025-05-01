@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Sheet,
     SheetContent,
@@ -16,9 +16,12 @@ import ThemeToggle from './toggle'
 import api from '@/lib/api'
 import { toast } from 'sonner'
 import { AxiosError } from 'axios'
+import { usePathname } from 'next/navigation';
 function Hamburger() {
   const {user,setUser} = useUser()
+  const [open, setopen] = useState(false)
   const router = useRouter();
+  const pathname = usePathname();
   const handleBtnClick = (route:string)=>{
     router.push(route)
   }
@@ -36,9 +39,14 @@ function Hamburger() {
     }
  
   }
+  useEffect(() => {
+   setopen(false)
+  
+  }, [pathname])
+  
   return (
     <div>
-        <Sheet>
+        <Sheet open={open} onOpenChange={setopen}>
   <SheetTrigger><Menu size={35}/></SheetTrigger>
   <SheetContent>
     <SheetTitle className='p-8 flex gap-4'>

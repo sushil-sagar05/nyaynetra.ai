@@ -102,7 +102,7 @@ const ClientComponent = () => {
       </h3>
 
       }
-        <div className='grid grid-cols-12 sm:p-1 p-4 justify-center items-center '>
+        <div className='sm:grid sm:grid-cols-12 sm:p-1 p-4 justify-center items-center '>
         <div className='col-span-11 sm:col-span-7  min-h-[40vh]  flex justify-center items-center '>
           <div className="inner  border-2 rounded-lg border-blue-500 border-dashed flex justify-center items-center">
             <>

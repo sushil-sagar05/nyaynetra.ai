@@ -9,10 +9,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { SendHorizontal,WrapText,Download } from 'lucide-react'
 import { useParams} from 'next/navigation'
-
+import api from '@/lib/api'
+import { AxiosError } from 'axios'
+import { toast } from 'sonner'
+interface ErrorResponse {
+  message: string;
+}
 function Page() {
   const [activeTab, setActiveTab] = useState("Summary")
-  
+   const [isSaved, setisSaved] = useState(false)
+   const [disabled, setdisabled] = useState(false)
   const params = useParams()
   const filename = params?.filename 
   useEffect(() => {
@@ -22,11 +28,38 @@ function Page() {
   if (!filename) {
     return <div>Loading...</div>;
   }
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault()
+    if (!filename) {
+      return
+    }
+    try {
+      const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/${filename}/save-document`,{})
+      toast(response.data.data)
+      setisSaved(true)
+      setdisabled(true)
+    } catch (error) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      if(axiosError.status===400){
+        setdisabled(true)
+        toast.error("Guest is not allowed to save document")
+        return
+      }
+      const errorMessage= axiosError.response?.data.message;
+      toast(errorMessage)
+    }
+  }
   return (
     <main className='min-h-screen min-w-full'>
     <div className=' min-h-screen ' >
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl pl-6 p-4 " >Unlock Critical Insights: AI Legal Document Analysis in Action</h1>
       <Separator className='my-1' />
+      <Button disabled={disabled}
+      className='m-2'
+       onClick={(e)=>handleSubmit(e)}
+       >{isSaved?"Document Saved":"Save Document"}
+      </Button>
       <div className=" sm:grid sm:grid-cols-12 overflow-y-auto ">
         <div className='hidden sm:block sm:col-span-2 '>
           <AppSidebar activeTab={activeTab} setActiveTab={setActiveTab} documentId={filename as string}  />

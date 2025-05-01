@@ -50,7 +50,6 @@ interface ErrorResponse {
   export function AppSidebar({ activeTab, setActiveTab,documentId}: AppSidebarProps) {
     const [isSaved, setisSaved] = useState(false)
     const isMobile = useIsMobile();
-      console.log("Docid",documentId)
       const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>)=>{
         e.preventDefault()
         if (!documentId) {
