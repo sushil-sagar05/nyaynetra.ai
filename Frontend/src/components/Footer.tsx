@@ -7,7 +7,7 @@ function Footer() {
     <section className="w-full bg-background text-foreground px-4 md:px-8 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
         <div className="space-y-2">
-          <h2 className="text-3xl md:text-4xl font-bold">👁 Nyaynetra</h2>
+          <h2 className="font-bold bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600 bg-clip-text text-transparent hover:scale-105 transition-all"> Nyaynetra</h2>
           <h3 className="text-lg md:text-xl text-muted-foreground">Smart Analysis. Faster Decisions</h3>
         </div>
         <div className="flex flex-col sm:flex-row justify-between gap-6">

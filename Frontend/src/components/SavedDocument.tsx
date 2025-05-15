@@ -79,7 +79,7 @@ function SavedDocument() {
     <div>
         <div className='col-span-3 items-center justify-center scroll-auto   '>
         <Sheet >
-  <SheetTrigger className=' flex m-5 cursor-pointer'>Saved Documents <Save size={50}/></SheetTrigger>
+  <SheetTrigger className=' flex m-5 cursor-pointer'>Saved Documents <Save/></SheetTrigger>
   <SheetContent className='max-h-screen overflow-y-auto p-1'>
     <SheetHeader>
       <SheetTitle>Your Collection of Saved Documents</SheetTitle>

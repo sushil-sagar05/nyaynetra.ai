@@ -98,7 +98,7 @@ const ClientComponent = () => {
       {
         user?"":<h3 className="scroll-m-20 text-xl font-bold tracking-tight pt-1 text-red-600 pl-6">You are uploading as a guest...<Button   
         onClick={()=>router.push('/register')}        
-          className=' bg-orange-500 text-white m-2'>Sign In</Button>
+          className='bg-gradient-to-r from-purple-600 to-blue-500 m-2'>Sign In</Button>
       </h3>
 
       }
@@ -174,8 +174,8 @@ const ClientComponent = () => {
   <div className="flex justify-center items-center w-full">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl  shadow-md border-2 border-gray-500 border-dotted rounded-md p-4 sm:p-8">
       <div className="p-4">
-        <Card className="h-full">
-          <CardTitle className="text-center">Guest User</CardTitle>
+        <Card className="h-full border border-orange-400">
+          <CardTitle className="text-center text-orange-500 font-bold text-xl mt-4">Guest User</CardTitle>
           <CardContent className="flex flex-col sm:flex-row items-center gap-4">
             <Image
               className="h-[25vh] w-[35vh] rounded-lg object-cover"
@@ -192,13 +192,13 @@ const ClientComponent = () => {
           <CardFooter>
           <Button   
             onClick={()=>router.push('/register')}        
-              className=' bg-[#1338BE] text-white'>Sign In</Button>
+              className=' bg-gradient-to-r from-purple-600 to-blue-500 text-white'>Sign In</Button>
           </CardFooter>
         </Card>
       </div>
       <div className="p-4">
-        <Card className="h-full ">
-          <CardTitle className="text-center">Register User</CardTitle>
+        <Card className="h-full border border-purple-500 ">
+          <CardTitle className="text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-400 font-bold text-xl mt-4">Register User</CardTitle>
           <CardContent className="flex flex-col sm:flex-row items-center gap-4">
             <Image
               className="h-[25vh] w-[30vh] rounded-lg object-cover"

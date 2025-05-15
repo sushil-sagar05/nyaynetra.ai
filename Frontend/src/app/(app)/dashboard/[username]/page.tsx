@@ -149,7 +149,7 @@ function Page() {
               />
             </div>
             <div className="col-span-12 md:col-span-6 flex flex-col justify-center items-center text-center">
-              <h1 className="text-4xl font-semibold text-gray-800 tracking-tight leading-tight md:text-5xl lg:text-6xl">
+              <h1 className="text-4xl font-semibold  tracking-tight leading-tight md:text-5xl lg:text-6xl">
                 You have not <span className="text-orange-500">Uploaded</span> any Documents yet!!
               </h1>
               <div className="mt-6 w-full px-6">

@@ -49,10 +49,6 @@ function Hamburger() {
         <Sheet open={open} onOpenChange={setopen}>
   <SheetTrigger><Menu size={35}/></SheetTrigger>
   <SheetContent>
-    <SheetTitle className='p-8 flex gap-4'>
-      <p>Change Mode</p>
-      <ThemeToggle/>
-    </SheetTitle>
     <SheetHeader className=''>
       <SheetTitle><Button
       onClick={()=>handleBtnClick('/upload')}
