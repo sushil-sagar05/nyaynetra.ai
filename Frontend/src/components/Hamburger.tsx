@@ -12,7 +12,6 @@ import { Menu,Upload,User, Settings } from 'lucide-react'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext'
-import ThemeToggle from './toggle'
 import api from '@/lib/api'
 import { toast } from 'sonner'
 import { AxiosError } from 'axios'
