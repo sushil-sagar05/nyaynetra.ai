@@ -102,9 +102,10 @@ try {
     }
     const {accessToken,refreshToken}=await generateAccessandRefreshToken(user._id.toString())
     const loggedInUser = await UserModel.findById(user._id).select('-password -refreshToken')
-    const options = {
-        httpOnly: true,
-        secure: true,
+    const options:CookieOptions = {
+        httpOnly:true,
+        secure:true,
+        sameSite:"none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     }
      res.status(201)
