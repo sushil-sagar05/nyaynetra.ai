@@ -21,9 +21,9 @@ function ComparisonTable() {
       <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center mb-6">
         Comparisons
       </h1>
-      <section className="mt-3 px-4 sm:px-8 md:px-12 py-8">
+      <section className="mt-3  sm:px-8 md:px-12 py-8">
         <div className="flex justify-center items-center w-full">
-          <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl bg-off-white shadow-md border-2 border-dotted border-gray-500 rounded-md p-4">
+          <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl bg-off-white shadow-md border-2 border-dotted border-gray-500 rounded-md ">
             <div className="hidden md:block absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-1 border-l-2 border-dotted border-[#4A4A4A]"></div>
             <div className="p-2">
               <Card className="h-full border border-orange-400">

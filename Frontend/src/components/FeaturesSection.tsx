@@ -16,8 +16,8 @@ function FeaturesSection() {
       <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center">
         Features
       </h1>
-      <div className="grid sm:grid-cols-12 gap-4 mt-8">
-        <div className="sm:col-span-4 p-[2px] rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600">
+      <div className="grid sm:grid-cols-12 gap-16 mt-8">
+        <div className="sm:col-span-4 p-[2px] rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600 hover:p-2">
           <Card className="rounded-lg flex flex-col justify-center h-full">
             <CardContent className="flex justify-center items-center py-6">
               <Zap color="#FF8C42" size={100} />
@@ -33,7 +33,7 @@ function FeaturesSection() {
             </CardHeader>
           </Card>
         </div>
-        <div className="sm:col-span-4 p-[2px] rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600">
+        <div className="sm:col-span-4 p-[2px] rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600 hover:p-2">
           <Card className="rounded-lg flex flex-col justify-center h-full">
             <CardContent className="flex justify-center items-center py-6">
               <BarChart color="#FF8C42" size={100} />
@@ -49,7 +49,7 @@ function FeaturesSection() {
             </CardHeader>
           </Card>
         </div>
-        <div className="sm:col-span-4 p-[2px] rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600">
+        <div className="sm:col-span-4 p-[2px] rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600 hover:p-2 ">
           <Card className="rounded-lg flex flex-col justify-center h-full">
             <CardContent className="flex justify-center items-center py-6">
               <ShieldCheck color="#FF8C42" size={100} />
