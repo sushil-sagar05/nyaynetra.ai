@@ -1,7 +1,5 @@
 'use client'
 import React from 'react'
-import photo from '../../public/Law firm-bro.png'
-import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
