@@ -52,10 +52,12 @@ ScheduledDeletionforMulter();
 import userRoutes from './routes/user.routes';
 import documentRoutes from './routes/document.routes';
 import settingRoutes from './routes/settings.route';
+import analysisRoutes from './routes/analysis.routes'
 
 app.use('/user', userRoutes);
 app.use('/document', documentRoutes);
 app.use('/settings', settingRoutes);
+app.use('/analyze',analysisRoutes)
 
 import errors from "./globalError";
 app.use(errors.MulterError);
