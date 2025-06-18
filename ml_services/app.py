@@ -87,7 +87,6 @@ def clause_match():
 def analyze():
     data = request.get_json()
     document_url = data.get("documentUrl")
-    print(document_url)
     if not document_url:
         return jsonify({'error': 'No document URL provided'}), 400
 

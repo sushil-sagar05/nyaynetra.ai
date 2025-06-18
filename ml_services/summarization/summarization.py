@@ -18,21 +18,28 @@ def call_space_summarizer(text):
 
     try:
         response_json = response.json()
-    except Exception:
+    except Exception as e:
+        print(f" Failed to parse JSON: {e}")
+        print("Response content:", response.text)
         return None
 
     if response.status_code == 200:
+        print(" Raw response JSON:", response_json)
+
         return response_json.get("summary_combined", "")
     else:
+        print(f"Space summarizer failed: {response.status_code}, {response.text}")
         return None
+
 
 def summarize(chunks):
     if not chunks:
         raise ValueError("No valid text chunks were created. Please check the PDF content.")
 
     summaries = []
-    for chunk in chunks:
+    for i, chunk in enumerate(chunks, start=1):
         if chunk.strip():
+            print(f" Sending chunk {i}/{len(chunks)} to summarizer...")
             result = call_space_summarizer(chunk)
             if result:
                 summaries.append(result)
