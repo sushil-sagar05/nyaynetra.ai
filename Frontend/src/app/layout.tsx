@@ -8,6 +8,7 @@ import { UserProvider } from "@/context/UserContext";
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { ThemeProvider } from 'next-themes';
 import { Separator } from "@/components/ui/separator";
+import { ProgressBar } from '@/components/progressBar'
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <UserProvider>
+            <ProgressBar />
             {!isAuth && <Navbar />}
             <Separator/>
             <SidebarProvider>

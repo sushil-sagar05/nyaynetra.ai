@@ -12,6 +12,7 @@ import { useParams } from 'next/navigation'
 import api from '@/lib/api'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
+import LoadingModal from '@/components/Loading'
 
 interface ErrorResponse {
   message: string;
@@ -40,12 +41,14 @@ function Page() {
   const [shortSummary, setShortSummary] = useState('')
   const [riskTerms, setRiskTerms] = useState<RiskTerm[]>([])
   const [keyClauses, setKeyClauses] = useState<KeyClause[]>([])
+  const [loading,setLoading] = useState(false)
   const params = useParams()
   const filename = params?.filename
   useEffect(() => {
     if (!filename) return
 
     const runAnalysis = async () => {
+      setLoading(true)
       try {
         const response = await api.post(
           `${process.env.NEXT_PUBLIC_Backend_Url}/analyze/analysis/${filename}`,
@@ -55,6 +58,7 @@ function Page() {
         setShortSummary(response.data.data.summary.short_summary)
         setKeyClauses(response.data.data.key_clauses)
         setRiskTerms(response.data.data.risky_terms[0].risks)
+        setLoading(false)
       } catch {
         toast.error("Failed to fetch analysis.")
       }
@@ -96,6 +100,8 @@ function Page() {
   }
 
   return (
+    <>
+    {loading && <LoadingModal isOpen={loading}/>}
     <main className='min-h-screen min-w-full'>
       <div className='min-h-screen'>
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl pl-6 p-4">
@@ -221,6 +227,7 @@ function Page() {
         </div>
       </div>
     </main>
+    </>
   )
 }
 
