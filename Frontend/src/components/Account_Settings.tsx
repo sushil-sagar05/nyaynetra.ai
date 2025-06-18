@@ -149,7 +149,7 @@ function Account_Settings() {
                       <User size={40} className="border-2 rounded-full" />
                       <div>
                         <p className="font-bold">{username}</p>
-                        <p className="text-sm text-muted">{email}</p>
+                        <p className="text-sm ">{email}</p>
                       </div>
                     </div>
                     <ChevronRight />
@@ -244,13 +244,12 @@ function Account_Settings() {
 
               <AutoSave />
             </div>
-
+            <Button
+              onClick={()=>handleLogout()}
+                 className="bg-orange-500 mt-4 sm:hidden">Logout</Button>
             <div className="mt-6">
               <Account_Delete />
             </div>
-            <Button
-        onClick={()=>handleLogout()}
-        className="bg-orange-500 mt-4 sm:hidden">Logout</Button>
           </div>
         </div>
       </div>

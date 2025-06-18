@@ -109,11 +109,11 @@ const ClientComponent = () => {
            {
            <form onSubmit={handleSubmit(onSubmit)}
            >
-            <Card className=' h-full w-full flex items-center justify-center bg-[#ff725e]'>
+            <Card className=' h-full w-full flex items-center justify-center '>
               <CardHeader className=' text-center w-full'>Upload Document</CardHeader>
-              <CardHeader className=' text-center w-full text-black'>max size: 10Mb</CardHeader>
+              <CardHeader className=' text-center w-full '>max size: 10Mb</CardHeader>
               <CardContent className='space-y-4 '>
-              <div className=' cursor-pointer text-center  bg-[#ff725e]'{...getRootProps()}>
+              <div className=' cursor-pointer text-center  '{...getRootProps()}>
               <Upload className=' w-full' color='#1338BE' size={75}/>
               <Input className='border-white  bg-blue-500  '{...getInputProps()}>
               </Input>

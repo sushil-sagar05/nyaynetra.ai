@@ -90,7 +90,7 @@ function Page() {
               <ChartColumn size={80} />
               <CardTitle className="text-2xl sm:text-3xl mt-2">Total Analysis</CardTitle>
             </CardHeader>
-            <CardContent className="text-3xl">0</CardContent>
+            <CardContent className="text-3xl">{document.length}</CardContent>
           </Card>
         </div>
         <div className="col-span-12 sm:col-span-4">
