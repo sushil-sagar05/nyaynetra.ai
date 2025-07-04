@@ -98,7 +98,12 @@ const ClientComponent = () => {
       {
         user?"":<h3 className="scroll-m-20 text-xl font-bold tracking-tight pt-1 text-red-600 pl-6">You are uploading as a guest...<Button   
         onClick={()=>router.push('/register')}        
-          className='bg-gradient-to-r from-purple-600 to-blue-500 m-2'>Sign In</Button>
+          className='bg-gradient-to-r from-purple-600 to-blue-500 m-2'>Sign In</Button>  <a
+      href="#comparisons"
+      className="ml-4  text-sm"
+    >
+      See Comparisons
+    </a>
       </h3>
 
       }
@@ -166,7 +171,7 @@ const ClientComponent = () => {
 
         </div>
        {user ===null && (
-        <div className='  '>
+        <div id="comparisons" >
              <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center">
         Comparisons
       </h1>

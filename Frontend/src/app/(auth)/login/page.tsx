@@ -35,9 +35,7 @@ const onSubmit = async(data:z.infer<typeof loginSchema>)=>{
   setIsSubmiting(true)
   try {
    const response =  await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/login`,data)
-   console.log(response.data)
    const {username} = response.data.data.user
-   console.log(username)
    if(response.status===201){
     setUser(response.data.data.user)
     toast(response.data.message)

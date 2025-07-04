@@ -2,7 +2,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 import { Loader2 } from 'lucide-react'
 
 interface LoadingModalProps {
@@ -10,29 +17,28 @@ interface LoadingModalProps {
 }
 
 const messages = [
+  "Generating summary...",
   "Analyzing legal clauses...",
   "Detecting risks...",
-  "Generating summary...",
   "Finalizing insights...",
-  "Almost there..."
+  "Almost there...",
+  "Just some polishing..."
 ]
 
 const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showConfirm, setShowConfirm] = useState(false)
 
-  // Message rotation every 10 seconds
   useEffect(() => {
     if (!isOpen) return
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % messages.length)
-    }, 10000)
+    }, 60000)
 
     return () => clearInterval(interval)
   }, [isOpen])
 
-  // Handle close attempt
   const handleCancelAttempt = () => {
     setShowConfirm(true)
   }
@@ -59,10 +65,12 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
           <p className="text-muted-foreground text-sm">
             {messages[currentIndex]}
           </p>
+          <p className="text-xs text-muted-foreground">
+            This may take several minutes b/c we are running on free space. Please do not close the window.
+          </p>
         </DialogContent>
       </Dialog>
 
-      {/* Alert Dialog for confirmation */}
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
