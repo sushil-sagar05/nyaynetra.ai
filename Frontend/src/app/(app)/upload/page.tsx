@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDropzone } from 'react-dropzone';
 import { Input } from '@/components/ui/input';
-import { Loader2, Upload,X } from 'lucide-react';
+import { Loader2, Upload, X, FileText, Shield, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useForm } from "react-hook-form"
 import { toast } from 'sonner';
@@ -15,20 +15,24 @@ import traditionals from '../../../../public/Questions-rafiki.png'
 import New from '../../../../public/Mention-bro.png'
 import api from '@/lib/api';
 import { AxiosError } from 'axios';
+
 interface UploadFormData {
-  file:FileList;
-  public:boolean;
-};
+  file: FileList;
+  public: boolean;
+}
+
 interface ErrorResponse {
   message: string;
 }
+
 const ClientComponent = () => {
   const { user } = useUser();  
   const [isClient, setIsClient] = useState(false);
-  const [SelectedFile, setSelectedFile] = useState<File|null>(null)
-  const [isSubmitting, setisSubmitting] = useState(false)
-  const {handleSubmit}=useForm<UploadFormData>();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { handleSubmit } = useForm<UploadFormData>();
   const router = useRouter();
+
   useEffect(() => {
     setIsClient(true); 
   }, []);
@@ -48,188 +52,354 @@ const ClientComponent = () => {
       "application/msword": [".doc", ".docx"],
     },
   });
+
   if (!isClient) {
-    return <div>Loading...</div>; 
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    ); 
   }
-    const onSubmit=async()=>{
-      if (!SelectedFile) {
-        toast('Please select a file to upload.');
-        return;
-      }
-      
-      setisSubmitting(true);
-      const formData = new FormData();
-      formData.append('document', SelectedFile);
-      try {
-        const route = user ? '/document/upload' : '/document/guest/upload';
-      
-        const response = await api.post(
-          `${process.env.NEXT_PUBLIC_Backend_Url}${route}`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
-      
-        const { _id } = response.data.data;
-      if(response.status===200)
-      {
-      router.push(`/analysis/${_id}`)
-      toast.success(response.data.message);
-      setisSubmitting(false)
+
+  const onSubmit = async () => {
+    if (!selectedFile) {
+      toast.error('Please select a file to upload.');
+      return;
     }
+    
+    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.append('document', selectedFile);
+    
+    try {
+      const route = user ? '/document/upload' : '/document/guest/upload';
+    
+      const response = await api.post(
+        `${process.env.NEXT_PUBLIC_Backend_Url}${route}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+    
+      const { _id } = response.data.data;
+      if (response.status === 200) {
+        router.push(`/analysis/${_id}`);
+        toast.success(response.data.message);
+      }
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
-      const errorMessage= axiosError.response?.data.message;
-      toast(errorMessage)
-    }finally {
-      setisSubmitting(false);
-      setSelectedFile(null)
+      const errorMessage = axiosError.response?.data.message;
+      toast.error(errorMessage || 'Upload failed');
+    } finally {
+      setIsSubmitting(false);
+      setSelectedFile(null);
     }
-
-    }
+  };
 
   return (
-    <div className='h-full w-[100vw] '>
-      <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl pl-6 p-4 " >Upload Your Legal Files and Let Us Help You Make <span className='text-orange-500'>Informed Decisions</span></h1>
-      <h3 className="scroll-m-20 text-xl font-md tracking-tight pt-1  pl-6">Focuses on empowerment and helping users make better legal decisions. </h3>
-      {
-        user?"":<h3 className="scroll-m-20 text-xl font-bold tracking-tight pt-1 text-red-600 pl-6">You are uploading as a guest...<Button   
-        onClick={()=>router.push('/register')}        
-          className='bg-gradient-to-r from-purple-600 to-blue-500 m-2'>Sign In</Button>  <a
-      href="#comparisons"
-      className="ml-4  text-sm"
-    >
-      See Comparisons
-    </a>
-      </h3>
-
-      }
-        <div className='sm:grid sm:grid-cols-12 sm:p-1 p-4 justify-center items-center '>
-        <div className='col-span-11 sm:col-span-7  min-h-[40vh]  flex justify-center items-center '>
-          <div className="inner  border-2 rounded-lg border-blue-500 border-dashed flex justify-center items-center">
-            <>
-           {
-           <form onSubmit={handleSubmit(onSubmit)}
-           >
-            <Card className=' h-full w-full flex items-center justify-center '>
-              <CardHeader className=' text-center w-full'>Upload Document</CardHeader>
-              <CardHeader className=' text-center w-full '>max size: 10Mb</CardHeader>
-              <CardContent className='space-y-4 '>
-              <div className=' cursor-pointer text-center  '{...getRootProps()}>
-              <Upload className=' w-full' color='#1338BE' size={75}/>
-              <Input className='border-white  bg-blue-500  '{...getInputProps()}>
-              </Input>
-              {
-              isDragActive ? (
-               <p>Drop the files here ...</p>
-                ) : SelectedFile ? (
-                <>
-            <div className='b rounded-md h-[4vh] '>
-            <p className='flex justify-around'>Filename: {SelectedFile.name} <X
-            onClick={()=>setSelectedFile(null)}
-            /></p>
-            </div>
-            </>
-          ) : (
-           <p>Drag &apos;n&apos;drop file here, or click to select files</p>
-         )
-          }
-
+    <main className='min-h-screen w-full bg-gray-50 dark:bg-gray-900'>
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+              Upload Your Legal Files and Let Us Help You Make{' '}
+              <span className='bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent'>
+                Informed Decisions
+              </span>
+            </h1>
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              AI-powered legal document analysis that empowers better decision-making
+            </p>
+          </div>
+          {!user && (
+            <div className="mt-8 max-w-4xl mx-auto">
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+                  <span className="text-amber-700 dark:text-amber-300 font-medium">
+                    ⚠️ You are uploading as a guest
+                  </span>
+                  <div className="flex flex-col sm:flex-row items-center gap-3">
+                    <Button
+                      onClick={() => router.push('/register')}        
+                      size="sm"
+                      className='bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600'
+                    >
+                      Sign Up for Full Features
+                    </Button>
+                    <a
+                      href="#comparisons"
+                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm underline"
+                    >
+                      See Feature Comparison
+                    </a>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-center space-x-2">
-            <Button disabled={isSubmitting}
-               className='mb-1  mr-4 bg-[#1338BE] text-white'>
-                 {
-            isSubmitting?<>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Please wait
-            </>:("Upload Document")
-          }
-               </Button>
-          </div>
-
-              </CardContent>
-            </Card>
-           </form>
-           }
-            </>
-          
-          </div>
+            </div>
+          )}
         </div>
-        <div className="hidden sm:block col-span-5 min-h-[50vh]   ">
-        <Image
-          src={photo}
-          alt="Upload Illustration"
-          className="rounded-lg"
-          width={500}
-          height={300}
-          objectFit="cover"
-        />
-        </div>
-
-        </div>
-       {user ===null && (
-        <div id="comparisons" >
-             <h1 className="scroll-m-20 text-4xl font-semibold tracking-tight lg:text-5xl text-center">
-        Comparisons
-      </h1>
-            <section className="mt-3 px-4 sm:px-8 md:px-16 py-8">
-  <div className="flex justify-center items-center w-full">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl  shadow-md border-2 border-gray-500 border-dotted rounded-md p-4 sm:p-8">
-      <div className="p-4">
-        <Card className="h-full border border-orange-400">
-          <CardTitle className="text-center text-orange-500 font-bold text-xl mt-4">Guest User</CardTitle>
-          <CardContent className="flex flex-col sm:flex-row items-center gap-4">
-            <Image
-              className="h-[25vh] w-[35vh] rounded-lg object-cover"
-              src={traditionals}
-              alt="Document Image"
-              layout="intrinsic"
-            />
-            <ul className="font-semibold list-disc pl-5 space-y-2">
-              <li> AI Responses: Receives basic, generic legal advice with no personalization.</li>
-              <li>Rate Limits: Restricted to a limited number of queries per day.</li>
-              <li>Save & Track: Cannot save or track past queries or responses.</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-          <Button   
-            onClick={()=>router.push('/register')}        
-              className=' bg-gradient-to-r from-purple-600 to-blue-500 text-white'>Sign In</Button>
-          </CardFooter>
-        </Card>
       </div>
-      <div className="p-4">
-        <Card className="h-full border border-purple-500 ">
-          <CardTitle className="text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-400 font-bold text-xl mt-4">Register User</CardTitle>
-          <CardContent className="flex flex-col sm:flex-row items-center gap-4">
-            <Image
-              className="h-[25vh] w-[30vh] rounded-lg object-cover"
-              src={New}
-              alt="Document Image"
-              layout="intrinsic"
-            />
-            <ul className="font-semibold list-disc pl-5 space-y-2">
-              <li>AI Responses: Receives personalized, in-depth legal advice tailored to their profile.</li>
-              <li>Rate Limits: Can ask unlimited questions and get follow-up answers.</li>
-              <li>Save & Track: Can save and revisit all past interactions with the AI</li>
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
-      
-    </div>
-  </div>
-</section>
-        
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-16'>
+          <div className='order-2 lg:order-1'>
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Upload Document
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Maximum file size: 10MB • Supports PDF, DOC, DOCX, Images
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+                <Card className='border-2 border-dashed border-blue-300 hover:border-blue-400 transition-all duration-300 bg-white dark:bg-gray-800'>
+                  <CardContent className='p-6'>
+                    <div 
+                      className={`p-8 rounded-xl transition-all duration-300 cursor-pointer ${
+                        isDragActive 
+                          ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-400' 
+                          : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border-2 border-gray-200 dark:border-gray-600'
+                      }`}
+                      {...getRootProps()}
+                    >
+                      <Input {...getInputProps()} className="hidden" />
+                      
+                      <div className="text-center">
+                        <Upload 
+                          className={`mx-auto mb-4 ${
+                            isDragActive ? 'text-blue-500' : 'text-gray-400'
+                          }`} 
+                          size={48}
+                        />
+                        
+                        {isDragActive ? (
+                          <p className="text-lg font-medium text-blue-600">
+                            Drop the file here...
+                          </p>
+                        ) : selectedFile ? (
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                              <FileText className="w-5 h-5 text-green-600" />
+                              <span className="font-medium text-green-700 dark:text-green-300 text-sm">
+                                {selectedFile.name}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedFile(null);
+                                }}
+                                className="text-red-500 hover:text-red-700 transition-colors"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              File ready to upload. Click the button below to proceed.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <p className="text-lg text-gray-700 dark:text-gray-300">
+                              Drag & drop your file here, or{' '}
+                              <span className="text-blue-600 font-medium">browse</span>
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              PDF, DOC, DOCX, PNG, JPG files supported
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <div className="mt-6">
+                  <Button 
+                    type="submit"
+                    disabled={isSubmitting || !selectedFile}
+                    size="lg"
+                    className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 px-8 py-3 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50'
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin"/>
+                        Analyzing Document...
+                      </>
+                    ) : (
+                      <>
+                        Upload & Analyze
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                  <Clock className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Instant Analysis
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                  <Shield className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    100% Secure
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                  <FileText className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    AI-Powered
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="order-1 lg:order-2">
+            <div className="relative">
+              <div className="relative bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8">
+                <Image
+                  src={photo}
+                  alt="Upload Illustration"
+                  className="w-full h-auto max-w-md mx-auto"
+                  width={400}
+                  height={300}
+                  priority
+                />
+              </div>
+            </div>
+          </div>
         </div>
+        {!user && (
+          <div id="comparisons" className="mt-20">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Guest vs Registered User
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300">
+                See what you unlock with a free account
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              <Card className="relative overflow-hidden border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20">
+                <div className="absolute top-4 right-4">
+                  <span className="px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full">
+                    LIMITED
+                  </span>
+                </div>
+                
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl font-bold text-orange-600">
+                    Guest User
+                  </CardTitle>
+                </CardHeader>
+                
+                <CardContent className="space-y-6">
+                  <div className="flex justify-center">
+                    <Image
+                      className="h-40 w-auto rounded-xl object-contain"
+                      src={traditionals}
+                      alt="Guest Features"
+                      width={200}
+                      height={160}
+                    />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                      <span className="text-orange-500 mt-1 text-lg">•</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        Basic AI analysis with limited features
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                      <span className="text-orange-500 mt-1 text-lg">•</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        Cannot save or track document analysis
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                      <span className="text-orange-500 mt-1 text-lg">•</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        Limited daily uploads and processing
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+                
+                <CardFooter>
+                  <Button
+                    onClick={() => router.push('/register')}
+                    className='w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600'
+                  >
+                    Upgrade to Full Access
+                  </Button>
+                </CardFooter>
+              </Card>
+              <Card className="relative overflow-hidden border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
+                <div className="absolute top-4 right-4">
+                  <span className="px-3 py-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-bold rounded-full">
+                    PREMIUM
+                  </span>
+                </div>
+                
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+                    Registered User
+                  </CardTitle>
+                </CardHeader>
+                
+                <CardContent className="space-y-6">
+                  <div className="flex justify-center">
+                    <Image
+                      className="h-40 w-auto rounded-xl object-contain"
+                      src={New}
+                      alt="Premium Features"
+                      width={200}
+                      height={160}
+                    />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                      <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        <strong>Advanced AI:</strong> Personalized, in-depth legal analysis
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                      <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        <strong>Save & Track:</strong> Access all past document analyses
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                      <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5 flex-shrink-0">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        <strong>Unlimited:</strong> No restrictions on uploads or features
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         )}
       </div>
+    </main>
   );
 };
 
 export default ClientComponent;
-
-

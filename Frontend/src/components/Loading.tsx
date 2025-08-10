@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Dialog, DialogContent ,DialogTitle} from '@/components/ui/dialog'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -50,6 +50,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
   return (
     <>
       <Dialog open={isOpen}>
+        <DialogTitle>Loading Analysis</DialogTitle>
         <DialogContent
           onEscapeKeyDown={(e) => {
             e.preventDefault()
