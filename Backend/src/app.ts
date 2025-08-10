@@ -15,16 +15,22 @@ app.use(cookieParser());
 
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
+    console.log('🔍 CORS Debug - Incoming Origin:', origin);
     
     const allowedOrigins = [
       process.env.FRONTEND_URL,
       'http://localhost:3000',
-      undefined
+      undefined  // Allow server-to-server requests
     ];
     
+    console.log('📋 Allowed Origins:', allowedOrigins);
+    console.log('🏠 Environment FRONTEND_URL:', process.env.FRONTEND_URL);
+    
     if (allowedOrigins.includes(origin)) {
+      console.log('✅ Origin ALLOWED:', origin);
       callback(null, true);
     } else {
+      console.log('❌ Origin BLOCKED:', origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
@@ -41,6 +47,16 @@ const corsOptions: CorsOptions = {
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function(data) {
+    console.log('📤 Response Headers being sent:');
+    console.log('Access-Control-Allow-Origin:', res.getHeader('Access-Control-Allow-Origin'));
+    console.log('Access-Control-Allow-Credentials:', res.getHeader('Access-Control-Allow-Credentials'));
+    return originalSend.call(this, data);
+  };
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
