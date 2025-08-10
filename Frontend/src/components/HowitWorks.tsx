@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Image, { StaticImageData } from 'next/image'
-import { useIsMobile } from "@/hooks/use-mobile"
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -21,9 +20,9 @@ interface StepItem {
   fullTitle: string;
   shortDesc: string;
   desc: string;
-  image: StaticImageData;
+  image: StaticImageData; 
   step: string;
-  color: ColorType;
+  color: ColorType; 
   features: string[];
 }
 
@@ -42,7 +41,7 @@ const items: StepItem[] = [
   {
     title: "Analyze Document",
     shortTitle: "Analyze",
-    fullTitle: "2. AI-Powered Analysis",
+    fullTitle: "2. AI-Powered Analysis", 
     shortDesc: "AI scans and extracts insights",
     desc: "Our advanced AI scans and interprets every section, extracting key clauses, risks, and insights using state-of-the-art NLP technology.",
     image: AnalysisO,
@@ -57,7 +56,7 @@ const items: StepItem[] = [
     shortDesc: "View summaries and risks",
     desc: "View detailed summaries, important clauses, obligations, and potential risks highlighted with clear explanations and actionable insights.",
     image: ReviewO,
-    step: "Step 3 of 4",
+    step: "Step 3 of 4", 
     color: "purple",
     features: ["Interactive summaries", "Risk highlighting", "Clause categorization", "Export options"]
   },
@@ -74,7 +73,14 @@ const items: StepItem[] = [
   },
 ]
 
-const colorStyles: Record<ColorType, any> = {
+const colorStyles: Record<ColorType, {
+  active: string;
+  inactive: string;
+  number: string;
+  activeNumber: string;
+  gradient: string;
+  badge: string;
+}> = {
   blue: {
     active: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white border-blue-500 shadow-lg shadow-blue-200 dark:shadow-blue-900/20',
     inactive: 'hover:bg-blue-50 hover:border-blue-200 dark:hover:bg-blue-950/20 dark:hover:border-blue-800',
@@ -110,7 +116,6 @@ const colorStyles: Record<ColorType, any> = {
 }
 
 function HowItWorks() {
-  const isMobile = useIsMobile()
   const [activeTab, setActiveTab] = useState(items[0].title)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [progress, setProgress] = useState(0)
@@ -121,21 +126,26 @@ function HowItWorks() {
 
     if (isAutoPlaying) {
       progressInterval = setInterval(() => {
-        setProgress(prev => (prev >= 100 ? 0 : prev + (100 / 60)))
+        setProgress(prev => {
+          if (prev >= 100) {
+            return 0
+          }
+          return prev + (100 / 60) 
+        })
       }, 100)
-
       interval = setInterval(() => {
         setActiveTab(prev => {
           const currentIndex = items.findIndex(item => item.title === prev)
-          return items[(currentIndex + 1) % items.length].title
+          const nextIndex = (currentIndex + 1) % items.length
+          return items[nextIndex].title
         })
         setProgress(0)
       }, 6000)
     }
-
+    
     return () => {
-      clearInterval(interval)
-      clearInterval(progressInterval)
+      if (interval) clearInterval(interval)
+      if (progressInterval) clearInterval(progressInterval)
     }
   }, [isAutoPlaying])
 
@@ -147,7 +157,9 @@ function HowItWorks() {
 
   const toggleAutoPlay = () => {
     setIsAutoPlaying(!isAutoPlaying)
-    if (!isAutoPlaying) setProgress(0)
+    if (!isAutoPlaying) {
+      setProgress(0)
+    }
   }
 
   const resetDemo = () => {
@@ -163,7 +175,7 @@ function HowItWorks() {
           <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
           <span className="text-sm font-medium text-blue-700 dark:text-blue-300">How It Works</span>
         </div>
-
+        
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           Transform Legal Analysis in{' '}
           <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
@@ -173,13 +185,22 @@ function HowItWorks() {
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
           Experience the future of legal document analysis with our AI-powered platform that simplifies complex legal workflows
         </p>
-
         <div className="flex items-center justify-center gap-4 mt-8">
-          <Button variant="outline" size="sm" onClick={toggleAutoPlay} className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleAutoPlay}
+            className="flex items-center gap-2"
+          >
             {isAutoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             {isAutoPlaying ? 'Pause Demo' : 'Play Demo'}
           </Button>
-          <Button variant="ghost" size="sm" onClick={resetDemo} className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetDemo}
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-400"
+          >
             <RotateCcw className="w-4 h-4" />
             Reset
           </Button>
@@ -192,18 +213,35 @@ function HowItWorks() {
             {items.map((item, index) => {
               const isActive = activeTab === item.title
               const colors = colorStyles[item.color]
+              
               return (
                 <div key={item.title} className="relative">
-                  <button onClick={() => handleTabChange(item.title)} className={`w-full text-left p-4 rounded-xl transition-all duration-300 border-2 group ${isActive ? colors.active : `bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-gray-200 dark:border-gray-700 ${colors.inactive}`}`}>
+                  <button
+                    onClick={() => handleTabChange(item.title)}
+                    className={`
+                      w-full text-left p-4 rounded-xl transition-all duration-300 border-2 group
+                      ${isActive 
+                        ? colors.active
+                        : `bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-gray-200 dark:border-gray-700 ${colors.inactive}`
+                      }
+                    `}
+                  >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 flex items-center justify-center font-bold rounded-full text-sm flex-shrink-0 transition-all duration-300 ${isActive ? colors.activeNumber : colors.number}`}>
+                      <div className={`
+                        w-10 h-10 flex items-center justify-center font-bold rounded-full text-sm flex-shrink-0 transition-all duration-300
+                        ${isActive ? colors.activeNumber : colors.number}
+                      `}>
                         {index + 1}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className={`font-bold text-lg mb-1 ${isActive ? 'text-white' : 'text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200'}`}>
+                        <div className={`font-bold text-lg mb-1 transition-colors ${
+                          isActive ? 'text-white' : 'text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200'
+                        }`}>
                           {item.shortTitle}
                         </div>
-                        <div className={`text-sm leading-relaxed ${isActive ? 'text-white/90' : 'text-gray-600 dark:text-gray-400'}`}>
+                        <div className={`text-sm leading-relaxed ${
+                          isActive ? 'text-white/90' : 'text-gray-600 dark:text-gray-400'
+                        }`}>
                           {item.shortDesc}
                         </div>
                       </div>
@@ -211,27 +249,33 @@ function HowItWorks() {
                   </button>
                   {isActive && isAutoPlaying && (
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-xl overflow-hidden">
-                      <div className="h-full bg-white transition-all duration-100 ease-linear" style={{ width: `${progress}%` }} />
+                      <div 
+                        className="h-full bg-white transition-all duration-100 ease-linear"
+                        style={{ width: `${progress}%` }}
+                      />
                     </div>
                   )}
                 </div>
               )
             })}
           </div>
-
           <div className="mt-6 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Progress</span>
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Progress
+              </span>
               <span className="text-sm text-gray-500 dark:text-gray-500">
                 {items.findIndex(item => item.title === activeTab) + 1}/4
               </span>
             </div>
             <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div className={`bg-gradient-to-r ${colorStyles[items.find(item => item.title === activeTab)?.color || 'blue'].gradient} h-2 rounded-full transition-all duration-500`} style={{ width: `${((items.findIndex(item => item.title === activeTab) + 1) / items.length) * 100}%` }} />
+              <div 
+                className={`bg-gradient-to-r ${colorStyles[items.find(item => item.title === activeTab)?.color || 'blue'].gradient} h-2 rounded-full transition-all duration-500`}
+                style={{ width: `${((items.findIndex(item => item.title === activeTab) + 1) / items.length) * 100}%` }}
+              />
             </div>
           </div>
         </div>
-
         <div className="lg:col-span-8 order-1 lg:order-2">
           <Card className="overflow-hidden shadow-2xl border-0 bg-white dark:bg-gray-800">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -239,10 +283,15 @@ function HowItWorks() {
                 <TabsContent key={item.title} value={item.title} className="m-0">
                   <div className="relative group">
                     <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
-                      <Image src={item.image} alt={item.fullTitle} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" priority={item.title === items[0].title} />
+                      <Image
+                        src={item.image}
+                        alt={item.fullTitle}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        priority={item.title === items[0].title}
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
-
+                    
                     <CardContent className="p-6 sm:p-8 bg-white dark:bg-gray-800">
                       <div className="flex flex-wrap items-center gap-3 mb-4">
                         <Badge className={`px-3 py-1 rounded-full text-xs font-medium ${colorStyles[item.color].badge}`}>
@@ -258,14 +307,13 @@ function HowItWorks() {
                           </div>
                         </div>
                       </div>
-
+                      
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3">
                         {item.fullTitle}
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed mb-4">
                         {item.desc}
                       </p>
-
                       <div className="grid grid-cols-2 gap-2">
                         {item.features.map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">

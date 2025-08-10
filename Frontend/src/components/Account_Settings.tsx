@@ -26,6 +26,10 @@ import {
 interface ErrorResponse {
   message: string;
 }
+interface PendingChanges {
+  hasProfileChanges: boolean;
+  hasPasswordChange: boolean;
+}
 
 function Account_Settings() {
   const { user, setUser } = useUser();
@@ -33,7 +37,7 @@ function Account_Settings() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [pendingChanges, setPendingChanges] = useState<any>(null);
+  const [pendingChanges, setPendingChanges] = useState<PendingChanges | null>(null); 
   const [confirmPassword, setConfirmPassword] = useState('');
   
   const [formData, setFormData] = useState({
@@ -139,7 +143,15 @@ function Account_Settings() {
 
   const confirmAndSave = async () => {
     try {
-      const updateData: any = {};
+      const updateData: {
+        username?: string;
+        email?: string;
+        currentPassword?: string;
+        newPassword?: string;
+        confirmPassword: string;
+      } = {
+        confirmPassword: confirmPassword
+      };
       
       if (pendingChanges?.hasProfileChanges) {
         updateData.username = formData.username;
@@ -150,8 +162,6 @@ function Account_Settings() {
         updateData.currentPassword = formData.currentPassword;
         updateData.newPassword = formData.newPassword;
       }
-      
-      updateData.confirmPassword = confirmPassword;
 
       const response = await api.put(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-profile`, updateData);
       
@@ -308,7 +318,6 @@ function Account_Settings() {
                 </div>
               )}
             </div>
-
             <Separator />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">

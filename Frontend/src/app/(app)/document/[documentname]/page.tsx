@@ -392,7 +392,7 @@ function Page() {
                                       Document Text
                                     </h4>
                                     <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
-                                      "{clause.matched_text}"
+                                      &ldquo;{clause.matched_text}&rdquo;
                                     </p>
                                   </div>
                                   <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -437,7 +437,7 @@ function Page() {
                               No Key Clauses Identified
                             </h3>
                             <p className="text-sm text-gray-500 dark:text-gray-500">
-                              The analysis didn't identify any specific contractual clauses in this document.
+                              The analysis didn&apos;t identify any specific contractual clauses in this document.
                             </p>
                           </div>
                         )}
@@ -471,7 +471,7 @@ function Page() {
                                       {risk.category.replace(/_/g, ' ')}
                                     </span>
                                     <span className="text-red-700 dark:text-red-300 font-semibold text-sm sm:text-lg break-words">
-                                      "{risk.term}"
+                                      &ldquo;{risk.term}&rdquo;
                                     </span>
                                   </div>
                                   <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex flex-row sm:flex-col sm:text-right gap-4 sm:gap-1">
