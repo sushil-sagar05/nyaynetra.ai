@@ -37,9 +37,12 @@ const analysis = async(req:authRequest,res:Response)=>{
             throw new ApiError(404, "Document not found");
         }
         const documentUrl=retrievedDocument?.ClouinaryUrl
-        const flaskUrl= `${process.env.Flask_Url}/analysis`
-        const response = await axios.post(flaskUrl,{documentUrl});
-         const { summary, risky_terms, key_clauses } = response.data;
+        const flaskUrl= `${process.env.FLASK_URL}/analysis`  
+        const response = await axios.post(flaskUrl,{documentUrl}, {
+            timeout: 600000  
+        });
+        const analysisData = response.data;
+        const { summary, risky_terms, key_clauses, doc_id, chat_ready, vector_storage, total_processing_time, chunk_count } = analysisData;    
         if (!summary || !risky_terms|| !key_clauses ) {
             throw new ApiError(400, "Incomplete analysis received from Flask ");
         }
@@ -48,7 +51,12 @@ const analysis = async(req:authRequest,res:Response)=>{
             documentId,
             summary,
             risky_terms,
-            key_clauses
+            key_clauses,
+            flask_doc_id: doc_id, 
+            chat_ready: chat_ready || false,
+            vector_storage_status: vector_storage === 'success' ? 'success' : 'failed',
+            processing_time: total_processing_time,
+            chunk_count: chunk_count || 0
          })
          const savedAnalysisResult = await newAnalysis.save()
          res.status(200).json(new ApiResponse(201,savedAnalysisResult,"Analysis of document generated"))
@@ -58,6 +66,7 @@ const analysis = async(req:authRequest,res:Response)=>{
         res.status(500).json(new ApiError(500, "Error analyzing document"));
     }
 }
+
 
 const getAnalysisById = async(req:authRequest,res:Response)=>{
    try {
@@ -73,9 +82,107 @@ const getAnalysisById = async(req:authRequest,res:Response)=>{
         res.status(500).json(new ApiError(500, "Error getting document"));
    }
 }
+const chatWithDocumentStream = async (req: authRequest, res: Response) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            throw new ApiError(400, "No user present");
+        }
+
+        const { documentId } = req.params;
+        const { message } = req.body;
+
+        if (!message?.trim()) {
+            throw new ApiError(400, "Message is required");
+        }
+
+        const analysis = await AnalysisModel.findOne({
+            userId: user._id,
+            documentId: documentId
+        });
+
+        if (!analysis) {
+            throw new ApiError(404, "Document analysis not found");
+        }
+
+        if (!analysis.chat_ready) {
+            throw new ApiError(400, "Document is not ready for chat");
+        }
+
+        const flaskDocId = analysis.flask_doc_id;
+        if (!flaskDocId) {
+            throw new ApiError(400, "Flask document ID not found");
+        }
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+        });
+
+        res.write(`data: ${JSON.stringify({
+            type: 'status',
+            message: 'Processing your question...'
+        })}\n\n`);
+
+        try {
+            const chatResponse = await axios.post(`${process.env.FLASK_URL}/chat`, {
+                message: message,
+                document_id: flaskDocId
+            }, {
+                timeout: 60000
+            });
+
+            const result = chatResponse.data;
+
+            if (!result.response) {
+                res.write(`data: ${JSON.stringify({
+                    type: 'error',
+                    message: 'No response received from chat service'
+                })}\n\n`);
+                res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
+                res.end();
+                return;
+            }
+
+            const words = result.response.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                res.write(`data: ${JSON.stringify({
+                    type: 'word',
+                    word: words[i],
+                    index: i
+                })}\n\n`);
+                
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+
+            res.write(`data: ${JSON.stringify({
+                type: 'complete',
+                response: result.response,
+                sources: result.sources || [],
+                chunks_used: result.chunks_used || 0
+            })}\n\n`);
+
+        } catch (error: any) {
+            res.write(`data: ${JSON.stringify({
+                type: 'error',
+                message: error.response?.data?.error || error.message
+            })}\n\n`);
+        }
+
+        res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
+        res.end();
+
+    } catch (error: any) {
+        console.error("Streaming chat error:", error.message);
+        if (!res.headersSent) {
+            res.status(500).json(new ApiError(500, "Error in streaming chat"));
+        }
+    }
+};
 
 const analysisController={
     analysis,
-    getAnalysisById
+    getAnalysisById,
+    chatWithDocumentStream
 }
 export default analysisController

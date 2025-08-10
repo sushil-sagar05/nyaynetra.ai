@@ -7,6 +7,7 @@ import authUser from '../middlewares/auth.middleware';
 
 
 const router = express.Router();
-router.post('/analysis/:documentId',authUser,analysisController.analysis);
+router.get('/analysis/:documentId',authUser,analysisController.analysis);
 router.post('/get-analyzed-document/:documentId',authUser,analysisController.getAnalysisById);
+router.post('/chat-stream/:documentId', authUser, analysisController.chatWithDocumentStream);
 export default router;

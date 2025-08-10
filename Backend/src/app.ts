@@ -15,8 +15,14 @@ app.use(cookieParser());
 
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigin = process.env.FRONTEND_URL;
-    if (!origin || origin === allowedOrigin) {
+    
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+      'http://localhost:3000',
+      undefined
+    ];
+    
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -24,17 +30,17 @@ const corsOptions: CorsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'Cache-Control',
+    'Accept',
+    'Origin',
+    'X-Requested-With'
+  ],
+  optionsSuccessStatus: 200
 };
-app.use((req, res, next) => {
-  console.log("Request Origin:", req.headers.origin);
-  next();
-});
-
 app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
