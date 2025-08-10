@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Eye, EyeOff, ArrowRight, Shield, Sparkles, Users, TrendingUp, UserPlus } from "lucide-react"
+import { Loader2, Eye, EyeOff, ArrowRight, Shield, Sparkles, UserPlus } from "lucide-react"
 import { toast } from "sonner"
 import { registerSchema } from "@/Schemas/register.schema"
 import { useUser } from "@/context/UserContext"
@@ -62,7 +62,8 @@ function Page() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col">
+      
       <div className="w-full border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <Link href='/' className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -73,9 +74,11 @@ function Page() {
           </Link>
         </div>
       </div>
+
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-6 min-h-0">
         <div className="w-full max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-8 items-center h-full">
+            
             <div className="w-full max-w-md mx-auto lg:mx-0">
               <Card className="border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm">
                 <CardHeader className="space-y-3 pb-4">
@@ -90,6 +93,7 @@ function Page() {
                       Create your account to access AI legal insights
                     </p>
                   </div>
+
                   <div className="flex gap-2 justify-center">
                     <Badge variant="secondary" className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
                       <Sparkles className="w-3 h-3 mr-1" />
@@ -106,7 +110,6 @@ function Page() {
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
                       
-                      {/* ✅ Name Fields in Grid */}
                       <div className="grid grid-cols-2 gap-3">
                         <FormField
                           name="fullname.firstname"
@@ -148,6 +151,7 @@ function Page() {
                           )}
                         />
                       </div>
+
                       <FormField
                         name="username"
                         control={form.control}
@@ -171,6 +175,7 @@ function Page() {
                           </FormItem>
                         )}
                       />
+
                       <FormField
                         name="email"
                         control={form.control}
@@ -191,6 +196,7 @@ function Page() {
                           </FormItem>
                         )}
                       />
+
                       <FormField
                         name="password"
                         control={form.control}
@@ -222,6 +228,7 @@ function Page() {
                           </FormItem>
                         )}
                       />
+
                       <Button 
                         type="submit" 
                         disabled={isSubmitting}
@@ -241,7 +248,9 @@ function Page() {
                       </Button>
                     </form>
                   </Form>
+
                   <Separator className="bg-gray-200 dark:bg-gray-700" />
+
                   <div className="text-center">
                     <p className="text-xs text-gray-600 dark:text-gray-400">
                       Already have an account?{" "}
@@ -256,6 +265,7 @@ function Page() {
                 </CardContent>
               </Card>
             </div>
+
             <div className="hidden lg:block">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10 dark:from-orange-400/10 dark:to-red-400/10 rounded-3xl transform rotate-2"></div>
@@ -271,6 +281,7 @@ function Page() {
                         Get instant access to AI-powered legal document analysis and unlock insights that matter.
                       </p>
                     </div>
+
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
                         <div className="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -320,6 +331,7 @@ function Page() {
                         </div>
                       </div>
                     </div>
+
                     <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                       <div className="flex items-center justify-between text-center">
                         <div>

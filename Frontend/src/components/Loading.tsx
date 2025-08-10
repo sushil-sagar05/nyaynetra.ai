@@ -119,13 +119,15 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
       setTimeElapsed(0)
       return
     }
+
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => {
         const newIndex = (prevIndex + 1) % loadingSteps.length
         setProgress(((newIndex + 1) / loadingSteps.length) * 100)
         return newIndex
       })
-    }, 4000) 
+    }, 4000)
+
     const timeInterval = setInterval(() => {
       setTimeElapsed((prev) => prev + 1)
     }, 1000)
@@ -194,6 +196,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
               </Button>
             </div>
           </div>
+
           <div className="px-6 py-2">
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
@@ -210,6 +213,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
               />
             </div>
           </div>
+
           <div className="px-6 py-4">
             <div className={`${currentStep.bgColor} ${currentStep.borderColor} border rounded-xl p-4 transition-all duration-500`}>
               <div className="flex items-start gap-4">
@@ -230,6 +234,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
               </div>
             </div>
           </div>
+
           <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
@@ -265,6 +270,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
           </div>
         </DialogContent>
       </Dialog>
+
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent className="max-w-md bg-white dark:bg-gray-900 border-0 shadow-2xl">
           <AlertDialogHeader className="space-y-4">
@@ -281,7 +287,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
               <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
                 <div className="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-300">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                  <span>You'll lose current progress ({Math.round(progress)}% complete)</span>
+                  <span>You&apos;ll lose current progress ({Math.round(progress)}% complete)</span>
                 </div>
               </div>
             </AlertDialogDescription>

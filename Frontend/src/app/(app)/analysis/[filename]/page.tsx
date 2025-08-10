@@ -109,6 +109,7 @@ function Page() {
       toast.error(errorMessage || "Save failed")
     }
   }
+
   const getSummaryContent = () => {
     const shortSummary = summary.short_summary || ''
     const actualSummary = summary.actual_summary || ''
@@ -504,7 +505,7 @@ function Page() {
                         <div className="space-y-1">
                           {riskTerms.slice(0, 3).map((risk, idx) => (
                             <div key={idx} className="text-xs p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
-                              <span className="font-medium text-red-900 dark:text-red-200">"{risk.term}"</span>
+                              <span className="font-medium text-red-900 dark:text-red-200">&ldquo;{risk.term}&rdquo;</span>
                               <div className="text-red-600 dark:text-red-400">{risk.category.replace(/_/g, ' ')}</div>
                             </div>
                           ))}

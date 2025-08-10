@@ -78,7 +78,7 @@ export function ChatUI({ documentId, isAnalysisReady = true }: ChatUIProps) {
     setConnectionError(false)
 
     try {
-      let assistantMessage: ChatMessage = {
+      const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
         content: '',
@@ -301,19 +301,19 @@ export function ChatUI({ documentId, isAnalysisReady = true }: ChatUIProps) {
                       I can help you understand your legal document. Try asking:
                     </p>
                     <div className="space-y-2 text-xs sm:text-sm px-2">
-                      <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
-                           onClick={() => setInputMessage("What are the key terms and conditions?")}>
-                        "What are the key terms and conditions?"
-                      </div>
-                      <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
-                           onClick={() => setInputMessage("What are the main risks in this document?")}>
-                        "What are the main risks in this document?"
-                      </div>
-                      <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
-                           onClick={() => setInputMessage("Explain the liability clauses")}>
-                        "Explain the liability clauses"
-                      </div>
-                    </div>
+                        <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
+                        onClick={() => setInputMessage("What are the key terms and conditions?")}>
+                        &quot;What are the key terms and conditions?&quot;
+                        </div>
+                        <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
+                        onClick={() => setInputMessage("What are the main risks in this document?")}>
+                        &quot;What are the main risks in this document?&quot;
+                  </div>
+                  <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
+                     onClick={() => setInputMessage("Explain the liability clauses")}>
+                    &quot;Explain the liability clauses&quot;
+                </div>
+                </div>
                   </div>
                 )}
 
