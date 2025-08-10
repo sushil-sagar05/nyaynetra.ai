@@ -1,388 +1,516 @@
 'use client';
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChevronRight, Pencil, User, Mail, Lock, Globe, Moon, Save, LogOut, Settings } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Input } from './ui/input';
-import { useTheme } from 'next-themes';
-import { toast } from 'sonner';
-import Account_Delete from './Account_Delete';
-import AutoSave from './AutoSave';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import { useUser } from '@/context/UserContext';
-import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import api from '@/lib/api';
-import { AxiosError } from "axios";
-import { Dialog, DialogContent, DialogTitle } from '@radix-ui/react-dialog';
-import { DialogHeader } from './ui/dialog';
+import { AxiosError } from 'axios';
+import { 
+  User, 
+  Mail, 
+  Calendar, 
+  Shield, 
+  Check, 
+  AlertTriangle, 
+  Eye, 
+  EyeOff,
+  Save,
+  UserCheck
+} from 'lucide-react';
 
 interface ErrorResponse {
   message: string;
 }
 
 function Account_Settings() {
-  const inputUsernameRef = useRef<HTMLInputElement>(null);
-  const inputEmailRef = useRef<HTMLInputElement>(null);
-  const inputPasswordRef = useRef<HTMLInputElement>(null);
-  const { theme, setTheme } = useTheme();
   const { user, setUser } = useUser();
-
-  const [username, setUsername] = useState('');
-  const [email, setemail] = useState(user?.email);
-  const [tempUsername, setTempUsername] = useState('');
-  const [tempEmail, setTempEmail] = useState(email);
-  const [tempPassword, setTempPassword] = useState('');
-  const [editingField, setEditingField] = useState<"username" | "email" | "password" | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [pendingField, setPendingField] = useState<"username" | "email" | "password" | null>(null);
+  const [pendingChanges, setPendingChanges] = useState<any>(null);
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [formData, setFormData] = useState({
+    username: user?.username || '',
+    email: user?.email || '',
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  });
 
-  const router = useRouter()
+  const [errors, setErrors] = useState({
+    username: '',
+    email: '',
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  });
 
   useEffect(() => {
-    if (user?.username) {
-      setUsername(user.username);
-      setTempUsername(user.username);
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        username: user.username || '',
+        email: user.email || ''
+      }));
     }
   }, [user]);
 
-  const handleEdit = (field: typeof editingField) => {
-    setEditingField(field);
-    setTimeout(() => {
-      if (field === 'username') inputUsernameRef.current?.focus();
-      if (field === 'email') inputEmailRef.current?.focus();
-      if (field === 'password') inputPasswordRef.current?.focus();
-    }, 0);
+  const validateForm = () => {
+    const newErrors = {
+      username: '',
+      email: '',
+      currentPassword: '',
+      newPassword: '',
+      confirmNewPassword: ''
+    };
+
+    let isValid = true;
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+      isValid = false;
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
+      isValid = false;
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
+      isValid = false;
+    }
+    if (formData.newPassword) {
+      if (!formData.currentPassword) {
+        newErrors.currentPassword = 'Current password is required to change password';
+        isValid = false;
+      }
+      
+      if (formData.newPassword.length < 6) {
+        newErrors.newPassword = 'New password must be at least 6 characters';
+        isValid = false;
+      }
+      
+      if (formData.newPassword !== formData.confirmNewPassword) {
+        newErrors.confirmNewPassword = 'Passwords do not match';
+        isValid = false;
+      }
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
-  const handleCancel = () => {
-    setEditingField(null);
-    setTempUsername(username);
-    setTempEmail(email);
-    setTempPassword('');
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    if (errors[field as keyof typeof errors]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
   };
 
-  const handleSaveWithConfirmation = (field: typeof editingField) => {
-    setPendingField(field);
+  const handleSave = async () => {
+    if (!validateForm()) {
+      toast.error('Please fix the errors before saving');
+      return;
+    }
+    const hasProfileChanges = formData.username !== user?.username || formData.email !== user?.email;
+    const hasPasswordChange = formData.newPassword.trim() !== '';
+
+    if (!hasProfileChanges && !hasPasswordChange) {
+      toast.info('No changes to save');
+      setIsEditing(false);
+      return;
+    }
+    setPendingChanges({ hasProfileChanges, hasPasswordChange });
     setShowPasswordConfirm(true);
   };
 
   const confirmAndSave = async () => {
-    if (confirmPassword.length < 1) return;
-
     try {
-      let response;
-
-      if (pendingField === 'username') {
-        response = await api.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-username`, {
-          newUsername: tempUsername,
-          currPassword: confirmPassword,
-        });
-        if (response.status === 200) {
-          setUsername(tempUsername);
-          toast.success(response.data.message);
-        }
+      const updateData: any = {};
+      
+      if (pendingChanges?.hasProfileChanges) {
+        updateData.username = formData.username;
+        updateData.email = formData.email;
       }
-
-      if (pendingField === 'email') {
-        response = await api.patch(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-email`, {
-          newemail: tempEmail,
-          currPassword: confirmPassword,
-        });
-        if (response.status === 200) {
-          setemail(tempEmail);
-          toast.success(response.data.message);
-        }
+      
+      if (pendingChanges?.hasPasswordChange) {
+        updateData.currentPassword = formData.currentPassword;
+        updateData.newPassword = formData.newPassword;
       }
+      
+      updateData.confirmPassword = confirmPassword;
 
-      if (pendingField === 'password') {
-        response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-password`, {
-          newPassword: tempPassword,
-          oldPassword: confirmPassword,
-        });
-        if (response.status === 200) {
-          toast.success(response.data.message);
+      const response = await api.put(`${process.env.NEXT_PUBLIC_Backend_Url}/user/update-profile`, updateData);
+      
+      if (response.status === 200) {
+        if (pendingChanges?.hasProfileChanges) {
+          setUser(prev => prev ? {
+            ...prev,
+            username: formData.username,
+            email: formData.email
+          } : null);
         }
+        
+        toast.success('Profile updated successfully');
+        setIsEditing(false);
+        setFormData(prev => ({
+          ...prev,
+          currentPassword: '',
+          newPassword: '',
+          confirmNewPassword: ''
+        }));
       }
-
-      setEditingField(null);
-      setShowPasswordConfirm(false);
-      setConfirmPassword('');
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
-      const errorMessage = axiosError.response?.data.message;
-      toast.error(errorMessage || "Update failed")
+      toast.error(axiosError.response?.data.message || 'Failed to update profile');
+    } finally {
+      setShowPasswordConfirm(false);
+      setConfirmPassword('');
+      setPendingChanges(null);
     }
   };
-
-  const handleLogout = async () => {
-    try {
-      const response = await api.post(`${process.env.NEXT_PUBLIC_Backend_Url}/user/logout`, {})
-      if (response.status === 200) {
-        toast.success(response.data.message)
-        setUser(null)
-        router.push('/login')
-      }
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data?.message || "Something went wrong");
-    }
-  }
 
   const cancelConfirmation = () => {
     setShowPasswordConfirm(false);
     setConfirmPassword('');
+    setPendingChanges(null);
   };
 
+  const cancelEdit = () => {
+    setFormData({
+      username: user?.username || '',
+      email: user?.email || '',
+      currentPassword: '',
+      newPassword: '',
+      confirmNewPassword: ''
+    });
+    setErrors({
+      username: '',
+      email: '',
+      currentPassword: '',
+      newPassword: '',
+      confirmNewPassword: ''
+    });
+    setIsEditing(false);
+  };
+
+  if (!user) {
+    return (
+      <Card className="border-0 shadow-lg">
+        <CardContent className="p-8">
+          <div className="text-center py-8">
+            <div className="text-gray-400 text-2xl mb-4">👤</div>
+            <p className="text-gray-600 dark:text-gray-400">Loading user information...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <div className="space-y-8">
+    <>
       <Card className="border-0 shadow-lg">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
           <CardTitle className="flex items-center gap-3 text-xl">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
-            Account Information
+            Account Settings
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-8">
-          <div className="flex items-center gap-6 mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
-              {username.charAt(0).toUpperCase()}
+        <CardContent className="p-6 sm:p-8">
+          <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-xl border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xl font-bold">
+                  {user.username.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Welcome, {user.username}!
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Manage your account information and preferences
+                </p>
+              </div>
+              <div className="ml-auto">
+                <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                  <UserCheck className="w-3 h-3 mr-1" />
+                  Verified
+                </Badge>
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {username}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">{email}</p>
-              <div className="flex items-center gap-2 mt-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-green-600 dark:text-green-400">Active Account</span>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <User className="w-4 h-4" />
+                <span>Username: {user.username}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Mail className="w-4 h-4" />
+                <span>Email: {user.email}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Calendar className="w-4 h-4" />
+                <span>Member since: {new Date().getFullYear()}</span>
               </div>
             </div>
           </div>
           <div className="space-y-6">
-            <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-xl">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-gray-500" />
-                  <label className="font-medium text-gray-900 dark:text-white">Username</label>
-                </div>
-                {!editingField && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleEdit("username")}
-                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                  >
-                    <Pencil className="w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
-                )}
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Profile Information
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Update your personal information and account settings
+                </p>
               </div>
-              
-              {editingField === 'username' ? (
-                <div className="space-y-4">
-                  <Input
-                    ref={inputUsernameRef}
-                    value={tempUsername}
-                    onChange={(e) => setTempUsername(e.target.value)}
-                    className="text-lg"
-                    placeholder="Enter new username"
-                  />
-                  <div className="flex gap-3 justify-end">
-                    <Button variant="outline" onClick={handleCancel}>
-                      Cancel
-                    </Button>
-                    <Button onClick={() => handleSaveWithConfirmation("username")} className="bg-blue-600 hover:bg-blue-700">
-                      <Save className="w-4 h-4 mr-1" />
-                      Save
-                    </Button>
-                  </div>
-                </div>
+              {!isEditing ? (
+                <Button 
+                  onClick={() => setIsEditing(true)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Edit Profile
+                </Button>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-gray-300 font-medium">{username}</p>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={cancelEdit}
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleSave}
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </Button>
+                </div>
               )}
             </div>
-            <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-xl">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-gray-500" />
-                  <label className="font-medium text-gray-900 dark:text-white">Email Address</label>
+
+            <Separator />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="username" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Username
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="username"
+                    value={formData.username}
+                    onChange={(e) => handleInputChange('username', e.target.value)}
+                    disabled={!isEditing}
+                    className={`pl-10 ${errors.username ? 'border-red-500' : ''} ${
+                      !isEditing ? 'bg-gray-50 dark:bg-gray-800' : ''
+                    }`}
+                    placeholder="Enter your username"
+                  />
+                  <User className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 </div>
-                {!editingField && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleEdit("email")}
-                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                  >
-                    <Pencil className="w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
+                {errors.username && (
+                  <p className="text-red-500 text-xs flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3" />
+                    {errors.username}
+                  </p>
                 )}
               </div>
-              
-              {editingField === 'email' ? (
-                <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Email Address
+                </Label>
+                <div className="relative">
                   <Input
-                    ref={inputEmailRef}
+                    id="email"
                     type="email"
-                    value={tempEmail}
-                    onChange={(e) => setTempEmail(e.target.value)}
-                    className="text-lg"
-                    placeholder="Enter new email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    disabled={!isEditing}
+                    className={`pl-10 ${errors.email ? 'border-red-500' : ''} ${
+                      !isEditing ? 'bg-gray-50 dark:bg-gray-800' : ''
+                    }`}
+                    placeholder="Enter your email"
                   />
-                  <div className="flex gap-3 justify-end">
-                    <Button variant="outline" onClick={handleCancel}>
-                      Cancel
-                    </Button>
-                    <Button onClick={() => handleSaveWithConfirmation("email")} className="bg-blue-600 hover:bg-blue-700">
-                      <Save className="w-4 h-4 mr-1" />
-                      Save
-                    </Button>
-                  </div>
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 </div>
-              ) : (
-                <p className="text-lg text-gray-700 dark:text-gray-300">{email}</p>
-              )}
-            </div>
-            <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-xl">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Lock className="w-5 h-5 text-gray-500" />
-                  <label className="font-medium text-gray-900 dark:text-white">Password</label>
-                </div>
-                {!editingField && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleEdit("password")}
-                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                  >
-                    <Pencil className="w-4 h-4 mr-1" />
-                    Change
-                  </Button>
+                {errors.email && (
+                  <p className="text-red-500 text-xs flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3" />
+                    {errors.email}
+                  </p>
                 )}
               </div>
-              
-              {editingField === 'password' ? (
-                <div className="space-y-4">
-                  <Input
-                    ref={inputPasswordRef}
-                    type="password"
-                    placeholder="Enter new password"
-                    value={tempPassword}
-                    onChange={(e) => setTempPassword(e.target.value)}
-                    className="text-lg"
-                  />
-                  <div className="flex gap-3 justify-end">
-                    <Button variant="outline" onClick={handleCancel}>
-                      Cancel
-                    </Button>
-                    <Button onClick={() => handleSaveWithConfirmation("password")} className="bg-blue-600 hover:bg-blue-700">
-                      <Save className="w-4 h-4 mr-1" />
-                      Save
-                    </Button>
+            </div>
+            {isEditing && (
+              <>
+                <Separator />
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      Change Password
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Leave blank if you don&apos;t want to change your password
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="currentPassword" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Current Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="currentPassword"
+                          type={showPassword ? 'text' : 'password'}
+                          value={formData.currentPassword}
+                          onChange={(e) => handleInputChange('currentPassword', e.target.value)}
+                          className={`pl-10 pr-10 ${errors.currentPassword ? 'border-red-500' : ''}`}
+                          placeholder="Enter current password"
+                        />
+                        <Shield className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {errors.currentPassword && (
+                        <p className="text-red-500 text-xs flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          {errors.currentPassword}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="newPassword" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        New Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="newPassword"
+                          type={showPassword ? 'text' : 'password'}
+                          value={formData.newPassword}
+                          onChange={(e) => handleInputChange('newPassword', e.target.value)}
+                          className={`pl-10 pr-10 ${errors.newPassword ? 'border-red-500' : ''}`}
+                          placeholder="Enter new password"
+                        />
+                        <Shield className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                      </div>
+                      {errors.newPassword && (
+                        <p className="text-red-500 text-xs flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          {errors.newPassword}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmNewPassword" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Confirm New Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="confirmNewPassword"
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          value={formData.confirmNewPassword}
+                          onChange={(e) => handleInputChange('confirmNewPassword', e.target.value)}
+                          className={`pl-10 pr-10 ${errors.confirmNewPassword ? 'border-red-500' : ''}`}
+                          placeholder="Confirm new password"
+                        />
+                        <Shield className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {errors.confirmNewPassword && (
+                        <p className="text-red-500 text-xs flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          {errors.confirmNewPassword}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <p className="text-lg text-gray-700 dark:text-gray-300">••••••••••••</p>
-              )}
+              </>
+            )}
+            <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-start gap-3">
+                <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-1">
+                    Security Notice
+                  </h4>
+                  <p className="text-blue-700 dark:text-blue-300 text-sm">
+                    Your current password is required to confirm any changes to your account. 
+                    We use industry-standard encryption to protect your data.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* Preferences Section */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
-          <CardTitle className="flex items-center gap-3 text-xl">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-              <Settings className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-            </div>
-            Preferences
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-8">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
-              <div className="flex items-center gap-3">
-                <Globe className="w-5 h-5 text-gray-500" />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">Language</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Choose your preferred language</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <span>English (US)</span>
-                <ChevronRight className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
-              <div className="flex items-center gap-3">
-                <Moon className="w-5 h-5 text-gray-500" />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">Dark Mode</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Toggle dark/light theme</p>
-                </div>
-              </div>
-              <Switch
-                checked={theme === 'dark'}
-                onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+      {showPasswordConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-blue-600" />
+                Confirm Your Password
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Please enter your current password to confirm these changes.
+              </p>
+              <Input
+                type="password"
+                placeholder="Enter current password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full"
+                onKeyDown={(e) => e.key === 'Enter' && confirmAndSave()}
               />
-            </div>
-            <AutoSave />
-          </div>
-        </CardContent>
-      </Card>
-      <div className="lg:hidden">
-        <Button
-          onClick={handleLogout}
-          variant="outline"
-          className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
-        </Button>
-      </div>
-      <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
-        <Account_Delete />
-      </div>
-{showPasswordConfirm && (
-  <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
-    <Dialog open={showPasswordConfirm} onOpenChange={setShowPasswordConfirm}>
-      <DialogContent className="w-full max-w-md">
-        <DialogHeader>
-          <DialogTitle>Confirm Your Password</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Please enter your current password to confirm this change.
-          </p>
-          <Input
-            type="password"
-            placeholder="Enter current password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full"
-          />
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={cancelConfirmation}>
-              Cancel
-            </Button>
-            <Button onClick={confirmAndSave} className="bg-blue-600 hover:bg-blue-700">
-              Confirm
-            </Button>
-          </div>
+              <div className="flex justify-end gap-3">
+                <Button variant="outline" onClick={cancelConfirmation}>
+                  Cancel
+                </Button>
+                <Button onClick={confirmAndSave} className="bg-blue-600 hover:bg-blue-700">
+                  <Check className="w-4 h-4 mr-2" />
+                  Confirm Changes
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </DialogContent>
-    </Dialog>
-  </div>
-)}
-
-    </div>
+      )}
+    </>
   );
 }
 

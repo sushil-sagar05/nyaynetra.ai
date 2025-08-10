@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { SendHorizontal, WrapText, Download, FileText, AlertTriangle, Shield, CheckCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { SendHorizontal, WrapText, Download, FileText, AlertTriangle, Shield, CheckCircle } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import api from '@/lib/api'
 import { AxiosError } from 'axios'
@@ -41,7 +41,6 @@ function Page() {
   const [activeTab, setActiveTab] = useState("Summary")
   const [isSaved, setIsSaved] = useState(false)
   const [disabled, setDisabled] = useState(false)
-  const [summary, setSummary] = useState<string[]>([])
   const [shortSummary, setShortSummary] = useState('')
   const [riskTerms, setRiskTerms] = useState<RiskTerm[]>([])
   const [keyClauses, setKeyClauses] = useState<KeyClause[]>([])
@@ -61,9 +60,6 @@ function Page() {
         )
         
         const analysisData = response.data.data
-        
-        // Safely extract data with fallbacks
-        setSummary(analysisData.summary?.actual_summary || '')
         setShortSummary(analysisData.summary?.short_summary || '')
         setKeyClauses(analysisData.key_clauses || [])
         setRiskTerms(analysisData.risky_terms || [])
@@ -71,9 +67,6 @@ function Page() {
       } catch (error) {
         console.error('Analysis error:', error)
         toast.error("Failed to fetch analysis.")
-        
-        // Reset states on error
-        setSummary([])
         setShortSummary('')
         setKeyClauses([])
         setRiskTerms([])
@@ -111,17 +104,18 @@ function Page() {
   const getCategoryColor = (category: string) => {
     switch (category.toLowerCase()) {
       case 'liability_risks':
-        return 'bg-red-100 text-red-800 border-red-200'
+        return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
       case 'general':
-        return 'bg-blue-100 text-blue-800 border-blue-200'
+        return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
       case 'financial':
-        return 'bg-green-100 text-green-800 border-green-200'
+        return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
       case 'compliance':
-        return 'bg-purple-100 text-purple-800 border-purple-200'
+        return 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600'
     }
   }
+
   const getClauseTypeIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case 'indemnification':
@@ -213,7 +207,7 @@ function Page() {
                                 <CardHeader className="pb-3">
                                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                                     <div className="flex items-center gap-3">
-                                      <div className="p-2 bg-blue-100 rounded-lg">
+                                      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                                         {getClauseTypeIcon(clause.clause_type)}
                                       </div>
                                       <div>
@@ -254,9 +248,11 @@ function Page() {
                                       Document Text
                                     </h4>
                                     <p className="text-sm text-gray-700 leading-relaxed italic">
-                                      "{clause.matched_text}"
+                                      &ldquo;{clause.matched_text}&rdquo;
                                     </p>
                                   </div>
+                                  
+                                  {/* Reference Clause */}
                                   <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                                     <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
                                       <Shield className="w-4 h-4 mr-2" />
@@ -295,7 +291,7 @@ function Page() {
                             <div className="text-gray-400 text-5xl mb-4">📋</div>
                             <h3 className="text-xl font-semibold text-gray-600 mb-2">No Key Clauses Identified</h3>
                             <p className="text-gray-500 text-sm sm:text-base">
-                              The analysis didn't identify any specific contractual clauses in this document.
+                              The analysis didn&apos;t identify any specific contractual clauses in this document.
                             </p>
                           </div>
                         )}
@@ -327,7 +323,7 @@ function Page() {
                                       {risk.category.replace(/_/g, ' ')}
                                     </span>
                                     <span className="text-red-700 font-semibold text-base sm:text-lg">
-                                      "{risk.term}"
+                                      &ldquo;{risk.term}&rdquo;
                                     </span>
                                   </div>
                                   <div className="text-sm text-gray-600 flex flex-col sm:text-right">
@@ -378,8 +374,8 @@ function Page() {
               </Card>
             </div>
 
-            <div className='hidden sm:block sm:col-span-3'>
-              <Card>
+            <div className='hidden  sm:block sm:col-span-3'>
+              <Card className=''>
                 <CardTitle className='p-1 flex justify-around'>
                   <span className='flex gap-2'><WrapText />Agreement.pdf</span>
                   <span><Download /></span>

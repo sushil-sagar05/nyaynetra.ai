@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import Setting_sidebar from '@/components/Settings_sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Account_Settings from '@/components/Account_Settings';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
-import { User, Settings, Shield, HelpCircle, ChevronLeft, ArrowLeft } from 'lucide-react';
+import { User, Settings, Shield, HelpCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 function Page() {
@@ -61,7 +60,7 @@ function Page() {
                 Preferences Coming Soon
               </h3>
               <p className="text-gray-600 dark:text-gray-300 max-w-md mx-auto">
-                We're working on adding customization options to personalize your experience.
+                We&apos;re working on adding customization options to personalize your experience.
               </p>
               <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <p className="text-blue-700 dark:text-blue-300 text-sm">
@@ -83,7 +82,7 @@ function Page() {
               <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                 <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
-              Privacy & Security
+              Privacy &amp; Security
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
@@ -160,7 +159,7 @@ function Page() {
               <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
-              Help & Support
+              Help &amp; Support
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
@@ -296,21 +295,10 @@ function Page() {
                 <TabsContent 
                   key={tab.label} 
                   value={tab.label} 
-                  className="mt-0 focus-visible:outline-none w-full"
+                  className="mt-0 w-full"
                 >
-                  <div className="space-y-6 w-full">
-                    <div className="hidden lg:block">
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
-                        <span>Settings</span>
-                        <span>/</span>
-                        <span className="text-gray-900 dark:text-white font-medium">
-                          {tab.label}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="min-h-[500px] w-full">
-                      {tab.content}
-                    </div>
+                  <div className="w-full">
+                    {tab.content}
                   </div>
                 </TabsContent>
               ))}

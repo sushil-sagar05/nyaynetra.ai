@@ -274,7 +274,7 @@ function Page() {
                   <div className="order-2 lg:order-1 text-center lg:text-left space-y-6">
                     <div>
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
-                        You haven't <span className="text-orange-500">uploaded</span> any documents yet!
+                        You don&apos;t  <span className="text-orange-500">uploaded</span> any documents yet!
                       </h3>
                       <p className="text-lg text-gray-600 dark:text-gray-300 mt-4">
                         Get started by uploading your first legal document for AI-powered analysis.
