@@ -57,12 +57,24 @@ export function ChatUI({ documentId, isAnalysisReady = true }: ChatUIProps) {
     }
   }, [messages, streamingMessage])
 
+  const validateEnvironment = () => {
+    const backendUrl = process.env.NEXT_PUBLIC_Backend_Url
+    if (!backendUrl) {
+      console.error('ChatUI: Backend URL not available')
+      toast.error('Configuration error: Backend URL not available')
+      return false
+    }
+    return true
+  }
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
     if (!isAnalysisReady) {
       toast.error('Document analysis is not complete. Please wait for analysis to finish.')
       return
     }
+
+    if (!validateEnvironment()) return
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -88,8 +100,10 @@ export function ChatUI({ documentId, isAnalysisReady = true }: ChatUIProps) {
 
       setMessages(prev => [...prev, assistantMessage])
 
+      const backendUrl = process.env.NEXT_PUBLIC_Backend_Url
+
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_Backend_Url}/analyze/chat-stream/${documentId}`,
+        `${backendUrl}/analyze/chat-stream/${documentId}`,
         {
           method: 'POST',
           headers: {
@@ -105,7 +119,7 @@ export function ChatUI({ documentId, isAnalysisReady = true }: ChatUIProps) {
           try {
             await api.post("/refresh-token")
             const retryResponse = await fetch(
-              `${process.env.NEXT_PUBLIC_Backend_Url}/analyze/chat-stream/${documentId}`,
+              `${backendUrl}/analyze/chat-stream/${documentId}`,
               {
                 method: 'POST',
                 headers: {
@@ -282,7 +296,7 @@ export function ChatUI({ documentId, isAnalysisReady = true }: ChatUIProps) {
               </Badge>
             )}
           </CardTitle>
-          <p className="text-xs sm:text-sm text-muted-foreground ">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Ask questions about your legal document analysis
           </p>
         </CardHeader>
@@ -301,19 +315,19 @@ export function ChatUI({ documentId, isAnalysisReady = true }: ChatUIProps) {
                       I can help you understand your legal document. Try asking:
                     </p>
                     <div className="space-y-2 text-xs sm:text-sm px-2">
-                        <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
+                      <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
                         onClick={() => setInputMessage("What are the key terms and conditions?")}>
-                        &quot;What are the key terms and conditions?&quot;
-                        </div>
-                        <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
+                        &ldquo;What are the key terms and conditions?&rdquo;
+                      </div>
+                      <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
                         onClick={() => setInputMessage("What are the main risks in this document?")}>
-                        &quot;What are the main risks in this document?&quot;
-                  </div>
-                  <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
-                     onClick={() => setInputMessage("Explain the liability clauses")}>
-                    &quot;Explain the liability clauses&quot;
-                </div>
-                </div>
+                        &ldquo;What are the main risks in this document?&rdquo;
+                      </div>
+                      <div className="p-2 sm:p-3 bg-muted rounded cursor-pointer hover:bg-muted/80 transition-colors"
+                        onClick={() => setInputMessage("Explain the liability clauses")}>
+                        &ldquo;Explain the liability clauses&rdquo;
+                      </div>
+                    </div>
                   </div>
                 )}
 
