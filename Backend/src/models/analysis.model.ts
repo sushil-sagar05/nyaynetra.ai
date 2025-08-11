@@ -1,4 +1,4 @@
-// models/analysis.model.ts
+// models/analysis.model.ts - Enhanced with proper enums and validation
 import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface Analysis extends Document {
@@ -12,7 +12,10 @@ export interface Analysis extends Document {
   vector_storage_status?: string; 
   processing_time?: string;     
   chunk_count?: number;         
-  analyzed_at?: Date;          
+  analyzed_at?: Date;
+  extracted_text_length?: number;
+  doc_id_source?: string;
+  analysis_source?: string;
 }
 
 const analysisSchema = new Schema<Analysis>({
@@ -57,17 +60,36 @@ const analysisSchema = new Schema<Analysis>({
   },
   chunk_count: {
     type: Number,
-    default: 0
+    default: 0,
+    min: 0  
   },
   analyzed_at: {
     type: Date,
     default: Date.now
+  },
+  extracted_text_length: {
+    type: Number,
+    default: 0,
+    min: 0  
+  },
+  doc_id_source: {
+    type: String,
+    enum: ['nodejs_generated', 'nodejs_provided', 'generated'], 
+    default: 'nodejs_generated'
+  },
+  analysis_source: {
+    type: String,
+    enum: ['flask', 'hf_space'], 
+    default: 'hf_space'
   }
 }, { timestamps: true });
 
+// Indexes
 analysisSchema.index({ userId: 1, documentId: 1 }, { unique: true });
 analysisSchema.index({ flask_doc_id: 1 });
 analysisSchema.index({ chat_ready: 1 });
+analysisSchema.index({ analysis_source: 1 });
+analysisSchema.index({ vector_storage_status: 1 });
 
 const AnalysisModel = mongoose.model<Analysis>("Analysis", analysisSchema);
 export default AnalysisModel;

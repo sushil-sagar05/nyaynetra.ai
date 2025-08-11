@@ -182,26 +182,26 @@ const ClientComponent = () => {
                           </p>
                         ) : selectedFile ? (
                           <div className="space-y-3">
-                            <div className="flex items-center justify-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                              <FileText className="w-5 h-5 text-green-600" />
-                              <span className="font-medium text-green-700 dark:text-green-300 text-sm">
-                                {selectedFile.name}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedFile(null);
-                                }}
-                                className="text-red-500 hover:text-red-700 transition-colors"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              File ready to upload. Click the button below to proceed.
-                            </p>
-                          </div>
+                          <div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                          <FileText className="w-5 h-5 text-green-600 flex-shrink-0" />
+                          <span 
+                            className="font-medium text-green-700 dark:text-green-300 text-sm flex-1 min-w-0 truncate"
+                            title={selectedFile.name}
+                          >
+                         {selectedFile.name}
+                          </span>
+                       <button
+                       type="button"
+                       onClick={(e) => {
+                       e.stopPropagation();
+                       setSelectedFile(null);
+                       }}
+                       className="text-red-500 hover:text-red-700 transition-colors flex-shrink-0 p-1"
+                      >
+                       <X className="w-4 h-4" />
+                      </button>
+                      </div>
+                    </div>
                         ) : (
                           <div className="space-y-2">
                             <p className="text-lg text-gray-700 dark:text-gray-300">
