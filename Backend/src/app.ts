@@ -8,10 +8,16 @@ dotenv.config({ path: ".env" });
 connect();
 
 const app = express();
-
 app.set("trust proxy", 1);
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+  console.log(" Incoming Request:");
+  console.log(" Method:", req.method);
+  console.log(" Path:", req.originalUrl);
+  console.log(" Origin Header:", req.headers.origin);
+  next();
+});
 const rawOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:3000",
@@ -21,7 +27,6 @@ const rawOrigins = [
 const allowedOrigins: string[] = rawOrigins.filter(
   (o): o is string => typeof o === "string" && o.trim().length > 0
 );
-
 const corsOptions: CorsOptions = {
   origin: function (origin, callback) {
     console.log("🔍 CORS Debug - Incoming Origin:", origin);
@@ -29,6 +34,7 @@ const corsOptions: CorsOptions = {
     console.log("🏠 Environment FRONTEND_URL:", process.env.FRONTEND_URL);
 
     if (!origin) {
+      console.log("✅ No origin header (likely Postman/internal request)");
       return callback(null, true);
     }
 
@@ -38,8 +44,10 @@ const corsOptions: CorsOptions = {
     );
 
     if (isAllowed) {
+      console.log("✅ CORS Allowed:", origin);
       callback(null, true);
     } else {
+      console.log("❌ CORS Blocked:", origin);
       callback(new Error(`Not allowed by CORS: ${origin}`));
     }
   },
@@ -55,10 +63,8 @@ const corsOptions: CorsOptions = {
   ],
   optionsSuccessStatus: 200
 };
-
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
-
 app.use((req, res, next) => {
   const originalSend = res.send;
   res.send = function (data) {
@@ -69,12 +75,10 @@ app.use((req, res, next) => {
   };
   next();
 });
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 console.log("Frontend URL allowed by CORS:", process.env.FRONTEND_URL);
-
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
@@ -84,6 +88,7 @@ import {
   DeleteDeactivateUser,
   ScheduledDeletionforMulter
 } from "./cron/Schedule-deletion";
+
 ScheduledDeletion();
 DeleteDeactivateUser();
 ScheduledDeletionforMulter();
@@ -97,7 +102,6 @@ app.use("/user", userRoutes);
 app.use("/document", documentRoutes);
 app.use("/settings", settingRoutes);
 app.use("/analyze", analysisRoutes);
-
 import errors from "./globalError";
 app.use(errors.MulterError);
 app.use(errors.ApiErrors);
