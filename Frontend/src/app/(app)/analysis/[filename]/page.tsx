@@ -65,13 +65,12 @@ useEffect(() => {
   const runAnalysis = async () => {
     setLoading(true);
     try {
-      let response;
       const apiInstance = user ? api : guestApi;
       const route = user
       ? `/analyze/analysis/${filename}`
       : `/analyze/guest/analysis/${filename}`;
 
-       response = await apiInstance.get(route);
+      const response = await apiInstance.get(route);
 
       const analysisData = response.data.data;
       setSummary(analysisData.summary || {});
