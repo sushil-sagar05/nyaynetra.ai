@@ -14,6 +14,8 @@ import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import LoadingModal from '@/components/Loading'
 import { ChatUI } from '@/components/Chat_Ui'
+import { useUser } from '../../../../context/UserContext';
+
 
 interface ErrorResponse {
   message: string;
@@ -55,36 +57,45 @@ function Page() {
   const [loading, setLoading] = useState(false)
   const params = useParams()
   const filename = params?.filename
+  const { user } = useUser();
+useEffect(() => {
+  if (!filename) return;
 
-  useEffect(() => {
-    if (!filename) return
+  const runAnalysis = async () => {
+    setLoading(true);
+    try {
+      let response;
 
-    const runAnalysis = async () => {
-      setLoading(true)
-      try {
-        const response = await api.get(
-          `${process.env.NEXT_PUBLIC_Backend_Url}/analyze/analysis/${filename}`,
-          {}
-        )
-        
-        const analysisData = response.data.data
-        setSummary(analysisData.summary || {})
-        setKeyClauses(analysisData.key_clauses || [])
-        setRiskTerms(analysisData.risky_terms || [])
-        
-      } catch (error) {
-        console.error('Analysis error:', error)
-        toast.error("Failed to fetch analysis.")
-        setSummary({})
-        setKeyClauses([])
-        setRiskTerms([])
-      } finally {
-        setLoading(false)
+      if (user) {
+        response = await api.get(
+          `/analyze/analysis/${filename}`
+        );
+      } else {
+        response = await api.get(
+          `${process.env.NEXT_PUBLIC_Backend_Url}/analyze/guest/analysis/${filename}`,
+          { withCredentials: false }
+        );
       }
-    }
 
-    runAnalysis()
-  }, [filename]) 
+      const analysisData = response.data.data;
+      setSummary(analysisData.summary || {});
+      setKeyClauses(analysisData.key_clauses || []);
+      setRiskTerms(analysisData.risky_terms || []);
+
+    } catch (error) {
+      console.error('Analysis error:', error);
+      toast.error("Failed to fetch analysis.");
+      setSummary({});
+      setKeyClauses([]);
+      setRiskTerms([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  runAnalysis();
+}, [filename, user]);
+
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -448,11 +459,20 @@ function Page() {
                         </TabsContent>
 
                         <TabsContent value="chat" className="mt-0 h-full">
-                          <ChatUI 
-                            documentId={filename as string}
-                            isAnalysisReady={summary.short_summary !== undefined && !loading}
-                          />
-                        </TabsContent>
+                        {user ? (
+                        <ChatUI 
+                         documentId={filename as string}
+                        isAnalysisReady={summary.short_summary !== undefined && !loading}
+                       />
+                      ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center">
+                    <Bot className="w-10 h-10 text-blue-500 mb-3" />
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Login Required</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">Please sign in to chat with your document.</p>
+                     <Button onClick={() => window.location.href = "/login"}>Login</Button>
+                    </div>
+                    )}
+                    </TabsContent>
                       </div>
                     </Tabs>
                   </CardContent>

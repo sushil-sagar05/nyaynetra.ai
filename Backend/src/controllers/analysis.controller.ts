@@ -9,7 +9,7 @@ import { ApiResponse } from "../utils/ApiResponse";
 import { User } from "../models/user.model";
 import DocumentModel from "../models/document.model";
 import axios from "axios";
-
+import crypto from "crypto";
 interface authRequest extends Request {
     user?: User
 }
@@ -266,11 +266,104 @@ const chatWithDocumentStream = async (req: authRequest, res: Response) => {
         }
     }
 };
+const guestAnalysis = async (req: Request, res: Response) => {
+  try {
+    const documentId = req.params.documentId;
+    if (!documentId) {
+      throw new ApiError(400, "No document to analyze");
+    }
+
+    const retrievedDocument = await DocumentModel.findOne({ _id: documentId });
+    if (!retrievedDocument) {
+      throw new ApiError(404, "Document not found");
+    }
+
+    const documentUrl = retrievedDocument?.ClouinaryUrl;
+
+    const docId = crypto
+      .createHash("sha256")
+      .update(`${documentId}_${Date.now()}`)
+      .digest("hex")
+      .substring(0, 16);
+
+    console.log(`⚙️ Guest Analysis - Generated doc_id: ${docId}`);
+
+    const hfSpaceUrl = `${process.env.HF_SPACE_URL}/analyze_document_url`;
+
+    const response = await axios.post(
+      hfSpaceUrl,
+      {
+        document_url: documentUrl,
+        force_doc_id: docId,
+      },
+      {
+        timeout: 600000,
+        headers: {
+          Authorization: `Bearer ${process.env.HF_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const analysisData = response.data;
+    const {
+      summary,
+      risky_terms,
+      key_clauses,
+      doc_id,
+      total_processing_time,
+      chunk_count,
+      extracted_text_length,
+    } = analysisData;
+
+    if (!summary || !risky_terms || !key_clauses) {
+      throw new ApiError(400, "Incomplete analysis received from HF Space");
+    }
+
+    console.log(`✅ Guest Analysis completed for doc_id: ${doc_id}`);
+
+     res
+      .status(200)
+      .json(
+        new ApiResponse(201, {
+          summary,
+          risky_terms,
+          key_clauses,
+          doc_id,
+          total_processing_time,
+          chunk_count,
+          extracted_text_length,
+        }, "Guest document analyzed successfully")
+      );
+  } catch (error: any) {
+    console.error("Guest analysis error:", error);
+
+    if (error.response?.status === 400) {
+      res
+        .status(400)
+        .json(
+          new ApiError(
+            400,
+            error.response.data.detail || "Invalid request to analysis service"
+          )
+        );
+    } else if (error.response?.status === 500) {
+      res.status(500).json(new ApiError(500, "Analysis service internal error"));
+    } else if (error.code === "ECONNABORTED") {
+      res
+        .status(408)
+        .json(new ApiError(408, "Analysis request timed out"));
+    } else {
+      res.status(500).json(new ApiError(500, "Error analyzing document"));
+    }
+  }
+};
 
 const analysisController = {
     analysis,
     getAnalysisById,
-    chatWithDocumentStream
+    chatWithDocumentStream,
+    guestAnalysis
 };
 
 export default analysisController;

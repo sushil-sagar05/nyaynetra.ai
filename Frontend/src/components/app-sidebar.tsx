@@ -50,6 +50,11 @@ interface ErrorResponse {
   export function AppSidebar({ activeTab, setActiveTab,documentId}: AppSidebarProps) {
     const [isSaved, setisSaved] = useState(false)
     const isMobile = useIsMobile();
+    const currentDate = new Date().toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
       const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>)=>{
         e.preventDefault()
         if (!documentId) {
@@ -62,8 +67,12 @@ interface ErrorResponse {
           setisSaved(true)
         } catch (error) {
           const axiosError = error as AxiosError<ErrorResponse>;
-          const errorMessage= axiosError.response?.data.message;
-          toast(errorMessage)
+          if (axiosError?.response?.status === 400) {
+                  toast.error("Guest is not allowed to save document")
+                  return
+                }
+                const errorMessage = axiosError.response?.data.message
+                toast.error(errorMessage || "Save failed")
         }
       }
 
@@ -103,7 +112,7 @@ interface ErrorResponse {
         "
         onClick={(e)=>handleSubmit(e)}
         >{isSaved?"Document Saved":"Save Document"}</Button>
-        <p>Upload: 24 April , 2024</p>
+        <p>Upload Date: {currentDate}</p>
         <p>File Size: 1.54MB</p>
       </SidebarFooter>
     </Sidebar>

@@ -73,16 +73,17 @@ const ClientComponent = () => {
     
     try {
       const route = user ? '/document/upload' : '/document/guest/upload';
-    
-      const response = await api.post(
-        `${process.env.NEXT_PUBLIC_Backend_Url}${route}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+
+    const response = await api.post(
+    `${process.env.NEXT_PUBLIC_Backend_Url}${route}`,
+    formData,
+    {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    withCredentials: !!user, 
+    }
+  );
     
       const { _id } = response.data.data;
       if (response.status === 200) {
