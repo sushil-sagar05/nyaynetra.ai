@@ -15,6 +15,7 @@ import traditionals from '../../../../public/Questions-rafiki.png'
 import New from '../../../../public/Mention-bro.png'
 import api from '@/lib/api';
 import { AxiosError } from 'axios';
+import guestApi from '@/lib/guestapi';
 
 interface UploadFormData {
   file: FileList;
@@ -73,17 +74,8 @@ const ClientComponent = () => {
     
     try {
       const route = user ? '/document/upload' : '/document/guest/upload';
-
-    const response = await api.post(
-    `${process.env.NEXT_PUBLIC_Backend_Url}${route}`,
-    formData,
-    {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-    withCredentials: !!user, 
-    }
-  );
+      const apiInstance = user ? api : guestApi;
+      const response = await apiInstance.post(route, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     
       const { _id } = response.data.data;
       if (response.status === 200) {

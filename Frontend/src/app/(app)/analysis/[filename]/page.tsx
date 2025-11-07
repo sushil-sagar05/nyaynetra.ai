@@ -15,6 +15,7 @@ import { toast } from 'sonner'
 import LoadingModal from '@/components/Loading'
 import { ChatUI } from '@/components/Chat_Ui'
 import { useUser } from '../../../../context/UserContext';
+import guestApi from '@/lib/guestapi'
 
 
 interface ErrorResponse {
@@ -65,17 +66,12 @@ useEffect(() => {
     setLoading(true);
     try {
       let response;
+      const apiInstance = user ? api : guestApi;
+      const route = user
+      ? `/analyze/analysis/${filename}`
+      : `/analyze/guest/analysis/${filename}`;
 
-      if (user) {
-        response = await api.get(
-          `/analyze/analysis/${filename}`
-        );
-      } else {
-        response = await api.get(
-          `${process.env.NEXT_PUBLIC_Backend_Url}/analyze/guest/analysis/${filename}`,
-          { withCredentials: false }
-        );
-      }
+       response = await apiInstance.get(route);
 
       const analysisData = response.data.data;
       setSummary(analysisData.summary || {});
