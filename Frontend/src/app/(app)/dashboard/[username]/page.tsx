@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { ChartColumn, Settings, TriangleAlert, Upload, FileText, Calendar, TrendingUp, Activity } from 'lucide-react'
+import { ChartColumn, Settings, Upload, FileText, Calendar,  Activity } from 'lucide-react'
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from 'react'
 import SavedDocument from '@/components/SavedDocument'
