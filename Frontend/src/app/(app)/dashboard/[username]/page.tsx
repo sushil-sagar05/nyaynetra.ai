@@ -106,7 +106,6 @@ function Page() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <Upload className="w-8 h-8" />
-                <TrendingUp className="w-5 h-5 opacity-70" />
               </div>
               <CardTitle className="text-lg font-semibold">Documents Uploaded</CardTitle>
             </CardHeader>
@@ -121,7 +120,6 @@ function Page() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <ChartColumn className="w-8 h-8" />
-                <Activity className="w-5 h-5 opacity-70" />
               </div>
               <CardTitle className="text-lg font-semibold">Total Analyses</CardTitle>
             </CardHeader>
@@ -136,28 +134,12 @@ function Page() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <FileText className="w-8 h-8" />
-                <TrendingUp className="w-5 h-5 opacity-70" />
               </div>
               <CardTitle className="text-lg font-semibold">Saved Documents</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold mb-1">{savedDocuments}</div>
               <p className="text-green-100 text-sm">Stored for 14 Days</p>
-            </CardContent>
-            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
-          </Card>
-
-          <Card className="relative overflow-hidden border-0 shadow-lg bg-gradient-to-br from-yellow-500 to-orange-500 text-white hover:shadow-xl transition-all duration-300">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <TriangleAlert className="w-8 h-8" />
-                <Activity className="w-5 h-5 opacity-70" />
-              </div>
-              <CardTitle className="text-lg font-semibold">Risk Flags</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold mb-1">0</div>
-              <p className="text-yellow-100 text-sm">Active warnings</p>
             </CardContent>
             <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
           </Card>
@@ -290,21 +272,6 @@ function Page() {
                         <Upload className="w-5 h-5 mr-2" />
                         Upload Your First Document
                       </Button>
-                      
-                      <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span>Instant Analysis</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <span>AI-Powered Insights</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                          <span>100% Secure</span>
-                        </div>
-                      </div>
                     </div>
                   </div>
                   

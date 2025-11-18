@@ -174,9 +174,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-400/10 dark:to-purple-400/10" />
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                  <Brain className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
+                
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                     NyayAI Analysis
@@ -238,7 +236,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen }) => {
           <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
-                <AlertTriangle className="w-4 h-4" />
+
                 <span className="font-medium">Processing on free tier - may take 3-5 minutes</span>
               </div>
               

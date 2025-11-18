@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDropzone } from 'react-dropzone';
 import { Input } from '@/components/ui/input';
-import { Loader2, Upload, X, FileText, Shield, Clock, ArrowRight } from 'lucide-react';
+import { Loader2, Upload, X, FileText,ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useForm } from "react-hook-form"
 import { toast } from 'sonner';
@@ -73,7 +73,7 @@ const ClientComponent = () => {
     formData.append('document', selectedFile);
     
     try {
-      const route = user ? '/document/upload' : '/document/guest/upload';
+      const route = user ? '/document/upload' : '/guest/document/guest/upload';
       const apiInstance = user ? api : guestApi;
       const response = await apiInstance.post(route, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     
@@ -112,13 +112,13 @@ const ClientComponent = () => {
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
                   <span className="text-amber-700 dark:text-amber-300 font-medium">
-                    ⚠️ You are uploading as a guest
+                    You are uploading as a guest
                   </span>
                   <div className="flex flex-col sm:flex-row items-center gap-3">
                     <Button
                       onClick={() => router.push('/register')}        
                       size="sm"
-                      className='bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600'
+            className="bg-blue-500 hover:bg-black dark:hover:border-2 text-white  font-semibold  shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                     >
                       Sign Up for Full Features
                     </Button>
@@ -231,26 +231,6 @@ const ClientComponent = () => {
                   </Button>
                 </div>
               </form>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                  <Clock className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Instant Analysis
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                  <Shield className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    100% Secure
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                  <FileText className="w-5 h-5 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    AI-Powered
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
           <div className="order-1 lg:order-2">

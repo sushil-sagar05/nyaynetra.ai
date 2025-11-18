@@ -62,12 +62,11 @@ function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col">
+    <div className=" bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col">
       
       <div className="w-full border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex-shrink-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <Link href='/' className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <span className="text-xl">👁</span>
             <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
               Nyaynetra
             </span>
@@ -121,7 +120,7 @@ function Page() {
                               </FormLabel>
                               <FormControl>
                                 <Input 
-                                  placeholder="John" 
+                                  placeholder="first" 
                                   {...field}
                                   className="h-9 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-orange-500/20 transition-colors"
                                 />
@@ -141,7 +140,7 @@ function Page() {
                               </FormLabel>
                               <FormControl>
                                 <Input 
-                                  placeholder="Doe" 
+                                  placeholder="name" 
                                   {...field}
                                   className="h-9 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-orange-500/20 transition-colors"
                                 />
@@ -162,7 +161,7 @@ function Page() {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="johndoe"
+                                placeholder="username"
                                 {...field}
                                 onChange={(e) => {
                                   field.onChange(e);
@@ -187,7 +186,7 @@ function Page() {
                             <FormControl>
                               <Input 
                                 type="email"
-                                placeholder="john@example.com" 
+                                placeholder="xyz@email.com" 
                                 {...field}
                                 className="h-9 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-orange-500/20 transition-colors"
                               />
@@ -328,23 +327,6 @@ function Page() {
                           <p className="text-xs text-gray-600 dark:text-gray-400">
                             Your documents are encrypted and automatically deleted after 7 days
                           </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center justify-between text-center">
-                        <div>
-                          <div className="text-xl font-bold text-orange-500">10K+</div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400">Happy Users</div>
-                        </div>
-                        <div>
-                          <div className="text-xl font-bold text-blue-500">99.9%</div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400">Uptime</div>
-                        </div>
-                        <div>
-                          <div className="text-xl font-bold text-green-500">Free</div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400">To Start</div>
                         </div>
                       </div>
                     </div>

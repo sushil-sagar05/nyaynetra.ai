@@ -11,13 +11,6 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  console.log(" Incoming Request:");
-  console.log(" Method:", req.method);
-  console.log(" Path:", req.originalUrl);
-  console.log(" Origin Header:", req.headers.origin);
-  next();
-});
 const rawOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:3000",
@@ -27,32 +20,11 @@ const rawOrigins = [
 const allowedOrigins: string[] = rawOrigins.filter(
   (o): o is string => typeof o === "string" && o.trim().length > 0
 );
-const corsOptions: CorsOptions = {
-  origin: function (origin, callback) {
-    console.log("🔍 CORS Debug - Incoming Origin:", origin);
-    console.log("📋 Allowed Origins:", allowedOrigins);
-    console.log("🏠 Environment FRONTEND_URL:", process.env.FRONTEND_URL);
 
-    if (!origin) {
-      console.log("✅ No origin header (likely Postman/internal request)");
-      return callback(null, true);
-    }
-
-    const normalizedOrigin = origin.replace(/\/$/, "");
-    const isAllowed = allowedOrigins.some((o) =>
-      normalizedOrigin.startsWith(o.replace(/\/$/, ""))
-    );
-
-    if (isAllowed) {
-      console.log("✅ CORS Allowed:", origin);
-      callback(null, true);
-    } else {
-      console.log("❌ CORS Blocked:", origin);
-      callback(new Error(`Not allowed by CORS: ${origin}`));
-    }
-  },
+const authCors: CorsOptions = {
+  origin: allowedOrigins,
   credentials: true,
-  methods: ["GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"],
+  methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
   allowedHeaders: [
     "Content-Type",
     "Authorization",
@@ -61,25 +33,18 @@ const corsOptions: CorsOptions = {
     "Origin",
     "X-Requested-With"
   ],
-  optionsSuccessStatus: 200
 };
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-app.use((req, res, next) => {
-  const originalSend = res.send;
-  res.send = function (data) {
-    console.log("Response Headers being sent:");
-    console.log("Access-Control-Allow-Origin:", res.getHeader("Access-Control-Allow-Origin"));
-    console.log("Access-Control-Allow-Credentials:", res.getHeader("Access-Control-Allow-Credentials"));
-    return originalSend.call(this, data);
-  };
-  next();
-});
+
+const guestCors: CorsOptions = {
+  origin: "*",
+  credentials: false,
+  methods: ["GET", "POST", "OPTIONS"],
+};
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-console.log("Frontend URL allowed by CORS:", process.env.FRONTEND_URL);
-app.get("/", (req, res) => {
+app.get("/", cors(guestCors), (req, res) => {
   res.send("Hello World");
 });
 
@@ -97,11 +62,14 @@ import userRoutes from "./routes/user.routes";
 import documentRoutes from "./routes/document.routes";
 import settingRoutes from "./routes/settings.route";
 import analysisRoutes from "./routes/analysis.routes";
+import guestAnalysisRoutes from "./routes/guest.route";
+app.use("/user", cors(authCors), userRoutes);
+app.use("/document", cors(authCors), documentRoutes);
+app.use("/settings", cors(authCors), settingRoutes);
+app.use("/analyze", cors(authCors), analysisRoutes);
+app.use("/guest/document", cors(guestCors), documentRoutes);
+app.use("/guest/analyze", cors(guestCors), guestAnalysisRoutes);
 
-app.use("/user", userRoutes);
-app.use("/document", documentRoutes);
-app.use("/settings", settingRoutes);
-app.use("/analyze", analysisRoutes);
 import errors from "./globalError";
 app.use(errors.MulterError);
 app.use(errors.ApiErrors);

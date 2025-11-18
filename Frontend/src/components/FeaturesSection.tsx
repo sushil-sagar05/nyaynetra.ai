@@ -61,7 +61,7 @@ function FeaturesSection() {
                   {feature.title}
                 </CardTitle>
                 <div className="mb-4">
-                  <span className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full">
+                  <span className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-orange-500 text-sm font-medium rounded-full">
                     {feature.subtitle}
                   </span>
                 </div>

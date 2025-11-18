@@ -172,13 +172,12 @@ function HowItWorks() {
     <section className="px-4 sm:px-6 lg:px-8 py-16 lg:py-24 max-w-7xl mx-auto">
       <div className="text-center mb-16">
         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 px-4 py-2 rounded-full border border-blue-200 dark:border-blue-800 mb-6">
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
           <span className="text-sm font-medium text-blue-700 dark:text-blue-300">How It Works</span>
         </div>
         
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           Transform Legal Analysis in{' '}
-          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <span className="text-orange-500">
             Four Steps
           </span>
         </h1>
@@ -317,7 +316,6 @@ function HowItWorks() {
                       <div className="grid grid-cols-2 gap-2">
                         {item.features.map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                            <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${colorStyles[item.color].gradient}`}></div>
                             {feature}
                           </div>
                         ))}

@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Button } from "./ui/button";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Clock, Users, DollarSign, Shield, Zap } from 'lucide-react';
+import { ArrowRight, Clock, Users, DollarSign, Shield } from 'lucide-react';
 
 function ComparisonTable() {
   const { user } = useUser();
@@ -169,25 +169,11 @@ function ComparisonTable() {
           <Button
             onClick={() => handleBtnClick('upload')}
             size="lg"
-            className='bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white px-10 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'
+            className="bg-blue-500 hover:bg-black dark:hover:border-2 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
           >
             {user ? "Upload Document" : "Try NyayNetra Now"}
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6 text-sm text-gray-500 dark:text-gray-400">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-green-500" />
-              <span>Instant Results</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-blue-500" />
-              <span>100% Secure</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span>No Setup Required</span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

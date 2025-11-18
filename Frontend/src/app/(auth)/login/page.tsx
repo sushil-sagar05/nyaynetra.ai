@@ -86,10 +86,6 @@ function Page() {
                     </p>
                   </div>
                   <div className="flex gap-2 justify-center">
-                    <Badge variant="secondary" className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      AI-Powered
-                    </Badge>
                     <Badge variant="secondary" className="text-xs bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
                       <Shield className="w-3 h-3 mr-1" />
                       Secure
@@ -239,20 +235,6 @@ function Page() {
                         <p className="text-xs text-gray-600 dark:text-gray-400">
                           Insights in minutes, not hours
                         </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-orange-500">10K+</div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">Documents</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-blue-500">99.9%</div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">Accuracy</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-green-500">24/7</div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">Available</div>
                       </div>
                     </div>
                   </div>

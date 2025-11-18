@@ -6,7 +6,6 @@ import { useUser } from '../context/UserContext';
 import ThemeToggle from './toggle';
 import Link from 'next/link';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import {
   DropdownMenu,
@@ -46,31 +45,31 @@ function Navbar() {
           <div className="flex items-center gap-3">
             <Link 
               href="/" 
-              className="flex items-center gap-2 group"
+              className="flex flex-col md:hidden group"
             >
-              <div className="p-2 bg-gradient-to-br from-violet-500 to-blue-600 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <span className="text-white font-bold text-lg">👁</span>
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-600 bg-clip-text text-transparent group-hover:scale-105 transition-all duration-300">
-                  NyayNetra
-                </h1>
-                <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                  AI Legal Analysis
-                </p>
-              </div>
+              <h1 className="text-lg font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent group-hover:scale-105 transition-all duration-300">
+                NyayNetra
+              </h1>
+              <p className="text-[10px] text-gray-600 dark:text-gray-400 font-medium -mt-1">
+                AI Legal Analysis
+              </p>
             </Link>
-            {user && (
-              <Badge variant="outline" className="hidden md:flex items-center gap-1 text-xs bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                Active
-              </Badge>
-            )}
+            <Link 
+              href="/" 
+              className="hidden md:flex flex-col group"
+            >
+              <h1 className="text-xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent group-hover:scale-105 transition-all duration-300">
+                NyayNetra
+              </h1>
+              <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                AI Legal Analysis
+              </p>
+            </Link>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              
+
               <Link 
                 href="/upload"
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200 group"
@@ -116,6 +115,7 @@ function Navbar() {
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
+
                   <DropdownMenuContent align="end" className="w-64">
                     <DropdownMenuLabel className="flex items-center gap-3 p-3">
                       <Avatar className="w-10 h-10">
@@ -132,8 +132,9 @@ function Navbar() {
                         </p>
                       </div>
                     </DropdownMenuLabel>
+
                     <DropdownMenuSeparator />
-                    
+
                     <DropdownMenuItem asChild>
                       <Link 
                         href={`/dashboard/${user?.username}`}
@@ -143,7 +144,7 @@ function Navbar() {
                         <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
-                    
+
                     <DropdownMenuItem asChild>
                       <Link 
                         href={`/settings/${user?.username}`}
@@ -153,9 +154,9 @@ function Navbar() {
                         <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
-                    
+
                     <DropdownMenuSeparator />
-                    
+
                     <DropdownMenuItem 
                       onClick={handleLogout}
                       className="flex items-center gap-3 px-3 py-2 text-sm text-red-600 dark:text-red-400 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20"

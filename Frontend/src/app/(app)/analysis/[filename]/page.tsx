@@ -61,14 +61,16 @@ function Page() {
   const { user } = useUser();
 useEffect(() => {
   if (!filename) return;
-
-  const runAnalysis = async () => {
+    let hasRun = false;
+    const runAnalysis = async () => {
+    if (hasRun) return;
+    hasRun = true;
     setLoading(true);
     try {
       const apiInstance = user ? api : guestApi;
       const route = user
       ? `/analyze/analysis/${filename}`
-      : `/analyze/guest/analysis/${filename}`;
+      : `/guest/analyze/analysis/${filename}`;
 
       const response = await apiInstance.get(route);
 
@@ -128,7 +130,6 @@ useEffect(() => {
         <div className="space-y-4">
           <div className="p-4 sm:p-6 border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20 shadow-sm">
             <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center">
-              <span className="w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full mr-3"></span>
               Short Summary
             </h3>
             <p className="text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-2">
@@ -141,7 +142,6 @@ useEffect(() => {
           
           <div className="p-4 sm:p-6 border border-green-200 dark:border-green-800 rounded-lg bg-green-50 dark:bg-green-900/20 shadow-sm">
             <h3 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-3 flex items-center">
-              <span className="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full mr-3"></span>
               Detailed Summary
             </h3>
             <p className="text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300">
@@ -154,7 +154,6 @@ useEffect(() => {
       return (
         <div className="p-4 sm:p-6 border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20 shadow-sm">
           <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3 flex items-center">
-            <span className="w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full mr-3"></span>
             Document Summary
           </h3>
           <p className="text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-2">
@@ -269,7 +268,6 @@ useEffect(() => {
                             <div className="space-y-6 pb-4">
                               <div>
                                 <h2 className="text-xl sm:text-2xl font-bold mb-2 text-gray-900 dark:text-white">Document Summary</h2>
-                                <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">AI-generated analysis and key insights from your legal document.</p>
                               </div>
                               
                               {getSummaryContent()}
@@ -314,9 +312,7 @@ useEffect(() => {
                                             <Badge className={`text-xs px-2 py-1 ${getCategoryColor(clause.clause_category)}`}>
                                               {clause.clause_category.replace(/_/g, ' ')}
                                             </Badge>
-                                            <Badge variant="outline" className="text-xs px-2  py-1 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">
-                                              Chunk {clause.chunk_index}
-                                            </Badge>
+                                            
                                             <Badge 
                                               variant="secondary" 
                                               className={`text-xs px-2 py-1 ${
@@ -336,7 +332,6 @@ useEffect(() => {
                                       <CardContent className="space-y-4">
                                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                                           <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2 flex items-center">
-                                            <FileText className="w-4 h-4 mr-2" />
                                             Document Text
                                           </h4>
                                           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
@@ -346,7 +341,6 @@ useEffect(() => {
                                         
                                         <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                           <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
-                                            <Shield className="w-4 h-4 mr-2" />
                                             Reference Clause
                                           </h4>
                                           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -420,7 +414,6 @@ useEffect(() => {
                                           </span>
                                         </div>
                                         <div className="text-sm text-gray-600 dark:text-gray-400 flex flex-col sm:text-right">
-                                          <div className="mb-2">Chunk {risk.chunk_index}</div>
                                           <div className="flex items-center gap-2">
                                             <span>Confidence: {(risk.confidence * 100).toFixed(0)}%</span>
                                             <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
