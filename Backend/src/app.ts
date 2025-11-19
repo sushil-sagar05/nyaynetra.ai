@@ -11,6 +11,7 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(cookieParser());
 
+
 const rawOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:3000",
@@ -20,6 +21,7 @@ const rawOrigins = [
 const allowedOrigins: string[] = rawOrigins.filter(
   (o): o is string => typeof o === "string" && o.trim().length > 0
 );
+
 
 const authCors: CorsOptions = {
   origin: allowedOrigins,
@@ -36,10 +38,16 @@ const authCors: CorsOptions = {
 };
 
 const guestCors: CorsOptions = {
-  origin: "*",
+  origin: (origin, callback) => {
+    callback(null, true); 
+  },
   credentials: false,
   methods: ["GET", "POST", "OPTIONS"],
 };
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,6 +71,7 @@ import documentRoutes from "./routes/document.routes";
 import settingRoutes from "./routes/settings.route";
 import analysisRoutes from "./routes/analysis.routes";
 import guestAnalysisRoutes from "./routes/guest.route";
+
 app.use("/user", cors(authCors), userRoutes);
 app.use("/document", cors(authCors), documentRoutes);
 app.use("/settings", cors(authCors), settingRoutes);
